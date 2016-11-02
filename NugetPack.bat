@@ -12,7 +12,7 @@ mkdir .\Out\NuGet\Release
  -Properties "Author=Simple Answers Energy, Inc."  ^
  -Properties "Owner=Simple Answers Energy, Inc."  ^
  -Properties "NuGetCopyright=Copyright (c) 2016 Simple Answers Energy, Inc."  ^
- -Properties RunOut=Out\Run\Release  ^
+ -Properties RunOut=.\Out\Run\Release  ^
  -Properties GitHubUrl=https://github.com/SAEnergy/Infrastructure  ^
  -Properties LicenseUrl=https://github.com/SAEnergy/Infrastructure/blob/master/LICENSE.md  ^
  -Properties NugetIconUrl=https://raw.githubusercontent.com/SAEnergy/Infrastructure/master/.nuget/NuGet.ico  ^
