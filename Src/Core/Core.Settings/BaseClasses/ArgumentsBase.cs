@@ -12,6 +12,8 @@ namespace Core.Settings
 
         protected readonly ILogger _logger;
 
+        protected readonly bool _malformedArgumentsAreFatal;
+
         #endregion
 
         #region Properties
@@ -22,8 +24,10 @@ namespace Core.Settings
 
         #region Constructor
 
-        protected ArgumentsBase(ILogger logger, bool autoLoad = true)
+        protected ArgumentsBase(ILogger logger, bool autoLoad = true, bool malformedArgumentsAreFatal = true)
         {
+            _malformedArgumentsAreFatal = malformedArgumentsAreFatal;
+
             if (logger != null)
             {
                 _logger = logger;
@@ -47,7 +51,9 @@ namespace Core.Settings
 
         public void Load(string[] args = null)
         {
-            if(args == null)
+            SetAllPropertiesToDefaultValue(); //always reset properties when Load is called, just incase someone reuses an object
+
+            if (args == null)
             {
                 args = Environment.GetCommandLineArgs();
             }
@@ -68,7 +74,11 @@ namespace Core.Settings
                 {
                     _logger.Log(string.Format("Missing required command line argument \"{0}\".", tokenName), LogMessageSeverity.Error);
 
-                    Environment.Exit(-1); //do not allow execution to continue, logging system will automatically clean up
+                    if (_malformedArgumentsAreFatal)
+                    {
+                        _logger.Log(string.Format("System exiting because missing arguments are configured to be fatal."), LogMessageSeverity.Error);
+                        Environment.Exit(-1); //do not allow execution to continue, logging system will automatically clean up
+                    }
                 }
             }
         }
@@ -95,6 +105,14 @@ namespace Core.Settings
 
         #region Private Methods
 
+        private void SetAllPropertiesToDefaultValue()
+        {
+            foreach(PropertyInfo info in GetFilteredProperties())
+            {
+                info.SetValue(this, null); //trick to set property to default value
+            }
+        }
+
         private string GetValue(string arg, Tuple<PropertyInfo, ArgumentAttribute> setting)
         {
             string retVal = string.Empty;
@@ -115,7 +133,11 @@ namespace Core.Settings
                 {
                     _logger.Log(string.Format("Argument \"{0}\" requires a delimiter of \"{1}\" with a value of type \"{2}\".", arg, setting.Item2.Delimiter, setting.Item1.PropertyType.Name), LogMessageSeverity.Error);
 
-                    Environment.Exit(-1); //do not allow execution to continue, logging system will automatically clean up
+                    if (_malformedArgumentsAreFatal)
+                    {
+                        _logger.Log(string.Format("System exiting because errors in arguments are configured to be fatal."), LogMessageSeverity.Error);
+                        Environment.Exit(-1); //do not allow execution to continue, logging system will automatically clean up
+                    }
                 }
             }
 
@@ -187,7 +209,7 @@ namespace Core.Settings
 
         private List<PropertyInfo> GetFilteredProperties()
         {
-            return GetType().GetProperties().Where(p => !typeof(ArgumentsBase).IsAssignableFrom(p.PropertyType)).ToList();
+            return GetType().GetProperties().Where(p => p.DeclaringType != typeof(ArgumentsBase)).ToList(); ;
         }
 
         #endregion
