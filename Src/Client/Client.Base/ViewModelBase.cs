@@ -54,6 +54,9 @@ namespace Client.Base
     public class ViewModelBase<T> : ViewModelBase where T : IUserAuthentication
     {
         protected Subscription<T> _sub;
+        private object _queueLock = new object();
+        private bool _isExecuting = false;
+        private Queue<ManualResetEvent> _taskQueue = new Queue<ManualResetEvent>();
 
         public ViewModelBase(ViewBase parent) : base(parent)
         {
@@ -82,10 +85,22 @@ namespace Client.Base
             base.Dispose();
         }
 
+        // guaranteed to execute sequentially in calling order
         protected Task Execute(Action action)
         {
             return Task.Run(()=> 
             {
+                ManualResetEvent evt = null;
+                lock (_queueLock)
+                {
+                    if (_isExecuting)
+                    {
+                        evt = new ManualResetEvent(false);
+                        _taskQueue.Enqueue(evt);
+                    }
+                    _isExecuting = true;
+                }
+                if (evt!=null) { evt.WaitOne(); }
                 try
                 {
                     action();
@@ -93,6 +108,20 @@ namespace Client.Base
                 catch(Exception ex)
                 {
                     HandleTransactionException(ex);
+                }
+                finally
+                {
+                    lock (_queueLock)
+                    {
+                        if (_taskQueue.Count > 0)
+                        {
+                            _taskQueue.Dequeue().Set();
+                        }
+                        else
+                        {
+                            _isExecuting = false;
+                        }
+                    }
                 }
             });
         }
