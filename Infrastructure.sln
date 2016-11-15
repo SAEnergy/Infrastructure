@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.24720.0
+VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Server", "Server", "{AB14B98D-CD89-4139-B0D4-3D3237D1871A}"
 EndProject
@@ -32,6 +32,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.Mocks", "Src\Test\Test.Mocks\Test.Mocks.csproj", "{1B7C43FB-F2BC-4C38-9D06-35C716666AFF}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Utilities", "Utilities", "{8BAA698D-C1D3-4809-84CE-DD4CCA59A075}"
+	ProjectSection(SolutionItems) = preProject
+		NugetPack.bat = NugetPack.bat
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Server.Hosts", "Src\Server\Server.Hosts\Server.Hosts.csproj", "{1AD8A980-3F70-45A8-A682-68365183B845}"
 EndProject
@@ -54,8 +57,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Server.Components", "Src\Components\Server.Components\Server.Components.csproj", "{E6322468-7278-4940-9D5C-826E30477A19}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Server.Components.Test", "Src\Test\UnitTests\Server.Components.Test\Server.Components.Test.csproj", "{7A4DB1DE-80C5-4D1A-9851-0A9B5AB05999}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client.Plugins.Test", "Src\Client\Client.Plugins.Test\Client.Plugins.Test.csproj", "{858DA7A4-4435-428D-8AB5-EA8DD3A52568}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Util", "Src\Core\Core.Util\Core.Util.csproj", "{74311B36-42B8-45D6-B0B7-7651DB281D48}"
 EndProject
@@ -86,11 +87,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client.Controls", "src\client\Client.Controls\Client.Controls.csproj", "{CCBA905E-CEDF-488F-BD79-5B2D1FE5E525}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectUpdater", "Src\Utilities\Internal\ProjectUpdater\ProjectUpdater.csproj", "{3825FC2C-5737-4922-98A5-31DB8B8D32AA}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{4EFB20B2-D650-4F65-9D4B-13DC31C6B6FD}"
-	ProjectSection(SolutionItems) = preProject
-		NugetPack.bat = NugetPack.bat
-	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -166,10 +162,6 @@ Global
 		{7A4DB1DE-80C5-4D1A-9851-0A9B5AB05999}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7A4DB1DE-80C5-4D1A-9851-0A9B5AB05999}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7A4DB1DE-80C5-4D1A-9851-0A9B5AB05999}.Release|Any CPU.Build.0 = Release|Any CPU
-		{858DA7A4-4435-428D-8AB5-EA8DD3A52568}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{858DA7A4-4435-428D-8AB5-EA8DD3A52568}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{858DA7A4-4435-428D-8AB5-EA8DD3A52568}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{858DA7A4-4435-428D-8AB5-EA8DD3A52568}.Release|Any CPU.Build.0 = Release|Any CPU
 		{74311B36-42B8-45D6-B0B7-7651DB281D48}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{74311B36-42B8-45D6-B0B7-7651DB281D48}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{74311B36-42B8-45D6-B0B7-7651DB281D48}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -252,7 +244,6 @@ Global
 		{6A0F7570-F1AF-4B1C-825E-AD242951266D} = {8BAA698D-C1D3-4809-84CE-DD4CCA59A075}
 		{E6322468-7278-4940-9D5C-826E30477A19} = {9B471AB8-7DD5-465A-B52B-E47404B7AC22}
 		{7A4DB1DE-80C5-4D1A-9851-0A9B5AB05999} = {8E18CE31-B102-47C1-B06A-319FE55B9043}
-		{858DA7A4-4435-428D-8AB5-EA8DD3A52568} = {4A268B4F-6F2F-4225-ABCD-CDED70CF33D0}
 		{74311B36-42B8-45D6-B0B7-7651DB281D48} = {FA0A3D8E-6753-49DB-AF8F-E5938FF494D8}
 		{12FBBE80-B573-411A-9226-CAD37408715B} = {8E18CE31-B102-47C1-B06A-319FE55B9043}
 		{81607B00-77B0-4987-A1B4-3DFF9DFFEADD} = {9B471AB8-7DD5-465A-B52B-E47404B7AC22}
