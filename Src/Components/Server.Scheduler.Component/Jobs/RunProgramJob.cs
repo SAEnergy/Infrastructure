@@ -1,5 +1,6 @@
 ﻿using Core.Interfaces.Components.Logging;
 using Core.Models.Persistent;
+using Scheduler.Interfaces;
 using System;
 using System.Diagnostics;
 using System.IO;

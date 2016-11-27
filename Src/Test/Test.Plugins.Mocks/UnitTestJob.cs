@@ -3,6 +3,7 @@ using System.Threading;
 using Core.Models.Persistent;
 using Core.Interfaces.Components.Logging;
 using System.Collections.Generic;
+using Scheduler.Interfaces;
 
 namespace Test.Plugins.Mocks
 {

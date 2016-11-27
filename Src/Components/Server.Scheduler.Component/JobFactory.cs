@@ -1,8 +1,8 @@
 ﻿using Core.Interfaces.Components.Logging;
-using Core.Interfaces.Components.Scheduler;
 using Core.Models.Persistent;
 using Core.Scheduler.Jobs;
 using Core.Util;
+using Scheduler.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;

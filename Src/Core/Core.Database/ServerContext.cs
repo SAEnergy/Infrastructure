@@ -17,8 +17,6 @@ namespace Core.Database
     {
         #region Properties
 
-        public DbSet<JobConfiguration> JobConfigurations { get; set; }
-
         public DbSet<SystemConfiguration> SystemConfigurations { get; set; }
 
         public DbSet<Permission> Permissions { get; set; }

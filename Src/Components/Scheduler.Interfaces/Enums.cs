@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Core.Interfaces.Components.Scheduler
+namespace Scheduler.Interfaces
 {
     public enum JobStatus
     {

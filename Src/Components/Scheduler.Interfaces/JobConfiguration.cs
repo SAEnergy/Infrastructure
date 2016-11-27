@@ -2,7 +2,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace Core.Models.Persistent
+namespace Scheduler.Interfaces
 {
     public class JobConfiguration
     {

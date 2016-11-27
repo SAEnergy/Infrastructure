@@ -1,5 +1,4 @@
-﻿using Core.Interfaces.Components.Scheduler;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -8,6 +7,7 @@ using System.Threading;
 using Core.Interfaces.Components.Logging;
 using System.Diagnostics;
 using System.Globalization;
+using Scheduler.Interfaces;
 
 namespace Core.Scheduler.Jobs
 {

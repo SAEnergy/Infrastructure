@@ -7,6 +7,7 @@ using Test.Plugins.Mocks;
 using System.Threading;
 using System.Linq;
 using Server.Components;
+using Scheduler.Interfaces;
 
 namespace Core.Scheduler.Test
 {

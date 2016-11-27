@@ -1,4 +1,4 @@
 cd /d %~dp0
-..\..\..\out\util\debug\ProjectUpdater /SourceFolder=..\.. /IsReadOnly
+..\..\..\out\util\debug\ProjectUpdater /SourceFolder=..\..
 pause
 

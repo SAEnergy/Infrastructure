@@ -4,7 +4,7 @@ using Core.Models.Persistent;
 using System;
 using System.Collections.Generic;
 
-namespace Core.Interfaces.Components.Scheduler
+namespace Scheduler.Interfaces
 {
     public interface IScheduler : IRunnable, IComponent
     {

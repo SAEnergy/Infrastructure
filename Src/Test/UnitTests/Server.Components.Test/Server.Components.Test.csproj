@@ -71,6 +71,10 @@
     <Compile Include="XMLDataComponentTest.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Components\Scheduler.Interfaces\Scheduler.Interfaces.csproj">
+      <Project>{7fccf86d-5c9a-4659-b003-c4be7dd6131a}</Project>
+      <Name>Scheduler.Interfaces</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\Components\Server.Components\Server.Components.csproj">
       <Project>{e6322468-7278-4940-9d5c-826e30477a19}</Project>
       <Name>Server.Components</Name>
