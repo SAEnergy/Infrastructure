@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{858DA7A4-4435-428D-8AB5-EA8DD3A52568}</ProjectGuid>
+    <ProjectGuid>{29CF2549-59A5-4E0F-8161-79537DEB3898}</ProjectGuid>
     <OutputType>library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Client.Plugins.Test</RootNamespace>
-    <AssemblyName>Client.Plugins.Test</AssemblyName>
+    <RootNamespace>Scheduler.Plugin</RootNamespace>
+    <AssemblyName>Scheduler.Plugin</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -51,28 +51,12 @@
     <Compile Include="..\..\GlobalAssemblyInfo.cs">
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
-    <Page Include="Views\ControlTestPanel.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\TestLogViewerViewPanel.xaml">
+    <Page Include="SchedulerPanel.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\TestSubscriptionPanel.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Compile Include="Views\ControlTestPanel.xaml.cs">
-      <DependentUpon>ControlTestPanel.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="ViewModels\ControlTestViewModel.cs" />
-    <Compile Include="ViewModels\TestSubscriptionViewModel.cs" />
-    <Compile Include="Views\TestLogViewerViewPanel.xaml.cs">
-      <DependentUpon>TestLogViewerViewPanel.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\TestSubscriptionPanel.xaml.cs">
-      <DependentUpon>TestSubscriptionPanel.xaml</DependentUpon>
+    <Compile Include="SchedulerPanel.xaml.cs">
+      <DependentUpon>SchedulerPanel.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
@@ -101,13 +85,9 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Core\Core.Comm\Core.Comm.csproj">
-      <Project>{ade057b4-c64f-4142-a4df-0b733fe31926}</Project>
-      <Name>Core.Comm</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Core\Core.Interfaces\Core.Interfaces.csproj">
-      <Project>{bdb06c43-2402-444e-a9e0-72c88174fed7}</Project>
-      <Name>Core.Interfaces</Name>
+    <ProjectReference Include="..\..\Components\Scheduler.Interfaces\Scheduler.Interfaces.csproj">
+      <Project>{7fccf86d-5c9a-4659-b003-c4be7dd6131a}</Project>
+      <Name>Scheduler.Interfaces</Name>
     </ProjectReference>
     <ProjectReference Include="..\Client.Base\Client.Base.csproj">
       <Project>{98c98907-35d1-40b3-970b-53b38dd3cb4a}</Project>

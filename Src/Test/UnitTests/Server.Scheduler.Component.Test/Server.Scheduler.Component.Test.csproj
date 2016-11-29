@@ -57,6 +57,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Components\Scheduler.Interfaces\Scheduler.Interfaces.csproj">
+      <Project>{7fccf86d-5c9a-4659-b003-c4be7dd6131a}</Project>
+      <Name>Scheduler.Interfaces</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\Components\Server.Components\Server.Components.csproj">
       <Project>{e6322468-7278-4940-9d5c-826e30477a19}</Project>
       <Name>Server.Components</Name>
@@ -88,6 +92,10 @@
     <ProjectReference Include="..\..\Test.Plugins.Mocks\Test.Plugins.Mocks.csproj">
       <Project>{95f60aac-85c0-477c-93bf-28bec5ea0e78}</Project>
       <Name>Test.Plugins.Mocks</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Server.Components.Test\Server.Components.Test.csproj">
+      <Project>{7a4db1de-80c5-4d1a-9851-0a9b5ab05999}</Project>
+      <Name>Server.Components.Test</Name>
     </ProjectReference>
   </ItemGroup>
   <Choose>

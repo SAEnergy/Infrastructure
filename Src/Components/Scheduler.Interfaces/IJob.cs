@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Core.Interfaces.Components.Scheduler
+namespace Scheduler.Interfaces
 {
     public interface IJob
     {
@@ -23,4 +23,11 @@ namespace Core.Interfaces.Components.Scheduler
 
         //void UpdateConfiguration(JobConfiguration newConfig);
     }
+
+
+    public interface IJob<T> : IJob where T : JobConfiguration
+    {
+        new T Configuration { get; }
+    }
+
 }

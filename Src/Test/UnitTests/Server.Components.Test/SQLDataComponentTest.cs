@@ -7,6 +7,7 @@ using Core.Models.Persistent;
 using Core.Interfaces.Components;
 using System.Linq;
 using Server.Components;
+using Scheduler.Interfaces;
 
 namespace Core.Components.Test
 {

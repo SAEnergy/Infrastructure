@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Client.Plugins.Test.Properties
+namespace Scheduler.Plugin.Properties
 {
     
     

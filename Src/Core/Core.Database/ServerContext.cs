@@ -1,4 +1,5 @@
 ﻿using Core.Models.Persistent;
+using Scheduler.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -85,6 +86,8 @@ namespace Core.Database
             {
                 var complexTuple = stack.Pop();
                 var obj = complexTuple.Item2.GetValue(complexTuple.Item1);
+
+                if (obj == null) { continue; }
 
                 CheckAndUpdateDataTimeProperties(obj);
 

@@ -1,5 +1,4 @@
 ﻿using Core.Interfaces.Components.Logging;
-using Core.Interfaces.Components.Scheduler;
 using Core.Interfaces.Components;
 using System;
 using System.Collections.Generic;
@@ -8,6 +7,7 @@ using Core.Models.Persistent;
 using Core.Interfaces.Components.IoC;
 using Core.Interfaces.Components.Base;
 using Core.Models;
+using Scheduler.Interfaces;
 
 namespace Core.Scheduler
 {

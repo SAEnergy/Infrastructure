@@ -1,5 +1,6 @@
 ﻿using Core.Interfaces.Components.Logging;
 using Core.Models.Persistent;
+using Scheduler.Interfaces;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -7,7 +8,7 @@ using System.Threading;
 
 namespace Core.Scheduler.Jobs
 {
-    public sealed class RunProgramJob : JobBase
+    public sealed class RunProgramJob : JobBase<RunProgramJobConfiguration>
     {
         #region Fields
 
@@ -17,7 +18,7 @@ namespace Core.Scheduler.Jobs
 
         #region Constructor
 
-        public RunProgramJob(ILogger logger, JobConfiguration config) : base(logger, config)
+        public RunProgramJob(ILogger logger, RunProgramJobConfiguration config) : base(logger, config)
         {
 
         }

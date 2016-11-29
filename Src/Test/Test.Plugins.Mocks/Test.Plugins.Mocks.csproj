@@ -47,6 +47,10 @@
     <Compile Include="UnitTestJob.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Components\Scheduler.Interfaces\Scheduler.Interfaces.csproj">
+      <Project>{7fccf86d-5c9a-4659-b003-c4be7dd6131a}</Project>
+      <Name>Scheduler.Interfaces</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Components\Server.Scheduler.Component\Server.Scheduler.Component.csproj">
       <Project>{93f677ee-2190-4f16-bf5a-2bd44437327d}</Project>
       <Name>Server.Scheduler.Component</Name>

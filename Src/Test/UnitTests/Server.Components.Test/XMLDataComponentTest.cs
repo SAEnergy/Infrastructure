@@ -5,6 +5,7 @@ using System;
 using System.IO;
 using System.Linq;
 using Test.Mocks;
+using Scheduler.Interfaces;
 
 namespace Core.Components.Test
 {

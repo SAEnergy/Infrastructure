@@ -62,6 +62,10 @@
       <Project>{74311b36-42b8-45d6-b0b7-7651db281d48}</Project>
       <Name>Core.Util</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Scheduler.Interfaces\Scheduler.Interfaces.csproj">
+      <Project>{7fccf86d-5c9a-4659-b003-c4be7dd6131a}</Project>
+      <Name>Scheduler.Interfaces</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
