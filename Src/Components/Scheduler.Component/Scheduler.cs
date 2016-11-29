@@ -60,7 +60,7 @@ namespace Scheduler.Component
                 {
                     _logger.Log("Scheduler component starting...");
 
-                    Task.Run(()=>LoadAllJobs()); //does not block here on purpose
+                    Task.Run(() => LoadAllJobs()); //does not block here on purpose
                 }
             }
         }
@@ -91,9 +91,9 @@ namespace Scheduler.Component
 
         public void AddJob(JobConfiguration job)
         {
-            if(_jobs != null)
+            if (_jobs != null)
             {
-                lock(_jobs)
+                lock (_jobs)
                 {
                     var newJob = JobFactory.Create(job);
 
@@ -124,9 +124,9 @@ namespace Scheduler.Component
 
         private void CancelAllJobs()
         {
-            if(_jobs != null)
+            if (_jobs != null)
             {
-                lock(_jobs)
+                lock (_jobs)
                 {
                     if (_jobs.Count > 0)
                     {
@@ -145,24 +145,33 @@ namespace Scheduler.Component
 
         private void LoadAllJobs()
         {
-            _jobs = new List<IJob>();
-
-            _logger.Log("Scheduler loading all jobs from storage.");
-
-            var query = GetJobs();
-
-            if (query != null)
+            try
             {
-                IsRunning = true;
+                _jobs = new List<IJob>();
 
-                foreach (var jobConfig in query)
+                _logger.Log("Scheduler loading all jobs from storage.");
+
+                var query = GetJobs();
+
+                if (query != null)
                 {
-                    AddJob(jobConfig);
+                    IsRunning = true;
+
+                    foreach (var jobConfig in query)
+                    {
+                        AddJob(jobConfig);
+                    }
+
+                    _logger.Log("Scheduler loaded " + query.Count + " jobs.");
+                }
+                else
+                {
+                    _logger.Log("Storage returned null as result!", LogMessageSeverity.Warning);
                 }
             }
-            else
+            catch (Exception ex)
             {
-                _logger.Log("Storage returned null as result!", LogMessageSeverity.Warning);
+                _logger.Log("Error loading jobs: " + ex.ToString(), LogMessageSeverity.Error);
             }
         }
 
