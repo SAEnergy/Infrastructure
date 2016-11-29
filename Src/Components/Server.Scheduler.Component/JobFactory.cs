@@ -14,7 +14,8 @@ namespace Core.Scheduler
     {
         #region Fields
 
-        private static Dictionary<string, Type> _jobActionTypeMap;
+        // map job configuration types to job implementation types.
+        private static Dictionary<Type, Type> _jobTypeMap = new Dictionary<Type, Type>();
 
         #endregion
 
@@ -43,18 +44,17 @@ namespace Core.Scheduler
             {
                 Type type = null;
 
-                if (_jobActionTypeMap.TryGetValue(config.ActionType, out type))
+                if (_jobTypeMap.TryGetValue(config.GetType(), out type))
                 {
                     if (type != null)
                     {
                         Logger.Log(string.Format("Creating job of type \"{0}\".", type.Name));
-
                         retVal = Activator.CreateInstance(type, Logger, config) as IJob;
                     }
                 }
                 else
                 {
-                    Logger.Log(string.Format("Action type \"{0}\" not supported.  This job will not be created.", config.ActionType), LogMessageSeverity.Error);
+                    Logger.Log(string.Format("Action type \"{0}\" not supported.  This job will not be created.", config.GetType()), LogMessageSeverity.Error);
                 }
             }
             else
@@ -71,17 +71,25 @@ namespace Core.Scheduler
 
         private static void BuildJobActionTypeMap()
         {
-            _jobActionTypeMap = new Dictionary<string, Type>();
+            var type = typeof(JobBase<>);
 
-            var type = typeof(JobBase);
+            var jobBases = TypeLocator.FindTypes("*.dll", typeof(JobBase<>)).ToList();
+            var jobConfigs = TypeLocator.FindTypes("*.dll", typeof(JobConfiguration)).ToList();
 
-            var types = TypeLocator.FindTypes("*plugin*.dll", typeof(JobBase)).ToList();
+            //types.AddRange(Assembly.GetExecutingAssembly().GetTypes().Where(t => t != type && type.IsAssignableFrom(t)));
 
-            types.AddRange(Assembly.GetExecutingAssembly().GetTypes().Where(t => t != type && type.IsAssignableFrom(t)));
-
-            foreach (var realtype in types)
+            foreach (var realtype in jobBases)
             {
-                _jobActionTypeMap.Add(realtype.Name, realtype);
+                foreach (ConstructorInfo con in realtype.GetConstructors())
+                {
+                    foreach (ParameterInfo parm in con.GetParameters())
+                    {
+                        if (jobConfigs.Contains(parm.ParameterType))
+                        {
+                            _jobTypeMap.Add(parm.ParameterType, realtype);
+                        }
+                    }
+                }
             }
         }
 

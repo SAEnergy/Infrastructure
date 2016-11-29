@@ -87,6 +87,8 @@ namespace Core.Database
                 var complexTuple = stack.Pop();
                 var obj = complexTuple.Item2.GetValue(complexTuple.Item1);
 
+                if (obj == null) { continue; }
+
                 CheckAndUpdateDataTimeProperties(obj);
 
                 GetComplextTypes(complexTuple.Item2.PropertyType).ForEach(t => stack.Push(new Tuple<object, PropertyInfo>(obj, t)));

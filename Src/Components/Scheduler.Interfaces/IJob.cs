@@ -23,4 +23,11 @@ namespace Scheduler.Interfaces
 
         //void UpdateConfiguration(JobConfiguration newConfig);
     }
+
+
+    public interface IJob<T> : IJob where T : JobConfiguration
+    {
+        new T Configuration { get; }
+    }
+
 }

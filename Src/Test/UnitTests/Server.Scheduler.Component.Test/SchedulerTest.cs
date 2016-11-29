@@ -27,7 +27,7 @@ namespace Core.Scheduler.Test
         }
 
         [TestMethod]
-        [Ignore]
+        //[Ignore]
         public void SchedulerTest_AddCustomJob()
         {
             XMLDataComponent.Folder = Environment.CurrentDirectory;
@@ -53,10 +53,7 @@ namespace Core.Scheduler.Test
 
         private JobConfiguration BuildMeAJob()
         {
-            var config = new JobConfiguration();
-
-            config.ActionType = "UnitTestJob";
-
+            var config = new UnitTestJobConfiugration();
             return config;
         }
     }

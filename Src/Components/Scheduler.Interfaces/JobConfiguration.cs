@@ -12,41 +12,15 @@ namespace Scheduler.Interfaces
         [StringLength(255)]
         public string Name { get; set; }
 
-        [StringLength(255)]
-        public string ActionType { get; set; }
+        public bool RunImmediatelyIfRunTimeMissed { get; set; }
 
-        [StringLength(255)]
-        public string FileName { get; set; }
+        public bool AllowSimultaneousExecutions { get; set; }
 
-        [StringLength(255)]
-        public string Arguments { get; set; }
-
-        [StringLength(255)]
-        public string WorkingDirectory { get; set; }
-
-        public bool CaptureOutput { get; set; }
-
-        public bool KillProcOnCancel { get; set; }
+        public TimeSpanBool Timeout { get; set; }
 
         public JobRunState RunState { get; set; }
 
-        public int StartTimeInSeconds { get; set; } //consider changing this to TimeSpan, problem is TimeSpan is not xml serializable...
-
-        public JobTriggerType TriggerType { get; set; }
-
-        public JobTriggerDays TriggerDays { get; set; }
-
-        public JobTriggerWeeks TriggerWeeks { get; set; }
-
-        public JobTriggerMonths TriggerMonths { get; set; }
-
-        public TimeSpanBool RepeatEvery { get; set; }
-
-        public bool RunImmediatelyIfRunTimeMissed { get; set; }
-
-        public bool SimultaneousExecutions { get; set; }
-
-        public TimeSpanBool Timeout { get; set; }
+        public JobSchedule Schedule { get; set; }
 
         public AuditInfo AuditInfo { get; set; }
 
@@ -55,7 +29,7 @@ namespace Scheduler.Interfaces
             //initialize objects
             AuditInfo = new AuditInfo();
             Timeout = new TimeSpanBool();
-            RepeatEvery = new TimeSpanBool();
+            Schedule = new JobSchedule();
         }
     }
 

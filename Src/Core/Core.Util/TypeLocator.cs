@@ -66,8 +66,27 @@ namespace Core.Util
 
                         foreach (Type type in types)
                         {
-                            var found = assm.GetTypes().Where(t => t != type && type.IsAssignableFrom(t) && t.ContainsGenericParameters == false);
-                            toRet.AddRange(found.Select(t => t.AssemblyQualifiedName));
+                            if (type.IsGenericType)
+                            {
+                                foreach (Type st in assm.GetTypes())
+                                {
+                                    if (st.Name.Contains("UnitTestJob")) { Console.WriteLine("moo"); }
+                                    if (st== type) { continue; }
+                                    if (st.BaseType==null) { continue; }
+                                    if (st.BaseType.IsGenericType && st.BaseType.GetGenericTypeDefinition()==type)
+                                    {
+                                        toRet.Add(st.AssemblyQualifiedName);
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                var found = assm.GetTypes().Where(t =>
+                                    t != type &&
+                                    type.IsAssignableFrom(t) &&
+                                    t.ContainsGenericParameters == false);
+                                toRet.AddRange(found.Select(t => t.AssemblyQualifiedName));
+                            }
                         }
                     }
                     catch (Exception ex)

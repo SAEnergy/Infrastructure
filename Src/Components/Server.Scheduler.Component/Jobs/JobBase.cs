@@ -29,7 +29,7 @@ namespace Core.Scheduler.Jobs
         }
     }
 
-    public abstract class JobBase : IJob
+    public abstract class JobBase<T> : IJob<T> where T : JobConfiguration
     {
         #region Fields
 
@@ -45,7 +45,9 @@ namespace Core.Scheduler.Jobs
 
         #region Properties
 
-        public JobConfiguration Configuration { get; private set; }
+        public T Configuration { get; private set; }
+
+        JobConfiguration IJob.Configuration { get { return Configuration; } }
 
         public JobStatus Status { get; private set; }
 
@@ -53,7 +55,7 @@ namespace Core.Scheduler.Jobs
 
         #region Constructor
 
-        protected JobBase(ILogger logger, JobConfiguration config)
+        protected JobBase(ILogger logger, T config)
         {
             Status = JobStatus.Unknown;
             _logger = logger;
@@ -202,7 +204,7 @@ namespace Core.Scheduler.Jobs
 
                         _logger.Log(string.Format(string.Format("Job \"{0}\" starting at \"{1}\"", Configuration.Name, DateTime.UtcNow.ToLocalTime())));
 
-                        bool willRun = !HasRunningTask() || Configuration.SimultaneousExecutions;
+                        bool willRun = !HasRunningTask() || Configuration.AllowSimultaneousExecutions;
 
                         if (!willRun && Configuration.RunImmediatelyIfRunTimeMissed)
                         {
@@ -353,13 +355,16 @@ namespace Core.Scheduler.Jobs
         {
             TimeSpan result = TimeSpan.MaxValue;
 
-            if (Configuration.TriggerType != JobTriggerType.NotConfigured)
+            //todo:  This should be one to many, loop through each schedule
+            JobSchedule schedule = Configuration.Schedule;
+
+            if (schedule.TriggerType != JobTriggerType.NotConfigured)
             {
                 var secondsInDay = (int)Math.Floor(TimeSpan.FromDays(1).TotalSeconds);
 
-                int seconds = Configuration.StartTimeInSeconds;
+                int seconds = schedule.StartTime.TimeInSeconds;
 
-                if (Configuration.StartTimeInSeconds > secondsInDay)
+                if (schedule.StartTime.TimeInSeconds > secondsInDay)
                 {
                     _logger.Log(string.Format("Job by the name of \"{0}\" start time set to more that one days worth of seconds, defaulting to start running at midnight.", Configuration.Name), LogMessageSeverity.Warning);
                     seconds = 0;
@@ -369,26 +374,26 @@ namespace Core.Scheduler.Jobs
 
                 TimeSpan offset = startTime.Subtract(DateTime.UtcNow.ToLocalTime());
 
-                switch (Configuration.TriggerType)
+                switch (schedule.TriggerType)
                 {
                     case JobTriggerType.Continuously:
-                        result = FindNextTriggerTimeSpanContinuously(offset);
+                        result = FindNextTriggerTimeSpanContinuously(schedule, offset);
                         break;
 
                     case JobTriggerType.Daily:
-                        result = FindNextTriggerTimeSpanDaily(offset);
+                        result = FindNextTriggerTimeSpanDaily(schedule, offset);
                         break;
 
                     case JobTriggerType.Weekly:
-                        result = FindNextTriggerTimeSpanWeekly(offset, DateTime.UtcNow.ToLocalTime());
+                        result = FindNextTriggerTimeSpanWeekly(schedule, offset, DateTime.UtcNow.ToLocalTime());
                         break;
 
                     case JobTriggerType.Monthly:
-                        result = FindNextTriggerTimeSpanMonthly(offset);
+                        result = FindNextTriggerTimeSpanMonthly(schedule, offset);
                         break;
 
                     default:
-                        _logger.Log(string.Format("Job by the name of \"{0}\" has a trigger type of \"{1}\" that is not supported.", Configuration.Name, Configuration.TriggerType), LogMessageSeverity.Warning);
+                        _logger.Log(string.Format("Job by the name of \"{0}\" has a trigger type of \"{1}\" that is not supported.", Configuration.Name, schedule.TriggerType), LogMessageSeverity.Warning);
                         break;
                 }
                 if (result != TimeSpan.MaxValue)
@@ -399,13 +404,13 @@ namespace Core.Scheduler.Jobs
             else
             {
                 Status = JobStatus.Misconfigured;
-                _logger.Log(string.Format("Job by the name of \"{0}\" has a trigger type of \"{1}\" that is misconfigured.  This job will not run!", Configuration.Name, Configuration.TriggerType), LogMessageSeverity.Critical);
+                _logger.Log(string.Format("Job by the name of \"{0}\" has a trigger type of \"{1}\" that is misconfigured.  This job will not run!", Configuration.Name, schedule.TriggerType), LogMessageSeverity.Critical);
             }
 
             return result;
         }
 
-        private TimeSpan FindNextTriggerTimeSpanContinuously(TimeSpan startTimeOffset)
+        private TimeSpan FindNextTriggerTimeSpanContinuously(JobSchedule schedule, TimeSpan startTimeOffset)
         {
             if (startTimeOffset.TotalSeconds < 0)
             {
@@ -414,11 +419,11 @@ namespace Core.Scheduler.Jobs
 
             var result = startTimeOffset;
 
-            if (Configuration.RepeatEvery.Enabled)
+            if (schedule.RepeatEvery.Enabled)
             {
-                var repeatSeconds = Configuration.RepeatEvery.TimeInSeconds;
+                var repeatSeconds = schedule.RepeatEvery.TimeInSeconds;
 
-                if (Configuration.RepeatEvery.TimeInSeconds < 1)
+                if (schedule.RepeatEvery.TimeInSeconds < 1)
                 {
                     _logger.Log(string.Format("Job by the name of \"{0}\" start time set to repeat faster than every 1 second, defaulting to run every 1 second.", Configuration.Name), LogMessageSeverity.Warning);
                     repeatSeconds = 1;
@@ -430,11 +435,11 @@ namespace Core.Scheduler.Jobs
             return result;
         }
 
-        private TimeSpan FindNextTriggerTimeSpanDaily(TimeSpan startTimeOffset)
+        private TimeSpan FindNextTriggerTimeSpanDaily(JobSchedule schedule, TimeSpan startTimeOffset)
         {
             var result = startTimeOffset;
 
-            if (Configuration.TriggerDays != JobTriggerDays.NotConfigured)
+            if (schedule.TriggerDays != JobTriggerDays.NotConfigured)
             {
                 var dayStart = (int)DateTime.UtcNow.ToLocalTime().DayOfWeek;
 
@@ -449,7 +454,7 @@ namespace Core.Scheduler.Jobs
 
                 var day = dayStart;
 
-                while (!Configuration.TriggerDays.HasFlag(dayToCheck))
+                while (!schedule.TriggerDays.HasFlag(dayToCheck))
                 {
                     result = result.Add(TimeSpan.FromDays(1));
 
@@ -466,23 +471,23 @@ namespace Core.Scheduler.Jobs
             else
             {
                 Status = JobStatus.Misconfigured;
-                _logger.Log(string.Format("Job by the name of \"{0}\" has a trigger type of \"{1}\" that is misconfigured.  This job will not run!", Configuration.Name, Configuration.TriggerType), LogMessageSeverity.Critical);
+                _logger.Log(string.Format("Job by the name of \"{0}\" has a trigger type of \"{1}\" that is misconfigured.  This job will not run!", Configuration.Name, schedule.TriggerType), LogMessageSeverity.Critical);
                 result = TimeSpan.MaxValue;
             }
 
             return result;
         }
 
-        private TimeSpan FindNextTriggerTimeSpanWeekly(TimeSpan startTimeOffset, DateTime startDate)
+        private TimeSpan FindNextTriggerTimeSpanWeekly(JobSchedule schedule, TimeSpan startTimeOffset, DateTime startDate)
         {
             var result = startTimeOffset;
 
-            if (Configuration.TriggerWeeks != JobTriggerWeeks.NotConfigured && Configuration.TriggerDays != JobTriggerDays.NotConfigured)
+            if (schedule.TriggerWeeks != JobTriggerWeeks.NotConfigured && schedule.TriggerDays != JobTriggerDays.NotConfigured)
             {
                 var now = startDate;
                 var triggerWeek = GetJobTriggerWeeks(now);
 
-                while (!TriggerWeeksCheck(now))
+                while (!TriggerWeeksCheck(schedule, now))
                 {
                     result = result.Add(TimeSpan.FromDays(1));
                     now = now.AddDays(1);
@@ -492,24 +497,24 @@ namespace Core.Scheduler.Jobs
             else
             {
                 Status = JobStatus.Misconfigured;
-                _logger.Log(string.Format("Job by the name of \"{0}\" has a trigger type of \"{1}\" that is misconfigured.  This job will not run!", Configuration.Name, Configuration.TriggerType), LogMessageSeverity.Critical);
+                _logger.Log(string.Format("Job by the name of \"{0}\" has a trigger type of \"{1}\" that is misconfigured.  This job will not run!", Configuration.Name, schedule.TriggerType), LogMessageSeverity.Critical);
                 result = TimeSpan.MaxValue;
             }
 
             return result;
         }
 
-        private TimeSpan FindNextTriggerTimeSpanMonthly(TimeSpan startTimeOffset)
+        private TimeSpan FindNextTriggerTimeSpanMonthly(JobSchedule schedule, TimeSpan startTimeOffset)
         {
             var result = startTimeOffset;
 
-            if (Configuration.TriggerMonths != JobTriggerMonths.NotConfigured)
+            if (schedule.TriggerMonths != JobTriggerMonths.NotConfigured)
             {
                 var now = DateTime.UtcNow.ToLocalTime();
                 var triggerMonth = GetJobTriggerMonths(now);
                 int numberOfDays = DateTime.DaysInMonth(now.Year, now.Month) - now.Day + 1;
 
-                while (!Configuration.TriggerMonths.HasFlag(triggerMonth))
+                while (!schedule.TriggerMonths.HasFlag(triggerMonth))
                 {
                     result = result.Add(TimeSpan.FromDays(numberOfDays));
                     now = now.AddDays(numberOfDays);
@@ -517,41 +522,41 @@ namespace Core.Scheduler.Jobs
                     triggerMonth = GetJobTriggerMonths(now);
                 }
 
-                result = FindNextTriggerTimeSpanWeekly(result, now);
+                result = FindNextTriggerTimeSpanWeekly(schedule, result, now);
             }
             else
             {
                 Status = JobStatus.Misconfigured;
-                _logger.Log(string.Format("Job by the name of \"{0}\" has a trigger type of \"{1}\" that is misconfigured.  This job will not run!", Configuration.Name, Configuration.TriggerType), LogMessageSeverity.Critical);
+                _logger.Log(string.Format("Job by the name of \"{0}\" has a trigger type of \"{1}\" that is misconfigured.  This job will not run!", Configuration.Name, schedule.TriggerType), LogMessageSeverity.Critical);
                 result = TimeSpan.MaxValue;
             }
 
             return result;
         }
 
-        private bool TriggerWeeksCheck(DateTime timeToCheck)
+        private bool TriggerWeeksCheck(JobSchedule schedule, DateTime timeToCheck)
         {
-            var result = Configuration.TriggerWeeks.HasFlag(GetJobTriggerWeeks(timeToCheck));
+            var result = schedule.TriggerWeeks.HasFlag(GetJobTriggerWeeks(timeToCheck));
 
-            if (Configuration.TriggerWeeks.HasFlag(JobTriggerWeeks.Last) && !result) //only check if we do not already have a hit
+            if (schedule.TriggerWeeks.HasFlag(JobTriggerWeeks.Last) && !result) //only check if we do not already have a hit
             {
                 result = IsLastWeekOfMonth(timeToCheck);
 
-                if(!result) //check is this week has the last configured trigger day of the month
+                if (!result) //check is this week has the last configured trigger day of the month
                 {
-                    result = HasLastTriggerDayOfMonth(timeToCheck);
+                    result = HasLastTriggerDayOfMonth(schedule, timeToCheck);
                 }
             }
 
             if (result) //only check if we have a hit
             {
-                result = Configuration.TriggerDays.HasFlag(GetJobTriggerDays((int)timeToCheck.DayOfWeek));
+                result = schedule.TriggerDays.HasFlag(GetJobTriggerDays((int)timeToCheck.DayOfWeek));
             }
 
             return result;
         }
 
-        private bool HasLastTriggerDayOfMonth(DateTime timeToCheck)
+        private bool HasLastTriggerDayOfMonth(JobSchedule schedule, DateTime timeToCheck)
         {
             int counter = 0;
 
@@ -561,12 +566,12 @@ namespace Core.Scheduler.Jobs
             {
                 var triggerDay = GetJobTriggerDays((int)timeToReallyCheck.DayOfWeek);
 
-                if (Configuration.TriggerDays.HasFlag(triggerDay))
+                if (schedule.TriggerDays.HasFlag(triggerDay))
                 {
                     counter++;
                 }
 
-                timeToReallyCheck= timeToReallyCheck.AddDays(1);
+                timeToReallyCheck = timeToReallyCheck.AddDays(1);
             }
 
             return counter == 1;

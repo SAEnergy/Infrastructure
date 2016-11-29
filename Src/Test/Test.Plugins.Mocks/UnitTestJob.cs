@@ -7,7 +7,12 @@ using Scheduler.Interfaces;
 
 namespace Test.Plugins.Mocks
 {
-    public class UnitTestJob : JobBase
+    public class UnitTestJobConfiugration : RunProgramJobConfiguration
+    {
+
+    }
+
+    public class UnitTestJob : JobBase<UnitTestJobConfiugration>
     {
         public static List<UnitTestJob> Instances { get; private set; }
 
@@ -15,7 +20,7 @@ namespace Test.Plugins.Mocks
 
         public event JobExecuteHandler JobExecuting;
 
-        public UnitTestJob(ILogger logger, JobConfiguration config) : base(logger, config)
+        public UnitTestJob(ILogger logger, UnitTestJobConfiugration config) : base(logger, config)
         {
             if(Instances == null)
             {
