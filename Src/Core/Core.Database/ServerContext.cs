@@ -1,4 +1,5 @@
 ﻿using Core.Models.Persistent;
+using Scheduler.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -16,6 +17,8 @@ namespace Core.Database
     public class ServerContext : DbContext
     {
         #region Properties
+
+        public DbSet<JobConfiguration> JobConfigurations { get; set; }
 
         public DbSet<SystemConfiguration> SystemConfigurations { get; set; }
 

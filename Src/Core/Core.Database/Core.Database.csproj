@@ -67,6 +67,10 @@
     <Compile Include="ServerContextConfig.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Components\Scheduler.Interfaces\Scheduler.Interfaces.csproj">
+      <Project>{7fccf86d-5c9a-4659-b003-c4be7dd6131a}</Project>
+      <Name>Scheduler.Interfaces</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Core.Interfaces\Core.Interfaces.csproj">
       <Project>{bdb06c43-2402-444e-a9e0-72c88174fed7}</Project>
       <Name>Core.Interfaces</Name>
