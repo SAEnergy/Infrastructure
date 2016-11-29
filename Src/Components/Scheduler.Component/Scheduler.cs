@@ -9,7 +9,7 @@ using Core.Interfaces.Components.Base;
 using Core.Models;
 using Scheduler.Interfaces;
 
-namespace Core.Scheduler
+namespace Scheduler.Component
 {
     [ComponentRegistration(ComponentType.Server, typeof(IScheduler))]
     [ComponentMetadata(AllowedActions = ComponentUserActions.All, Description = "Scheduling system.", FriendlyName = "Scheduler Component")]

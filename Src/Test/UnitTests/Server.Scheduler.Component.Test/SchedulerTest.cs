@@ -1,15 +1,15 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Test.Mocks;
-using Core.Models.Persistent;
-using Test.Helpers;
-using Test.Plugins.Mocks;
-using System.Threading;
-using System.Linq;
-using Server.Components;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Scheduler.Interfaces;
+using Server.Components;
+using System;
+using System.Linq;
+using System.Threading;
+using Test.Helpers;
+using Test.Mocks;
+using Test.Plugins.Mocks;
+using Scheduler.Component;
 
-namespace Core.Scheduler.Test
+namespace Scheduler.Component.Test
 {
     [TestClass]
     public class SchedulerTest

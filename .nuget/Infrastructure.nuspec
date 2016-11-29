@@ -23,5 +23,6 @@
     <file src="..\$RunOut$\Server.*" target="lib\net452" />
     <file src="..\$RunOut$\Core.*" target="lib\net452" />
     <file src="..\$RunOut$\Logging.*" target="lib\net452" />
+    <file src="..\$RunOut$\Scheduler.*" target="lib\net452" />
   </files>
 </package>

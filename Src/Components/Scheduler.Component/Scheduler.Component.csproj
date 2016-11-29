@@ -7,8 +7,8 @@
     <ProjectGuid>{93F677EE-2190-4F16-BF5A-2BD44437327D}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Server.Scheduler.Component</RootNamespace>
-    <AssemblyName>Server.Scheduler.Component</AssemblyName>
+    <RootNamespace>Scheduler.Component</RootNamespace>
+    <AssemblyName>Scheduler.Component</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

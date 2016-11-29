@@ -9,7 +9,7 @@ using System.Diagnostics;
 using System.Globalization;
 using Scheduler.Interfaces;
 
-namespace Core.Scheduler.Jobs
+namespace Scheduler.Component.Jobs
 {
     public class JobRunInfo
     {

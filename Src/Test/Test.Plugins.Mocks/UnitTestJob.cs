@@ -1,6 +1,6 @@
-﻿using Core.Scheduler.Jobs;
-using System.Threading;
+﻿using System.Threading;
 using Core.Models.Persistent;
+using Scheduler.Component.Jobs;
 using Core.Interfaces.Components.Logging;
 using System.Collections.Generic;
 using Scheduler.Interfaces;

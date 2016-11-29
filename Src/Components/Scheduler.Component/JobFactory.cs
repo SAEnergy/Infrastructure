@@ -1,14 +1,13 @@
 ﻿using Core.Interfaces.Components.Logging;
-using Core.Models.Persistent;
-using Core.Scheduler.Jobs;
 using Core.Util;
+using Scheduler.Component.Jobs;
 using Scheduler.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace Core.Scheduler
+namespace Scheduler.Component
 {
     public static class JobFactory
     {

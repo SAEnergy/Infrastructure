@@ -1,12 +1,11 @@
 ﻿using Core.Interfaces.Components.Logging;
-using Core.Models.Persistent;
 using Scheduler.Interfaces;
 using System;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
 
-namespace Core.Scheduler.Jobs
+namespace Scheduler.Component.Jobs
 {
     public sealed class RunProgramJob : JobBase<RunProgramJobConfiguration>
     {
