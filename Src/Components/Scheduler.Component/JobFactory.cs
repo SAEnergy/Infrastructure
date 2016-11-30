@@ -26,11 +26,6 @@ namespace Scheduler.Component
 
         #region Constructor
 
-        static JobFactory()
-        {
-            BuildJobActionTypeMap();
-        }
-
         #endregion
 
         #region Public Methods
@@ -42,6 +37,14 @@ namespace Scheduler.Component
             if (config != null)
             {
                 Type type = null;
+
+                lock (_jobTypeMap)
+                {
+                    if (_jobTypeMap.Keys.Count == 0)
+                    {
+                        BuildJobActionTypeMap();
+                    }
+                }
 
                 if (_jobTypeMap.TryGetValue(config.GetType(), out type))
                 {
@@ -70,10 +73,11 @@ namespace Scheduler.Component
 
         private static void BuildJobActionTypeMap()
         {
-            var type = typeof(JobBase<>);
-
             var jobBases = TypeLocator.FindTypes("*.dll", typeof(JobBase<>)).ToList();
             var jobConfigs = TypeLocator.FindTypes("*.dll", typeof(JobConfiguration)).ToList();
+
+            Logger.Log("Scheduler Available Jobs: " + Environment.NewLine + string.Join(Environment.NewLine, jobBases.Select(s => s.Name)));
+            Logger.Log("Scheduler Available Configurations: " + Environment.NewLine + string.Join(Environment.NewLine, jobConfigs.Select(s => s.Name)));
 
             //types.AddRange(Assembly.GetExecutingAssembly().GetTypes().Where(t => t != type && type.IsAssignableFrom(t)));
 
@@ -90,6 +94,8 @@ namespace Scheduler.Component
                     }
                 }
             }
+
+            Logger.Log("Scheduler Jobs Mapping: " + Environment.NewLine + string.Join(Environment.NewLine, _jobTypeMap.Keys.Select(s => s.Name + "->" + _jobTypeMap[s].Name)));
         }
 
         #endregion
