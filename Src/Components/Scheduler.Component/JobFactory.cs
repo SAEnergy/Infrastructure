@@ -42,7 +42,7 @@ namespace Scheduler.Component
                 {
                     if (_jobTypeMap.Keys.Count == 0)
                     {
-                        BuildJobActionTypeMap();
+                        Initialize();
                     }
                 }
 
@@ -71,7 +71,7 @@ namespace Scheduler.Component
 
         #region Private Methods
 
-        private static void BuildJobActionTypeMap()
+        public static void Initialize()
         {
             var jobBases = TypeLocator.FindTypes("*.dll", typeof(JobBase<>)).ToList();
             var jobConfigs = TypeLocator.FindTypes("*.dll", typeof(JobConfiguration)).ToList();

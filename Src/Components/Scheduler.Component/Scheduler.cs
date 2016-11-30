@@ -147,6 +147,8 @@ namespace Scheduler.Component
         {
             try
             {
+                JobFactory.Initialize();
+
                 _jobs = new List<IJob>();
 
                 _logger.Log("Scheduler loading all jobs from storage.");
