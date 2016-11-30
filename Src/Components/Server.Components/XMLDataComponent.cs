@@ -12,6 +12,7 @@ using System.Xml.Linq;
 using System.Xml.Serialization;
 using Core.Interfaces.Components.IoC;
 using Core.Models;
+using Core.Util;
 
 namespace Server.Components
 {
@@ -223,17 +224,23 @@ namespace Server.Components
                 using (TextWriter streamWriter = new StreamWriter(memoryStream))
                 {
                     var emptyNs = new XmlSerializerNamespaces(new[] { XmlQualifiedName.Empty });
-                    var xmlSerializer = new XmlSerializer(typeof(T));
+                    var xmlSerializer = new XmlSerializer(obj.GetType());
 
                     xmlSerializer.Serialize(streamWriter, obj, emptyNs);
-                    return XElement.Parse(Encoding.ASCII.GetString(memoryStream.ToArray()));
+                    XElement elem = XElement.Parse(Encoding.ASCII.GetString(memoryStream.ToArray()));
+                    return elem;
                 }
             }
         }
 
         private T FromXElement<T>(XElement xElement)
         {
-            var xmlSerializer = new XmlSerializer(typeof(T));
+            Type objType = null;
+            if (xElement.Name.LocalName != typeof(T).Name)
+            {
+                 objType = TypeLocator.FindType(typeof(T),xElement.Name.LocalName);
+            }
+            var xmlSerializer = new XmlSerializer(objType??typeof(T));
             return (T)xmlSerializer.Deserialize(xElement.CreateReader());
         }
 
@@ -293,7 +300,7 @@ namespace Server.Components
         {
             var element = GetTypeElement<T>();
 
-            return element.Elements(typeof(T).Name).ToList();
+            return element.Elements().ToList();
         }
 
         private string GetTypeElementName(Type type)

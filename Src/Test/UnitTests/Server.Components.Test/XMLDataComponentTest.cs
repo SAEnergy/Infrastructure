@@ -9,6 +9,12 @@ using Scheduler.Interfaces;
 
 namespace Core.Components.Test
 {
+
+    public class XMLTestJobConfiguration : JobConfiguration
+    {
+        public string CustomThing { get; set; } = "Roffle";
+    }
+
     [TestClass]
     public class XMLDataComponentTest
     {
@@ -30,10 +36,10 @@ namespace Core.Components.Test
         {
             var component = new XMLDataComponent(new LoggerMock());
 
-            var newJob = new JobConfiguration();
+            var newJob = new XMLTestJobConfiguration();
             newJob.Name = "Test Job";
 
-            Assert.IsTrue(component.Insert(newJob));
+            Assert.IsTrue(component.Insert<JobConfiguration>(newJob));
 
             var realNewJob = component.Find<JobConfiguration>(1000);
             Assert.IsNotNull(realNewJob);

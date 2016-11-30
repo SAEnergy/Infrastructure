@@ -39,6 +39,42 @@ namespace Core.Util
 
             return found;
         }
+
+        public static Dictionary<string, Type> _typeCache = new Dictionary<string, Type>();
+
+        public static Type FindType(string typeName)
+        {
+            return FindType(null, typeName);
+        }
+
+        public static Type FindType(Type baseType, string typeName)
+        {
+            Type retval = null;
+            if (_typeCache.TryGetValue(typeName, out retval)) { return retval; }
+
+            foreach (Assembly assy in AppDomain.CurrentDomain.GetAssemblies())
+            {
+                foreach (Type type in assy.GetTypes())
+                {
+                    if (type.FullName == typeName || type.Name == typeName)
+                    {
+                        if (baseType != null)
+                        {
+                            Type cType = type.BaseType;
+                            while (cType != null && cType != baseType)
+                            {
+                                cType = cType.BaseType;
+                            }
+                            if (cType != baseType) { continue; }
+                        }
+                        _typeCache.Add(typeName, type);
+                        return type;
+                    }
+                }
+            }
+
+            throw new ArgumentException("Unable to locate type '" + typeName + "' in any loaded assembly.");
+        }
     }
 
     public class TypeLocatorWorker : MarshalByRefObject
@@ -71,9 +107,9 @@ namespace Core.Util
                                 foreach (Type st in assm.GetTypes())
                                 {
                                     if (st.Name.Contains("UnitTestJob")) { Console.WriteLine("moo"); }
-                                    if (st== type) { continue; }
-                                    if (st.BaseType==null) { continue; }
-                                    if (st.BaseType.IsGenericType && st.BaseType.GetGenericTypeDefinition()==type)
+                                    if (st == type) { continue; }
+                                    if (st.BaseType == null) { continue; }
+                                    if (st.BaseType.IsGenericType && st.BaseType.GetGenericTypeDefinition() == type)
                                     {
                                         toRet.Add(st.AssemblyQualifiedName);
                                     }
