@@ -106,7 +106,6 @@ namespace Core.Util
                             {
                                 foreach (Type st in assm.GetTypes())
                                 {
-                                    if (st.Name.Contains("UnitTestJob")) { Console.WriteLine("moo"); }
                                     if (st == type) { continue; }
                                     if (st.BaseType == null) { continue; }
                                     if (st.BaseType.IsGenericType && st.BaseType.GetGenericTypeDefinition() == type)

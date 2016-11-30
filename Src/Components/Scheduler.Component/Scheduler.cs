@@ -147,11 +147,13 @@ namespace Scheduler.Component
         {
             try
             {
-                JobFactory.Initialize();
-
                 _jobs = new List<IJob>();
 
-                _logger.Log("Scheduler loading all jobs from storage.");
+                _logger.Log("Scheduler loading job types...");
+
+                JobFactory.Initialize();
+
+                _logger.Log("Scheduler loading all jobs from storage...");
 
                 var query = GetJobs();
 

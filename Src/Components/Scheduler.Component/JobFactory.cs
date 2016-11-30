@@ -73,29 +73,32 @@ namespace Scheduler.Component
 
         public static void Initialize()
         {
-            var jobBases = TypeLocator.FindTypes("*.dll", typeof(JobBase<>)).ToList();
-            var jobConfigs = TypeLocator.FindTypes("*.dll", typeof(JobConfiguration)).ToList();
-
-            Logger.Log("Scheduler Available Jobs: " + Environment.NewLine + string.Join(Environment.NewLine, jobBases.Select(s => s.Name)));
-            Logger.Log("Scheduler Available Configurations: " + Environment.NewLine + string.Join(Environment.NewLine, jobConfigs.Select(s => s.Name)));
-
-            //types.AddRange(Assembly.GetExecutingAssembly().GetTypes().Where(t => t != type && type.IsAssignableFrom(t)));
-
-            foreach (var realtype in jobBases)
+            lock (_jobTypeMap)
             {
-                foreach (ConstructorInfo con in realtype.GetConstructors())
+                var jobBases = TypeLocator.FindTypes("*.dll", typeof(JobBase<>)).ToList();
+                var jobConfigs = TypeLocator.FindTypes("*.dll", typeof(JobConfiguration)).ToList();
+
+                Logger.Log("Scheduler Available Jobs: " + Environment.NewLine + string.Join(Environment.NewLine, jobBases.Select(s => s.Name)));
+                Logger.Log("Scheduler Available Configurations: " + Environment.NewLine + string.Join(Environment.NewLine, jobConfigs.Select(s => s.Name)));
+
+                //types.AddRange(Assembly.GetExecutingAssembly().GetTypes().Where(t => t != type && type.IsAssignableFrom(t)));
+
+                foreach (var realtype in jobBases)
                 {
-                    foreach (ParameterInfo parm in con.GetParameters())
+                    foreach (ConstructorInfo con in realtype.GetConstructors())
                     {
-                        if (jobConfigs.Contains(parm.ParameterType))
+                        foreach (ParameterInfo parm in con.GetParameters())
                         {
-                            _jobTypeMap.Add(parm.ParameterType, realtype);
+                            if (jobConfigs.Contains(parm.ParameterType))
+                            {
+                                _jobTypeMap.Add(parm.ParameterType, realtype);
+                            }
                         }
                     }
                 }
-            }
 
-            Logger.Log("Scheduler Jobs Mapping: " + Environment.NewLine + string.Join(Environment.NewLine, _jobTypeMap.Keys.Select(s => s.Name + "->" + _jobTypeMap[s].Name)));
+                Logger.Log("Scheduler Jobs Mapping: " + Environment.NewLine + string.Join(Environment.NewLine, _jobTypeMap.Keys.Select(s => s.Name + "->" + _jobTypeMap[s].Name)));
+            }
         }
 
         #endregion
