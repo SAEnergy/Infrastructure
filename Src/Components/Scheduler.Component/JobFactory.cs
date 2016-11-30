@@ -91,6 +91,10 @@ namespace Scheduler.Component
                         {
                             if (jobConfigs.Contains(parm.ParameterType))
                             {
+                                if (_jobTypeMap.ContainsKey(parm.ParameterType))
+                                {
+                                    throw new InvalidOperationException("Job Configuration Type '" + parm.ParameterType + "' maps to two Job Types '" + realtype + "','" + _jobTypeMap[parm.ParameterType] + "'.");
+                                }
                                 _jobTypeMap.Add(parm.ParameterType, realtype);
                             }
                         }

@@ -10,7 +10,12 @@ namespace Core.Util
 {
     public static class TypeLocator
     {
-        public static IEnumerable<Type> FindTypes(string searchPattern, Type supportedInterface)
+        public static IEnumerable<Type> FindTypes(string searchPattern, Type searchType)
+        {
+            return FindTypes(searchPattern, new Type[] { searchType });
+        }
+
+        public static IEnumerable<Type> FindTypes(string searchPattern, IEnumerable<Type> searchTypes)
         {
             string baseDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 
@@ -23,7 +28,7 @@ namespace Core.Util
             string[] foundTypes = null;
             string[] errors = null;
 
-            bob.Search(new string[] { supportedInterface.AssemblyQualifiedName }, baseDir, searchPattern, out foundTypes, out errors);
+            bob.Search(searchTypes.Select(s => s.AssemblyQualifiedName).ToArray(), baseDir, searchPattern, out foundTypes, out errors);
 
             foreach (string s in errors)
             {
@@ -75,6 +80,43 @@ namespace Core.Util
 
             throw new ArgumentException("Unable to locate type '" + typeName + "' in any loaded assembly.");
         }
+        public static List<Type> SearchAssembly(Assembly assy, Type searchType)
+        {
+            return SearchAssembly(assy, new Type[] { searchType });
+        }
+
+        public static List<Type> SearchAssembly(Assembly assy, IEnumerable<Type> searchTypes)
+        {
+            List<Type> toRet = new List<Type>();
+
+            foreach (Type searchType in searchTypes)
+            {
+                foreach (Type iter in assy.GetTypes())
+                {
+                    if (iter == searchType) { continue; }
+                    if (iter.IsAbstract) { continue; }
+                    if (searchType.IsAssignableFrom(iter))
+                    {
+                        toRet.Add(iter);
+                        continue;
+                    }
+                    if (searchType.IsGenericType)
+                    {
+                        if (iter.BaseType.IsGenericType && iter.BaseType.GetGenericTypeDefinition() == searchType)
+                        {
+                            toRet.Add(iter);
+                            continue;
+                        }
+                        if (iter.GetInterfaces().Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == searchType))
+                        {
+                            toRet.Add(iter);
+                            continue;
+                        }
+                    }
+                }
+            }
+            return toRet;
+        }
     }
 
     public class TypeLocatorWorker : MarshalByRefObject
@@ -99,30 +141,8 @@ namespace Core.Util
                     try
                     {
                         var assm = Assembly.LoadFile(file);
+                        toRet.AddRange(TypeLocator.SearchAssembly(assm, types).Select(t => t.AssemblyQualifiedName));
 
-                        foreach (Type type in types)
-                        {
-                            if (type.IsGenericType)
-                            {
-                                foreach (Type st in assm.GetTypes())
-                                {
-                                    if (st == type) { continue; }
-                                    if (st.BaseType == null) { continue; }
-                                    if (st.BaseType.IsGenericType && st.BaseType.GetGenericTypeDefinition() == type)
-                                    {
-                                        toRet.Add(st.AssemblyQualifiedName);
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                var found = assm.GetTypes().Where(t =>
-                                    t != type &&
-                                    type.IsAssignableFrom(t) &&
-                                    t.ContainsGenericParameters == false);
-                                toRet.AddRange(found.Select(t => t.AssemblyQualifiedName));
-                            }
-                        }
                     }
                     catch (Exception ex)
                     {
