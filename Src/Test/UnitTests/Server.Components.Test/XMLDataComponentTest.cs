@@ -12,7 +12,8 @@ namespace Core.Components.Test
 
     public class XMLTestJobConfiguration : JobConfiguration
     {
-        public string CustomThing { get; set; } = "Roffle";
+        public string CustomThing { get; set; }
+        public XMLTestJobConfiguration() { CustomThing = "Roffle"; }
     }
 
     [TestClass]
