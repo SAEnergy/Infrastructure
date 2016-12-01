@@ -49,6 +49,7 @@
     <Compile Include="IScheduler.cs" />
     <Compile Include="JobConfiguration.cs" />
     <Compile Include="JobSchedule.cs" />
+    <Compile Include="JobStatistics.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RunProgramJobConfiguration.cs" />
   </ItemGroup>

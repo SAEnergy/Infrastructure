@@ -45,6 +45,7 @@
     </Compile>
     <Compile Include="JobFactory.cs" />
     <Compile Include="Jobs\JobBase.cs" />
+    <Compile Include="Jobs\JobRunInfo.cs" />
     <Compile Include="Jobs\RunProgramJob.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Scheduler.cs" />

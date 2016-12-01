@@ -1,4 +1,5 @@
 ﻿using Core.Interfaces.Components.Logging;
+using Scheduler.Component.Jobs;
 using Scheduler.Interfaces;
 using System;
 using System.Diagnostics;
@@ -26,7 +27,7 @@ namespace Scheduler.Component.Jobs
 
         #region Public Methods
 
-        public override bool Execute(CancellationToken ct)
+        public override bool Execute(JobRunInfo<JobStatistics> info)
         {
             bool rc = false;
 
@@ -39,7 +40,7 @@ namespace Scheduler.Component.Jobs
 
                 while (!proc.WaitForExit((int)_processWaitTimer.TotalMilliseconds))
                 {
-                    if (ct.IsCancellationRequested)
+                    if (info.CancellationToken.IsCancellationRequested)
                     {
                         //if we are not going to kill the proc, then leave it to do it's thing
                         if (Configuration.KillProcOnCancel)
@@ -51,7 +52,7 @@ namespace Scheduler.Component.Jobs
 
                         StopCapturingOutput(proc);
 
-                        ct.ThrowIfCancellationRequested();
+                        info.CancellationToken.ThrowIfCancellationRequested();
                     }
                 }
 

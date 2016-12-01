@@ -11,25 +11,16 @@ using Scheduler.Interfaces;
 
 namespace Scheduler.Component.Jobs
 {
-    public class JobRunInfo
+
+    public abstract class JobBase<ConfigType> : JobBase<ConfigType, JobStatistics>
+        where ConfigType : JobConfiguration
     {
-        public Task<bool> Task { get; private set; }
-
-        public bool IsRunning { get; set; }
-
-        public DateTime StartTime { get; set; }
-
-        public TimeSpan RunDuration { get; set; }
-
-        public bool CompletedSuccessfully { get; set; }
-
-        public JobRunInfo(Task<bool> task)
-        {
-            Task = task;
-        }
+        public JobBase(ILogger logger, ConfigType config) : base(logger, config) { }
     }
 
-    public abstract class JobBase<T> : IJob<T> where T : JobConfiguration
+    public abstract class JobBase<ConfigType, StatisticType> : IJob<ConfigType> 
+        where ConfigType : JobConfiguration
+        where StatisticType : JobStatistics, new()
     {
         #region Fields
 
@@ -38,14 +29,14 @@ namespace Scheduler.Component.Jobs
         protected readonly ILogger _logger;
 
         private CancellationTokenSource cancelSource;
-        private List<JobRunInfo> _infos;
+        private List<JobRunInfo<StatisticType>> _infos = new List<JobRunInfo<StatisticType>>();
         private bool _isRunning;
 
         #endregion
 
         #region Properties
 
-        public T Configuration { get; private set; }
+        public ConfigType Configuration { get; private set; }
 
         JobConfiguration IJob.Configuration { get { return Configuration; } }
 
@@ -55,13 +46,12 @@ namespace Scheduler.Component.Jobs
 
         #region Constructor
 
-        protected JobBase(ILogger logger, T config)
+        protected JobBase(ILogger logger, ConfigType config)
         {
             Status = JobStatus.Unknown;
             _logger = logger;
             Configuration = config;
             cancelSource = new CancellationTokenSource();
-            _infos = new List<JobRunInfo>();
 
             _logger.Log(string.Format("Job name \"{0}\" created of type \"{1}\".", config.Name, GetType()));
         }
@@ -163,7 +153,7 @@ namespace Scheduler.Component.Jobs
             return rc;
         }
 
-        public abstract bool Execute(CancellationToken ct);
+        public abstract bool Execute(JobRunInfo<StatisticType> info);
 
         #endregion
 
@@ -173,9 +163,11 @@ namespace Scheduler.Component.Jobs
         {
             if (Configuration.RunState == JobRunState.Automatic || runNow)
             {
-                var info = new JobRunInfo(new Task<bool>(() => Execute(ct), ct));
+                var info = new JobRunInfo<StatisticType>();
+                info.CancellationToken = ct;
+                info.Task = new Task<bool>(() => Execute(info), ct);
 
-                info.StartTime = runNow ? DateTime.UtcNow : CalculateNextStartTime();
+                info.Statistics.StartTime = runNow ? DateTime.UtcNow : CalculateNextStartTime();
 
                 if (_infos != null)
                 {
@@ -191,7 +183,7 @@ namespace Scheduler.Component.Jobs
         }
 
         //a self relaunching scheduler
-        private async Task Run(CancellationToken ct, JobRunInfo info)
+        private async Task Run(CancellationToken ct, JobRunInfo<StatisticType> info)
         {
             if (info != null)
             {
@@ -199,8 +191,8 @@ namespace Scheduler.Component.Jobs
                 {
                     try
                     {
-                        _logger.Log(string.Format(string.Format("Job \"{0}\" scheduled to start \"{1}\"", Configuration.Name, info.StartTime.ToLocalTime())));
-                        WaitTillDoneOrThrow(ct, info.StartTime); //wait till it's time, while checking for cancel token
+                        _logger.Log(string.Format(string.Format("Job \"{0}\" scheduled to start \"{1}\"", Configuration.Name, info.Statistics.StartTime.ToLocalTime())));
+                        WaitTillDoneOrThrow(ct, info.Statistics.StartTime); //wait till it's time, while checking for cancel token
 
                         _logger.Log(string.Format(string.Format("Job \"{0}\" starting at \"{1}\"", Configuration.Name, DateTime.UtcNow.ToLocalTime())));
 
@@ -276,7 +268,7 @@ namespace Scheduler.Component.Jobs
             }
         }
 
-        private void RemoveFromInfos(JobRunInfo info)
+        private void RemoveFromInfos(JobRunInfo<StatisticType> info)
         {
             if (info != null && _infos != null)
             {
@@ -305,7 +297,7 @@ namespace Scheduler.Component.Jobs
             return rc;
         }
 
-        private async Task RunTask(JobRunInfo info)
+        private async Task RunTask(JobRunInfo<StatisticType> info)
         {
             if (info != null && info.Task != null)
             {
@@ -334,8 +326,8 @@ namespace Scheduler.Component.Jobs
 
                 watch.Stop();
 
-                info.CompletedSuccessfully = rc;
-                info.RunDuration = watch.Elapsed;
+                info.Statistics.CompletedSuccessfully = rc;
+                info.Statistics.Duration = watch.Elapsed;
                 info.IsRunning = false;
 
                 Status = rc ? JobStatus.Success : JobStatus.Error;

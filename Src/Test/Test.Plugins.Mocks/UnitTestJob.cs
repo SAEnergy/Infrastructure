@@ -30,7 +30,7 @@ namespace Test.Plugins.Mocks
             Instances.Add(this);
         }
 
-        public override bool Execute(CancellationToken ct)
+        public override bool Execute(JobRunInfo<JobStatistics> info)
         {
             if(JobExecuting != null)
             {
