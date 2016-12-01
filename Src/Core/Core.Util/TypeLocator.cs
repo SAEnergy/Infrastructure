@@ -102,15 +102,20 @@ namespace Core.Util
                     }
                     if (searchType.IsGenericType)
                     {
-                        if (iter.BaseType.IsGenericType && iter.BaseType.GetGenericTypeDefinition() == searchType)
-                        {
-                            toRet.Add(iter);
-                            continue;
-                        }
                         if (iter.GetInterfaces().Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == searchType))
                         {
                             toRet.Add(iter);
                             continue;
+                        }
+                        Type baseType = iter.BaseType;
+                        while(baseType != null)
+                        {
+                            if (baseType.IsGenericType && baseType.GetGenericTypeDefinition() == searchType)
+                            {
+                                toRet.Add(iter);
+                                break; 
+                            }
+                            baseType = baseType.BaseType;
                         }
                     }
                 }

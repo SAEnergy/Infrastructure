@@ -12,13 +12,22 @@ namespace Core.Util.Test
     public class TypeLocatorTest
     {
         [TestMethod]
-        public void TypeLocatorGenericBaseTest()
+        public void TypeLocatorGenericInterfaceTest()
         {
             List<Type> types = TypeLocator.SearchAssembly(Assembly.GetExecutingAssembly(), typeof(TestInheritInterface<>));
 
             Assert.AreEqual(2, types.Count);
             Assert.IsTrue(types.Contains(typeof(TestConcreteInheritClass)));
             Assert.IsTrue(types.Contains(typeof(TestConcreteGenericClass)));
+        }
+
+        [TestMethod]
+        public void TypeLocatorGenericBaseTest()
+        {
+            List<Type> types = TypeLocator.SearchAssembly(Assembly.GetExecutingAssembly(), typeof(TestInheritClass<>));
+
+            Assert.AreEqual(1, types.Count);
+            Assert.IsTrue(types.Contains(typeof(TestConcreteInheritClass)));
         }
 
         [TestMethod]
@@ -68,7 +77,9 @@ namespace Core.Util.Test
         public virtual T HI2U { get; set; }
     }
 
-    public class TestConcreteInheritClass : TestInheritClass<int> { }
+    public abstract class TestInheriterClass<T> : TestInheritClass<T> { }
+
+    public class TestConcreteInheritClass : TestInheriterClass<int> { }
 
     public class TestConcreteGenericClass : TestInheritInterface<int>
     {
