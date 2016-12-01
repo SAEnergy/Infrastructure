@@ -28,6 +28,7 @@ namespace Scheduler.Component.Test
 
         [TestMethod]
         [Timeout(30000)]
+        [Ignore]
         public void SchedulerTest_AddCustomJob()
         {
             XMLDataComponent.Folder = Environment.CurrentDirectory;
