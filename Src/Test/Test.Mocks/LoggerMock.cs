@@ -27,14 +27,6 @@ namespace Test.Mocks
             }
         }
 
-        public ComponentType ComponentType
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
-
         public ComponentUserActions AllowedUserActions
         {
             get

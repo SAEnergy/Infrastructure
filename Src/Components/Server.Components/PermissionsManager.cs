@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 
 namespace Server.Components
 {
-    [ComponentRegistration(ComponentType.Server, typeof(IPermissionsManager))]
+    [ComponentRegistration(typeof(IPermissionsManager))]
     [ComponentMetadata(Description = "Controls permissions throught the system.", FriendlyName = "Permissions Manager")]
     public sealed class PermissionsManager : Singleton<IPermissionsManager>, IPermissionsManager
     {

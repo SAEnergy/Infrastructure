@@ -14,7 +14,7 @@ using Core.Proxies;
 
 namespace Server.Components
 {
-    [ComponentRegistration(ComponentType.Server, typeof(IComponentManager))]
+    [ComponentRegistration(typeof(IComponentManager))]
     [ComponentMetadata(Description = "Controller for all components.", FriendlyName = "Component Manager")]
     [ProxyDecorator(typeof(MethodTimerProxy<>))]
 
@@ -448,11 +448,6 @@ namespace Server.Components
                 }
 
                 var regAtty = type.Value.GetAttribute<ComponentRegistrationAttribute>();
-
-                if (regAtty != null)
-                {
-                    info.Type = regAtty.Type;
-                }
 
                 //TODO: use configuration system to get the real data
                 //info.IsDisabled = _config.GetConfig<bool>(GetType().Name,string.Format(type.Value.Name));

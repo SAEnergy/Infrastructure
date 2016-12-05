@@ -15,15 +15,6 @@ namespace Core.Models
     }
 
     [Flags]
-    public enum ComponentType
-    {
-        NotConfigured = 0,
-        Server = 1,
-        Client = 2,
-        All = 3
-    }
-
-    [Flags]
     public enum ComponentUserActions
     {
         NoActions = 0,

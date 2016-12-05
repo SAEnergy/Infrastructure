@@ -6,15 +6,12 @@ namespace Core.Interfaces.Components.IoC
     [AttributeUsage(AttributeTargets.Class)]
     public class ComponentRegistrationAttribute : Attribute
     {
-        public ComponentType Type { get; set; }
-
         public Type InterfaceType { get; set; }
 
         public bool DoNotRegister { get; set; }
 
-        public ComponentRegistrationAttribute(ComponentType type, Type interfaceType)
+        public ComponentRegistrationAttribute(Type interfaceType)
         {
-            Type = type;
             InterfaceType = interfaceType;
         }
     }

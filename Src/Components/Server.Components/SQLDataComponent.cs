@@ -1,5 +1,4 @@
-﻿using Core.Database;
-using Core.Interfaces.Components.Logging;
+﻿using Core.Interfaces.Components.Logging;
 using Core.Interfaces.Components;
 using System;
 using System.Collections.Generic;
@@ -7,24 +6,34 @@ using System.Data.Entity;
 using System.Linq;
 using Core.Interfaces.Components.IoC;
 using Core.Models;
+using System.Data.Entity.Infrastructure;
 
 namespace Server.Components
 {
-    [ComponentRegistration(ComponentType.Server, typeof(IDataComponent), DoNotRegister = true)]
+
+    public interface IDatabaseContextFactory
+    {
+        DbContext NewContext();
+    }
+
+
+    [ComponentRegistration(typeof(IDataComponent), DoNotRegister = true)]
     [ComponentMetadata(Description = "Data access layer for SQL.", FriendlyName = "SQL Data Component")]
     public sealed class SQLDataComponent : IDataComponent
     {
         #region Fields
 
         private readonly ILogger _logger;
+        private readonly IDatabaseContextFactory _contextFactory;
 
         #endregion
 
         #region Constructor
 
-        public SQLDataComponent(ILogger logger)
+        public SQLDataComponent(ILogger logger, IDatabaseContextFactory contextFactory)
         {
             _logger = logger;
+            _contextFactory = contextFactory;
         }
 
         #endregion
@@ -35,7 +44,7 @@ namespace Server.Components
         {
             bool retVal = false;
 
-            using (ServerContext db = new ServerContext())
+            using (DbContext db = _contextFactory.NewContext())
             {
                 var set = db.Set<T>();
                 var results = set.Where(where).ToList();
@@ -57,7 +66,7 @@ namespace Server.Components
 
             if (ValidateObject(obj))
             {
-                using (ServerContext db = new ServerContext())
+                using (DbContext db = _contextFactory.NewContext())
                 {
                     var set = db.Set<T>();
                     set.Attach(obj);
@@ -75,7 +84,7 @@ namespace Server.Components
         {
             bool retVal = false;
 
-            using (ServerContext db = new ServerContext())
+            using (DbContext db = _contextFactory.NewContext())
             {
                 var set = db.Set<T>();
                 var obj = set.Find(key);
@@ -94,7 +103,7 @@ namespace Server.Components
         {
             T result = null;
 
-            using (ServerContext db = new ServerContext())
+            using (DbContext db = _contextFactory.NewContext())
             {
                 var set = db.Set<T>();
                 result = set.Find(key);
@@ -107,7 +116,7 @@ namespace Server.Components
         {
             List<T> results;
 
-            using (ServerContext db = new ServerContext())
+            using (DbContext db = _contextFactory.NewContext())
             {
                 var set = db.Set<T>();
                 results = set.Where(where).ToList();
@@ -127,7 +136,7 @@ namespace Server.Components
 
             if (ValidateObject(obj))
             {
-                using (ServerContext db = new ServerContext())
+                using (DbContext db = _contextFactory.NewContext())
                 {
                     var set = db.Set<T>();
                     set.Add(obj);
@@ -142,7 +151,7 @@ namespace Server.Components
         {
             bool result = false;
 
-            using (ServerContext db = new ServerContext())
+            using (DbContext db = _contextFactory.NewContext())
             {
                 var set = db.Set<T>();
                 T dbObj = set.Attach(obj);

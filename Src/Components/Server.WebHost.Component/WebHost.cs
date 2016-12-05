@@ -15,7 +15,7 @@ using Core.Models;
 
 namespace Server.WebHost
 {
-    [ComponentRegistration(ComponentType.Server, typeof(IWebHost))]
+    [ComponentRegistration(typeof(IWebHost))]
     [ComponentMetadata(AllowedActions = ComponentUserActions.Restart, Description = "Self hosted web server.", FriendlyName = "Web Server Component")]
     public class WebHost : Singleton<IWebHost>, IWebHost
     {

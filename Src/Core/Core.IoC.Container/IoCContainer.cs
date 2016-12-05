@@ -1,5 +1,7 @@
 ﻿using Core.Interfaces.Base;
+using Core.Interfaces.Components.Base;
 using Core.Interfaces.Components.IoC;
+using Core.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -68,6 +70,17 @@ namespace Core.IoC.Container
         public void Register<TInterfaceType, TConcreteType>(LifeCycle lifeCycle)
         {
             Register(typeof(TInterfaceType), typeof(TConcreteType), lifeCycle);
+        }
+
+        public void Register(Type concreteType)
+        {
+            var atty = concreteType.GetAttribute<ComponentRegistrationAttribute>();
+
+            if (atty == null) { throw new InvalidOperationException("Attempt to register component without ComponentRegistration attribute."); }
+            
+            var lifeCycle = typeof(SingletonBase).IsAssignableFrom(concreteType) ? LifeCycle.Singleton : LifeCycle.Transient;
+
+            Register(atty.InterfaceType, concreteType, lifeCycle);
         }
 
         public void Register(Type interfaceType, Type concreteType, LifeCycle lifeCycle)

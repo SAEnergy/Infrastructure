@@ -7,7 +7,7 @@ using System;
 
 namespace Server.Components
 {
-    [ComponentRegistration(ComponentType.Server, typeof(ISystemConfiguration))]
+    [ComponentRegistration(typeof(ISystemConfiguration))]
     [ComponentMetadata(Description = "Maintains system wide configurations.", FriendlyName = "System Configuration Component")]
     public class SystemConfiguration : Singleton<ISystemConfiguration>, ISystemConfiguration
     {

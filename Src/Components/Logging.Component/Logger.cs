@@ -11,7 +11,7 @@ using Core.Models;
 
 namespace Core.Logging
 {
-    [ComponentRegistration(ComponentType.All, typeof(ILogger))]
+    [ComponentRegistration(typeof(ILogger))]
     [ComponentMetadata(Description = "Logging system.", FriendlyName = "Logger Component")]
     public sealed class Logger : Singleton<ILogger>, ILogger
     {

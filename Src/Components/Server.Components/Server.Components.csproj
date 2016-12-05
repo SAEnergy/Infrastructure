@@ -70,10 +70,6 @@
       <Project>{ade057b4-c64f-4142-a4df-0b733fe31926}</Project>
       <Name>Core.Comm</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Core\Core.Database\Core.Database.csproj">
-      <Project>{b21c9416-91fc-462c-9676-a429d4b4d132}</Project>
-      <Name>Core.Database</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Core\Core.Interfaces\Core.Interfaces.csproj">
       <Project>{bdb06c43-2402-444e-a9e0-72c88174fed7}</Project>
       <Name>Core.Interfaces</Name>

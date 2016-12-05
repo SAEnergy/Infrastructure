@@ -24,7 +24,7 @@ namespace Server.Components
         public ILogger Logger { get; set; }
     }
 
-    [ComponentRegistration(ComponentType.Server, typeof(IHostManager))]
+    [ComponentRegistration(typeof(IHostManager))]
     [ComponentMetadata(AllowedActions = ComponentUserActions.Restart, Description = "Controller for all host endpoints.", FriendlyName = "Host Manager Component")]
     public sealed class HostManager : Singleton<IHostManager>, IHostManager
     {

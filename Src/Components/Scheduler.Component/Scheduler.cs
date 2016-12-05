@@ -11,7 +11,7 @@ using Scheduler.Interfaces;
 
 namespace Scheduler.Component
 {
-    [ComponentRegistration(ComponentType.Server, typeof(IScheduler))]
+    [ComponentRegistration(typeof(IScheduler))]
     [ComponentMetadata(AllowedActions = ComponentUserActions.All, Description = "Scheduling system.", FriendlyName = "Scheduler Component")]
     public sealed class Scheduler : Singleton<IScheduler>, IScheduler
     {

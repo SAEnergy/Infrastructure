@@ -8,7 +8,7 @@ using System.Threading;
 
 namespace HostService
 {
-    [ComponentRegistration(ComponentType.Server, typeof(IServerHeartbeat))]
+    [ComponentRegistration(typeof(IServerHeartbeat))]
     [ComponentMetadata(AllowedActions =ComponentUserActions.All, Description = "Server heartbeat component.", FriendlyName = "Server Heartbeat Component")]
     public class ServerHeartbeat : Singleton<IServerHeartbeat>, IServerHeartbeat
     {
