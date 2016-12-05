@@ -101,11 +101,22 @@ namespace Scheduler.Component
                     {
                         _logger.Log(string.Format("Scheduler component adding new job named \"{0}\".", job.Name));
                         _jobs.Add(newJob);
-
+                        newJob.StatisticsUpdated += JobStatisticsUpdated;
+                        newJob.JobCompleted += JobJobCompleted;
                         newJob.Start();
                     }
                 }
             }
+        }
+
+        private void JobStatisticsUpdated(JobStatistics stats)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void JobJobCompleted(JobStatistics stats)
+        {
+            _dataComponent.Insert<JobStatistics>(stats);
         }
 
         public bool DeleteJob(JobConfiguration job)

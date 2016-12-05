@@ -7,11 +7,18 @@ using System.Threading.Tasks;
 
 namespace Scheduler.Interfaces
 {
+
+    public delegate void EventHandlerJobStatistics(JobStatistics stats);
+
     public interface IJob
     {
         JobStatus Status { get; }
 
         JobConfiguration Configuration { get; }
+
+        event EventHandlerJobStatistics StatisticsUpdated;
+
+        event EventHandlerJobStatistics JobCompleted;
 
         void ForceRun();
 

@@ -78,8 +78,8 @@ namespace Scheduler.Component
                 var jobBases = TypeLocator.FindTypes("*.dll", typeof(JobBase<,>)).ToList();
                 var jobConfigs = TypeLocator.FindTypes("*.dll", typeof(JobConfiguration)).ToList();
 
-                Logger.Log("Scheduler Available Jobs: " + Environment.NewLine + string.Join(Environment.NewLine + "  ", jobBases.Select(s => s.Name)));
-                Logger.Log("Scheduler Available Configurations: " + Environment.NewLine + string.Join(Environment.NewLine + "  ", jobConfigs.Select(s => s.Name)));
+                Logger.Log("Scheduler Available Jobs: " + Environment.NewLine + "  " + string.Join(Environment.NewLine + "  ", jobBases.Select(s => s.Name)));
+                Logger.Log("Scheduler Available Configurations: " + Environment.NewLine + "  " + string.Join(Environment.NewLine + "  ", jobConfigs.Select(s => s.Name)));
 
                 //types.AddRange(Assembly.GetExecutingAssembly().GetTypes().Where(t => t != type && type.IsAssignableFrom(t)));
 
@@ -101,7 +101,7 @@ namespace Scheduler.Component
                     }
                 }
 
-                Logger.Log("Scheduler Jobs Mapping: " + Environment.NewLine + string.Join(Environment.NewLine + "  ", _jobTypeMap.Keys.Select(s => s.Name + "->" + _jobTypeMap[s].Name)));
+                Logger.Log("Scheduler Jobs Mapping: " + Environment.NewLine + "  " + string.Join(Environment.NewLine + "  ", _jobTypeMap.Keys.Select(s => s.Name + "->" + _jobTypeMap[s].Name)));
             }
         }
 

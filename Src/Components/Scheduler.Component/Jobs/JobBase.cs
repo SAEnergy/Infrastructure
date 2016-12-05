@@ -24,13 +24,16 @@ namespace Scheduler.Component.Jobs
     {
         #region Fields
 
-        private TimeSpan _cancelWaitCycle = TimeSpan.FromMilliseconds(500);
+        private TimeSpan _cancelWaitCycle = TimeSpan.FromMilliseconds(1000);
 
         protected readonly ILogger _logger;
 
         private CancellationTokenSource cancelSource;
         private List<JobRunInfo<StatisticType>> _infos = new List<JobRunInfo<StatisticType>>();
         private bool _isRunning;
+
+        public event EventHandlerJobStatistics StatisticsUpdated;
+        public event EventHandlerJobStatistics JobCompleted;
 
         #endregion
 
@@ -167,6 +170,7 @@ namespace Scheduler.Component.Jobs
                 info.CancellationToken = ct;
                 info.Task = new Task<bool>(() => Execute(info), ct);
 
+                info.Statistics.Job = Configuration;
                 info.Statistics.StartTime = runNow ? DateTime.UtcNow : CalculateNextStartTime();
 
                 if (_infos != null)
@@ -329,6 +333,8 @@ namespace Scheduler.Component.Jobs
                 info.Statistics.CompletedSuccessfully = rc;
                 info.Statistics.Duration = watch.Elapsed;
                 info.IsRunning = false;
+
+                JobCompleted?.Invoke(info.Statistics);
 
                 Status = rc ? JobStatus.Success : JobStatus.Error;
 
