@@ -52,7 +52,7 @@ namespace Core.Components.Test
         {
             var component = new XMLDataComponent(new LoggerMock());
 
-            var newJob = new JobConfiguration();
+            var newJob = new RunProgramJobConfiguration();
             newJob.JobConfigurationId = 1;
             newJob.Name = "Test Job";
 

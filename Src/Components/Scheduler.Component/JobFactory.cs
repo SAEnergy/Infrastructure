@@ -75,7 +75,7 @@ namespace Scheduler.Component
         {
             lock (_jobTypeMap)
             {
-                var jobBases = TypeLocator.FindTypes("*.dll", typeof(JobBase<>)).ToList();
+                var jobBases = TypeLocator.FindTypes("*.dll", typeof(JobBase<,>)).ToList();
                 var jobConfigs = TypeLocator.FindTypes("*.dll", typeof(JobConfiguration)).ToList();
 
                 Logger.Log("Scheduler Available Jobs: " + Environment.NewLine + string.Join(Environment.NewLine + "  ", jobBases.Select(s => s.Name)));

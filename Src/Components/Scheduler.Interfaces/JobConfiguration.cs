@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Scheduler.Interfaces
 {
-    public class JobConfiguration
+    public abstract class JobConfiguration
     {
         [Key]
         public int JobConfigurationId { get; set; }
