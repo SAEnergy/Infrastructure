@@ -334,7 +334,7 @@ namespace Scheduler.Component.Jobs
                 info.Statistics.Duration = watch.Elapsed;
                 info.IsRunning = false;
 
-                JobCompleted?.Invoke(info.Statistics);
+                if (JobCompleted!=null) JobCompleted(info.Statistics);
 
                 Status = rc ? JobStatus.Success : JobStatus.Error;
 
