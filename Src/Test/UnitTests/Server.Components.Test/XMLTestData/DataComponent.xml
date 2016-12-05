@@ -2,7 +2,7 @@
 <!--XML File for storing Data-->
 <Data>
     <JobConfigurations>
-        <JobConfiguration>
+        <RunProgramJobConfiguration>
             <JobConfigurationId>1</JobConfigurationId>
             <Name>Test Job</Name>
             <ActionType>RunProgramJob</ActionType>
@@ -18,8 +18,8 @@
             <TriggerDays>Monday</TriggerDays>
             <TriggerWeeks>Last</TriggerWeeks>
             <TriggerMonths>December</TriggerMonths>
-        </JobConfiguration>
-        <JobConfiguration>
+        </RunProgramJobConfiguration>
+      <RunProgramJobConfiguration>
             <JobConfigurationId>2</JobConfigurationId>
             <Name>BobbyDelete</Name>
             <ActionType>RunProgramJob</ActionType>
@@ -35,8 +35,8 @@
             <TriggerDays>Monday</TriggerDays>
             <TriggerWeeks>Last</TriggerWeeks>
             <TriggerMonths>December</TriggerMonths>
-        </JobConfiguration>
-        <JobConfiguration>
+        </RunProgramJobConfiguration>
+      <RunProgramJobConfiguration>
             <JobConfigurationId>3</JobConfigurationId>
             <Name>BobbyDeleteWhere</Name>
             <ActionType>RunProgramJob</ActionType>
@@ -52,8 +52,8 @@
             <TriggerDays>Monday</TriggerDays>
             <TriggerWeeks>Last</TriggerWeeks>
             <TriggerMonths>December</TriggerMonths>
-        </JobConfiguration>
-        <JobConfiguration>
+        </RunProgramJobConfiguration>
+      <RunProgramJobConfiguration>
             <JobConfigurationId>999</JobConfigurationId>
             <Name>BobbyInsertAfter</Name>
             <ActionType>RunProgramJob</ActionType>
@@ -69,6 +69,6 @@
             <TriggerDays>Monday</TriggerDays>
             <TriggerWeeks>Last</TriggerWeeks>
             <TriggerMonths>December</TriggerMonths>
-        </JobConfiguration>
+        </RunProgramJobConfiguration>
     </JobConfigurations>
 </Data>

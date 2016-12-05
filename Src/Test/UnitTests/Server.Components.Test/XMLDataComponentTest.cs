@@ -9,13 +9,6 @@ using Scheduler.Interfaces;
 
 namespace Core.Components.Test
 {
-
-    public class XMLTestJobConfiguration : JobConfiguration
-    {
-        public string CustomThing { get; set; }
-        public XMLTestJobConfiguration() { CustomThing = "Roffle"; }
-    }
-
     [TestClass]
     public class XMLDataComponentTest
     {
@@ -37,7 +30,8 @@ namespace Core.Components.Test
         {
             var component = new XMLDataComponent(new LoggerMock());
 
-            var newJob = new XMLTestJobConfiguration();
+            var newJob = new RunProgramJobConfiguration();
+            newJob.JobConfigurationId = 1000;
             newJob.Name = "Test Job";
 
             Assert.IsTrue(component.Insert<JobConfiguration>(newJob));
@@ -56,7 +50,7 @@ namespace Core.Components.Test
             newJob.JobConfigurationId = 1;
             newJob.Name = "Test Job";
 
-            Assert.IsTrue(component.Delete(newJob));
+            Assert.IsTrue(component.Delete<JobConfiguration>(newJob));
             var realNewJob = component.Find<JobConfiguration>(1);
             Assert.IsNull(realNewJob);
         }
