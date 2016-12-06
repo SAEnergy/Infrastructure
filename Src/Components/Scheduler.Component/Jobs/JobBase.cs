@@ -170,7 +170,7 @@ namespace Scheduler.Component.Jobs
                 info.CancellationToken = ct;
                 info.Task = new Task<bool>(() => Execute(info), ct);
 
-                info.Statistics.Job = Configuration;
+                info.Statistics.JobID = Configuration.JobConfigurationId;
                 info.Statistics.StartTime = runNow ? DateTime.UtcNow : CalculateNextStartTime();
 
                 if (_infos != null)

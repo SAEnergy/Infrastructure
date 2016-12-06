@@ -7,6 +7,7 @@ using System.ServiceModel;
 using System.ServiceModel.Channels;
 using System.Threading;
 using Core.Interfaces.ServiceContracts;
+using System.ServiceModel.Description;
 
 namespace Core.Comm
 {
@@ -67,6 +68,11 @@ namespace Core.Comm
                         else
                         {
                             _factory = new ChannelFactory<T>(binding, endpoint);
+                        }
+
+                        foreach (var operation in _factory.Endpoint.Contract.Operations)
+                        {
+                            operation.Behaviors.Find<DataContractSerializerOperationBehavior>().DataContractResolver = new DataContractTypeResolver();
                         }
                     }
 

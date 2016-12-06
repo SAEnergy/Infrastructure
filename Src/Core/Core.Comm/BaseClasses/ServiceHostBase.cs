@@ -1,4 +1,5 @@
-﻿using Core.Interfaces.Components.Logging;
+﻿using Core.Interfaces;
+using Core.Interfaces.Components.Logging;
 using Core.Interfaces.ServiceContracts;
 using Core.IoC.Container;
 using System;
@@ -10,21 +11,10 @@ using System.Threading.Tasks;
 namespace Core.Comm.BaseClasses
 {
     [ServiceBehavior(ConcurrencyMode = ConcurrencyMode.Multiple, InstanceContextMode = InstanceContextMode.PerSession)]
-    public class ServiceHostBase<CHANNEL> : IServiceHost, IUserAuthentication, IDisposable where CHANNEL : IUserAuthentication
+    public abstract class ServiceHostBase<CHANNEL> : IServiceHost<CHANNEL>, IUserAuthentication, IDisposable where CHANNEL : IUserAuthentication
     {
         protected ILogger _logger;
-        protected static List<IServiceHost> _instances = new List<IServiceHost>();
-
-        public Type InterfaceType
-        {
-            get { return typeof(CHANNEL); }
-        }
-
-        // called via reflection to find implemented service contract
-        public static Type GetInterfaceType()
-        {
-            return typeof(CHANNEL);
-        }
+        protected static List<IServiceHost<CHANNEL>> _instances = new List<IServiceHost<CHANNEL>>();
 
         public void Ping()
         {
@@ -60,7 +50,7 @@ namespace Core.Comm.BaseClasses
     }
 
 
-    public class ServiceHostBase<CHANNEL, CALLBACK> : ServiceHostBase<CHANNEL> where CHANNEL : IUserAuthentication
+    public abstract class ServiceHostBase<CHANNEL, CALLBACK> : ServiceHostBase<CHANNEL> where CHANNEL : IUserAuthentication
     {
         protected CALLBACK _callback;
 

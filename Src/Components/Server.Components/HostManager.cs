@@ -14,6 +14,7 @@ using System.ServiceModel.Channels;
 using System.ServiceModel.Description;
 using System.ServiceModel.Dispatcher;
 using Core.Models;
+using Core.Interfaces;
 
 namespace Server.Components
 {
@@ -30,7 +31,7 @@ namespace Server.Components
     {
         #region Fields
 
-        private const string _dllSearchPattern = "*Host*.dll";
+        private const string _dllSearchPattern = "*.dll";
         private readonly ILogger _logger;
 
         private Dictionary<Type, ServiceHostInfo> _infos;
@@ -153,11 +154,12 @@ namespace Server.Components
         {
             var hosts = new Dictionary<Type, ServiceHostInfo>();
 
-            foreach (Type type in TypeLocator.FindTypes(_dllSearchPattern, typeof(IServiceHost)))
+            foreach (Type type in TypeLocator.FindTypes(_dllSearchPattern, typeof(IServiceHost<>)))
             {
                 ServiceHostInfo info = new ServiceHostInfo();
 
-                Type interfaceType = (Type)type.GetMethod("GetInterfaceType", BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy).Invoke(null, null);
+                Type interfaceType = type.GetInterfaces().FirstOrDefault(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IServiceHost<>));
+                interfaceType = interfaceType.GetGenericArguments().First();
 
                 info.InterfaceType = interfaceType;
                 info.Logger = _logger;
@@ -165,12 +167,18 @@ namespace Server.Components
 
                 info.Host.Description.Behaviors.Add(new HostErrorHandlerBehavior(info));
                 info.Host.Authorization.ServiceAuthorizationManager = new RoleBasedAuthorizationManager();
-
+                
                 ContractDescription contract = ContractDescription.GetContract(interfaceType);
 
                 EndpointAddress endpoint = EndpointInformation.BuildEndpoint(new EndpointInformation(), ServerConnectionInformation.Instance, interfaceType);
                 Binding binding = BindingInformation.BuildBinding(new BindingInformation(), ServerConnectionInformation.Instance);
                 ServiceEndpoint service = new ServiceEndpoint(contract, binding, endpoint);
+
+                foreach (OperationDescription operation in service.Contract.Operations)
+                {
+                    operation.Behaviors.Find<DataContractSerializerOperationBehavior>().DataContractResolver = new DataContractTypeResolver();
+                }
+
                 info.Host.AddServiceEndpoint(service);
 
                 hosts.Add(interfaceType, info);

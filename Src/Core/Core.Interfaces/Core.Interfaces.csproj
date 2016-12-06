@@ -46,6 +46,7 @@
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Base\IInitializable.cs" />
+    <Compile Include="Base\IServiceHost.cs" />
     <Compile Include="Base\UserExtensibleEnum.cs" />
     <Compile Include="Base\IRunnable.cs" />
     <Compile Include="Components\Base\SingletonBase.cs" />

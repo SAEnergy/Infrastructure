@@ -1,19 +1,19 @@
-﻿using Core.Interfaces.Components.Logging;
+﻿using Core.Interfaces;
 using Core.Interfaces.Components;
+using Core.Interfaces.Components.Base;
+using Core.Interfaces.Components.IoC;
+using Core.Interfaces.Components.Logging;
+using Core.Models;
+using Scheduler.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Core.Models.Persistent;
-using Core.Interfaces.Components.IoC;
-using Core.Interfaces.Components.Base;
-using Core.Models;
-using Scheduler.Interfaces;
 
 namespace Scheduler.Component
 {
-    [ComponentRegistration(typeof(IScheduler))]
+    [ComponentRegistration(typeof(ISchedulerComponent))]
     [ComponentMetadata(AllowedActions = ComponentUserActions.All, Description = "Scheduling system.", FriendlyName = "Scheduler Component")]
-    public sealed class Scheduler : Singleton<IScheduler>, IScheduler
+    public sealed class Scheduler : Singleton<ISchedulerComponent>, ISchedulerComponent
     {
         #region Fields
 
@@ -47,7 +47,7 @@ namespace Scheduler.Component
 
         #region Public Methods
 
-        public static IScheduler CreateInstance(ILogger logger, IDataComponent dataComponent)
+        public static ISchedulerComponent CreateInstance(ILogger logger, IDataComponent dataComponent)
         {
             return Instance = new Scheduler(logger, dataComponent);
         }
@@ -188,6 +188,11 @@ namespace Scheduler.Component
             {
                 _logger.Log("Error loading jobs: " + ex.ToString(), LogMessageSeverity.Error);
             }
+        }
+
+        public void Ping()
+        {
+            throw new NotImplementedException();
         }
 
         #endregion

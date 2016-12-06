@@ -21,6 +21,7 @@ namespace Scheduler.Plugin
         public SchedulerPanel()
         {
             InitializeComponent();
+            ViewModel = new SchedulerViewModel(this);
         }
     }
 }

@@ -32,6 +32,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -46,8 +47,8 @@
     </Compile>
     <Compile Include="BaseClasses\ServiceHostBase.cs" />
     <Compile Include="BindingInformation.cs" />
+    <Compile Include="DataContractTypeResolver.cs" />
     <Compile Include="EndpointInformation.cs" />
-    <Compile Include="IServiceHost.cs" />
     <Compile Include="ISubscription.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RoleBasedAuthorizationManager.cs" />
@@ -62,6 +63,10 @@
     <ProjectReference Include="..\Core.IoC.Container\Core.IoC.Container.csproj">
       <Project>{e4860231-c690-45df-b396-120a9e3bcdd4}</Project>
       <Name>Core.IoC.Container</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Core.Util\Core.Util.csproj">
+      <Project>{74311b36-42b8-45d6-b0b7-7651db281d48}</Project>
+      <Name>Core.Util</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
