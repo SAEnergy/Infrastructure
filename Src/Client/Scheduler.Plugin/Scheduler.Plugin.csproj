@@ -51,7 +51,22 @@
     <Compile Include="..\..\GlobalAssemblyInfo.cs">
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="SchedulerAddJobDialog.xaml.cs">
+      <DependentUpon>SchedulerAddJobDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SchedulerAddJobView.xaml.cs">
+      <DependentUpon>SchedulerAddJobView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SchedulerAddJobViewModel.cs" />
     <Compile Include="SchedulerViewModel.cs" />
+    <Page Include="SchedulerAddJobDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SchedulerAddJobView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="SchedulerPanel.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -97,6 +112,10 @@
     <ProjectReference Include="..\..\Core\Core.Interfaces\Core.Interfaces.csproj">
       <Project>{bdb06c43-2402-444e-a9e0-72c88174fed7}</Project>
       <Name>Core.Interfaces</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Core\Core.Util\Core.Util.csproj">
+      <Project>{74311b36-42b8-45d6-b0b7-7651db281d48}</Project>
+      <Name>Core.Util</Name>
     </ProjectReference>
     <ProjectReference Include="..\Client.Base\Client.Base.csproj">
       <Project>{98c98907-35d1-40b3-970b-53b38dd3cb4a}</Project>

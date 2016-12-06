@@ -2,6 +2,7 @@
 using Core.Interfaces.ServiceContracts;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -12,10 +13,12 @@ using System.Windows.Input;
 
 namespace Client.Base
 {
-    public class ViewModelBase : DependencyObject, IDisposable
+    public class ViewModelBase : DependencyObject, INotifyPropertyChanged, IDisposable
     {
         protected SynchronizationContext _context;
         protected ViewBase _parent;
+
+        public event PropertyChangedEventHandler PropertyChanged;
 
         public ViewModelBase(ViewBase parent)
         {
@@ -24,6 +27,11 @@ namespace Client.Base
         }
 
         public virtual void Dispose() { }
+
+        protected void NotiftyPropertyChanged(string s)
+        {
+            if (PropertyChanged!=null) { PropertyChanged(this, new PropertyChangedEventArgs(s)); }
+        }
 
         protected virtual void HandleTransactionException(Exception error)
         {

@@ -1,4 +1,5 @@
-﻿using Core.Util;
+﻿using Core.Models;
+using Core.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;

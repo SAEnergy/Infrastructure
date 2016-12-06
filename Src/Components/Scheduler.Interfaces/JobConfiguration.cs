@@ -1,4 +1,5 @@
-﻿using Core.Models.ComplexTypes;
+﻿using Core.Models;
+using Core.Models.ComplexTypes;
 using System;
 using System.ComponentModel.DataAnnotations;
 
@@ -7,6 +8,7 @@ namespace Scheduler.Interfaces
     public abstract class JobConfiguration
     {
         [Key]
+        [PropertyEditorMetadata(Hidden = true)]
         public int JobConfigurationId { get; set; }
 
         [StringLength(255)]
@@ -20,8 +22,10 @@ namespace Scheduler.Interfaces
 
         public JobRunState RunState { get; set; }
 
+        [PropertyEditorMetadata(Hidden = true)]
         public JobSchedule Schedule { get; set; }
 
+        [PropertyEditorMetadata(Hidden = true)]
         public AuditInfo AuditInfo { get; set; }
 
         public JobConfiguration()

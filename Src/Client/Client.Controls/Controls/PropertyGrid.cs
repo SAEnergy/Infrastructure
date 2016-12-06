@@ -1,17 +1,17 @@
-﻿using Core.Util;
+﻿using Core.Models;
+using Core.Util;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Collections.Specialized;
 using System.Windows.Threading;
-using Client.Base;
-using System.ComponentModel;
 
 namespace Client.Controls
 {

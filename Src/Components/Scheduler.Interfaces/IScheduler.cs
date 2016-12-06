@@ -13,6 +13,12 @@ namespace Scheduler.Interfaces
     {
         [OperationContract(IsOneWay = true)]
         void JobAdded(JobConfiguration job);
+
+        [OperationContract(IsOneWay = true)]
+        void JobStateUpdated();
+
+        [OperationContract(IsOneWay = true)]
+        void JobStatisticsUpdated(JobStatistics stats);
     }
 
     [ServiceContract]
