@@ -97,6 +97,7 @@ namespace Scheduler.Plugin
             }
 
             List<JobConfiguration> jobs = Channel.GetJobs();
+            if (jobs == null || jobs.Count == 0) return;
             BeginInvoke(() =>
             {
                 foreach (var iter in jobs)

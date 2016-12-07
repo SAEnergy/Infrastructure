@@ -46,8 +46,6 @@ namespace Scheduler.Interfaces
 
     }
 
-    public delegate void JobStateEventHandler(JobState state);
-
     public interface ISchedulerComponent : ISchedulerBase, IRunnable, IComponent
     {
         event JobStateEventHandler StateUpdated;

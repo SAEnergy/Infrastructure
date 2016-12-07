@@ -18,12 +18,13 @@ namespace Scheduler.Component.Jobs
 
         public CancellationToken CancellationToken { get; set; }
 
-        public event EventHandlerJobStatistics StatisticsUpdated;
+        public event JobStatisticsEventHandler StatisticsUpdated;
 
         public JobRunInfo()
         {
             Statistics = new T();
         }
+
         public void FireStatisticsUpdated()
         {
             if (StatisticsUpdated != null) { StatisticsUpdated(Statistics); }

@@ -8,7 +8,8 @@ using System.Threading.Tasks;
 namespace Scheduler.Interfaces
 {
 
-    public delegate void EventHandlerJobStatistics(JobStatistics stats);
+    public delegate void JobStatisticsEventHandler(JobStatistics stats);
+    public delegate void JobStateEventHandler(JobState state);
 
     public interface IJob
     {
@@ -17,7 +18,7 @@ namespace Scheduler.Interfaces
         JobConfiguration Configuration { get; set; }
 
         event JobStateEventHandler StateUpdated;
-        event JobStateEventHandler JobCompleted;
+        event JobStatisticsEventHandler JobCompleted;
 
         void ForceRun();
 

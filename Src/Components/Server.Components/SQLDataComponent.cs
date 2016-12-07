@@ -17,7 +17,7 @@ namespace Server.Components
     }
 
 
-    [ComponentRegistration(typeof(IDataComponent), DoNotRegister = true)]
+    [ComponentRegistration(typeof(IDataComponent))]
     [ComponentMetadata(Description = "Data access layer for SQL.", FriendlyName = "SQL Data Component")]
     public sealed class SQLDataComponent : IDataComponent
     {

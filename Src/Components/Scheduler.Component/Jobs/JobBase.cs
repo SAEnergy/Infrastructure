@@ -33,7 +33,7 @@ namespace Scheduler.Component.Jobs
         private bool _isRunning;
 
         public event JobStateEventHandler StateUpdated;
-        public event JobStateEventHandler JobCompleted;
+        public event JobStatisticsEventHandler JobCompleted;
 
         #endregion
 
@@ -359,7 +359,7 @@ namespace Scheduler.Component.Jobs
 
                 State.Status = rc ? JobStatus.Success : JobStatus.Error;
 
-                if (JobCompleted != null) JobCompleted(State);
+                if (JobCompleted != null) JobCompleted(State.Statistics);
 
                 FireStatusUpdate();
 

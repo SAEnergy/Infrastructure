@@ -117,13 +117,12 @@ namespace Scheduler.Component
             if (StateUpdated!=null) { StateUpdated(state); }
         }
 
-        private void JobCompleted(JobState state)
+        private void JobCompleted(JobStatistics stats)
         {
-            if (state.Statistics != null)
+            if (stats != null)
             {
-                _dataComponent.Insert<JobStatistics>(state.Statistics);
+                _dataComponent.Insert<JobStatistics>(stats);
             }
-            if (StateUpdated != null) { StateUpdated(state); }
         }
 
         public void DeleteJob(JobConfiguration job)

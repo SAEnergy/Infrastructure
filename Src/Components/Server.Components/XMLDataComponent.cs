@@ -16,7 +16,7 @@ using Core.Util;
 
 namespace Server.Components
 {
-    [ComponentRegistration(typeof(IDataComponent))]
+    [ComponentRegistration(typeof(IDataComponent),DoNotRegister = true)]
     [ComponentMetadata(Description = "Data access layer for XML storage.", FriendlyName = "XML Data Component")]
     public sealed class XMLDataComponent : IDataComponent
     {
