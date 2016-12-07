@@ -24,15 +24,19 @@ namespace Scheduler.Component
         public void AddJob(JobConfiguration job)
         {
             _scheduler.AddJob(job);
-            if (_data.Insert(job))
+            if (_data.Insert<JobConfiguration>(job))
             {
                 this.Broadcast(c => c.JobAdded(job));
             }
         }
 
-        public bool DeleteJob(JobConfiguration job)
+        public void DeleteJob(JobConfiguration job)
         {
-            throw new NotImplementedException();
+            _scheduler.DeleteJob(job);
+            if (_data.Delete<JobConfiguration>(job))
+            {
+                this.Broadcast(j => j.JobDeleted(job));
+            }
         }
 
         public List<JobConfiguration> GetJobs()
@@ -40,7 +44,7 @@ namespace Scheduler.Component
             return _scheduler.GetJobs();
         }
 
-        public bool UpdateJob(JobConfiguration job)
+        public void UpdateJob(JobConfiguration job)
         {
             throw new NotImplementedException();
         }

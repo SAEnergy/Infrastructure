@@ -6,6 +6,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
     xmlns:local="clr-namespace:Scheduler.Plugin"
     xmlns:base="clr-namespace:Client.Base;assembly=Client.Base"
+    xmlns:controls="clr-namespace:Client.Controls;assembly=Client.Controls"
     mc:Ignorable="d" 
     d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
@@ -16,12 +17,24 @@
         <StackPanel Orientation="Horizontal">
             <Button Command="{Binding Path=AddJobCommand}">New Job</Button>
         </StackPanel>
-        <ListBox Grid.Row ="1" ItemsSource="{Binding Path=Jobs}">
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <TextBlock Text="{Binding Path=Name}"/>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
+        <DataGrid Grid.Row ="1" ItemsSource="{Binding Path=Jobs}" IsReadOnly="true" SelectionMode="Extended" controls:MultiSelect.IsEnabled="true" AutoGenerateColumns="False" HeadersVisibility="Column">
+            <DataGrid.Columns>
+                <DataGridTextColumn Binding="{Binding Path=Job.Name}" Header="Name"/>
+            </DataGrid.Columns>
+            <DataGrid.ItemContainerStyle>
+                <Style TargetType="DataGridRow">
+                    <Setter Property="ContextMenu">
+                        <Setter.Value>
+                            <ContextMenu>
+                                <MenuItem Command="{Binding EditJobCommand}" Header="Edit Selected Jobs"/>
+                                <MenuItem Command="{Binding EditScheduleCommand}" Header="Edit Selected Schedules"/>
+                                <Separator/>
+                                <MenuItem Command="{Binding DeleteJobCommand}" Header="Delete Selected Jobs"/>
+                            </ContextMenu>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </DataGrid.ItemContainerStyle>
+        </DataGrid>
     </Grid>
 </base:PanelBase>

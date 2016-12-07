@@ -54,16 +54,9 @@
     <Compile Include="SchedulerAddJobDialog.xaml.cs">
       <DependentUpon>SchedulerAddJobDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="SchedulerAddJobView.xaml.cs">
-      <DependentUpon>SchedulerAddJobView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="SchedulerAddJobViewModel.cs" />
+    <Compile Include="SchedulerJobModel.cs" />
     <Compile Include="SchedulerViewModel.cs" />
     <Page Include="SchedulerAddJobDialog.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="SchedulerAddJobView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

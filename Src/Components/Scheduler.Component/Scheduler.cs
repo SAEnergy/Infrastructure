@@ -7,6 +7,7 @@ using Core.Models;
 using Scheduler.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Scheduler.Component
@@ -119,12 +120,18 @@ namespace Scheduler.Component
             _dataComponent.Insert<JobStatistics>(stats);
         }
 
-        public bool DeleteJob(JobConfiguration job)
+        public void DeleteJob(JobConfiguration job)
         {
-            throw new NotImplementedException();
+            lock (_jobs)
+            {
+                var found = _jobs.FirstOrDefault(j => j.Configuration.JobConfigurationId == job.JobConfigurationId);
+                if (found == null) throw new InvalidOperationException("JobID " + job.JobConfigurationId + " not found.");
+                if (found.Status == JobStatus.Running) { throw new InvalidOperationException("Cannot delete running job."); }
+                _jobs.Remove(found);
+            }
         }
 
-        public bool UpdateJob(JobConfiguration job)
+        public void UpdateJob(JobConfiguration job)
         {
             throw new NotImplementedException();
         }

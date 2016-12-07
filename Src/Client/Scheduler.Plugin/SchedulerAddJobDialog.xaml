@@ -5,13 +5,22 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
     xmlns:local="clr-namespace:Scheduler.Plugin"
+    xmlns:controls="clr-namespace:Client.Controls;assembly=Client.Controls"
     xmlns:base="clr-namespace:Client.Base;assembly=Client.Base"
     mc:Ignorable="d" 
     Width="400"
     Height="500"
     >
     <Grid Margin="5">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
         <Border BorderThickness="0" Background="White" Opacity="0.75" Margin="1" Grid.RowSpan="99"/>
-        <ContentControl Content="{Binding Path=View}"/>
+        <ComboBox Margin="5" ItemsSource="{Binding Path=AvailableJobTypes}" SelectedItem="{Binding Path=SelectedType}"></ComboBox>
+        <controls:PropertyGrid Margin="5" Grid.Row="1" DataContext="{Binding Path=Job}" />
+        <Button Grid.Row="2" HorizontalAlignment="Left" IsCancel="True">Cancel</Button>
+        <Button Grid.Row="2" HorizontalAlignment="Right" Click="ClickAdd">Add</Button>
     </Grid>
 </base:DialogBase>

@@ -15,6 +15,9 @@ namespace Scheduler.Interfaces
         void JobAdded(JobConfiguration job);
 
         [OperationContract(IsOneWay = true)]
+        void JobDeleted(JobConfiguration job);
+
+        [OperationContract(IsOneWay = true)]
         void JobStateUpdated();
 
         [OperationContract(IsOneWay = true)]
@@ -31,10 +34,10 @@ namespace Scheduler.Interfaces
         void AddJob(JobConfiguration job);
 
         [OperationContract]
-        bool DeleteJob(JobConfiguration job);
+        void DeleteJob(JobConfiguration job);
 
         [OperationContract]
-        bool UpdateJob(JobConfiguration job);
+        void UpdateJob(JobConfiguration job);
     }
 
     [ServiceContract(CallbackContract = typeof(ISchedulerCallback))]
