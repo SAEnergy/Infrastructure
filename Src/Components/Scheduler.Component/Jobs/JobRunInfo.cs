@@ -14,7 +14,7 @@ namespace Scheduler.Component.Jobs
 
         public bool IsRunning { get; set; }
 
-        public T Statistics { get; set; }
+        public T Statistics { get; private set; }
 
         public CancellationToken CancellationToken { get; set; }
 

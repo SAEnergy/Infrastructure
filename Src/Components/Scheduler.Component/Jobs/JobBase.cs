@@ -178,12 +178,14 @@ namespace Scheduler.Component.Jobs
             if (Configuration.RunState == JobRunState.Automatic || runNow)
             {
                 var info = new JobRunInfo<StatisticType>();
-                this.State.Statistics = info.Statistics;
                 info.CancellationToken = ct;
                 info.StatisticsUpdated += StatisticsUpdated;
                 info.Task = new Task<bool>(() => Execute(info), ct);
                 info.Statistics.JobID = Configuration.JobConfigurationId;
                 info.Statistics.StartTime = runNow ? DateTime.UtcNow : CalculateNextStartTime();
+
+                State = new JobState();
+                State.Statistics = info.Statistics;
 
                 FireStatusUpdate();
 
