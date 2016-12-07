@@ -100,7 +100,7 @@ namespace Client.Controls
                     if (prop.DeclaringType == typeof(DispatcherObject)) { continue; }
 
                     PropertyEditorMetadataAttribute atty = prop.GetCustomAttribute<PropertyEditorMetadataAttribute>();
-                    if (atty!=null && atty.Hidden) { continue; }
+                    if (atty != null && atty.Hidden) { continue; }
 
                     PropertyGridEditor editor = null;
                     _properties.TryGetValue(prop.Name, out editor);
@@ -130,7 +130,17 @@ namespace Client.Controls
 
             List<object> items = new List<object>();
             if (Items != null && Items.Count > 0) { items.AddRange(Items.OfType<object>()); }
-            else if (DataContext != null) { items.Add(DataContext); }
+            else if (DataContext != null)
+            {
+                if (DataContext is IEnumerable<object>)
+                {
+                    items.AddRange(DataContext as IEnumerable<object>);
+                }
+                else
+                {
+                    items.Add(DataContext);
+                }
+            }
 
             if (items.Count == 0) { return; }
 

@@ -17,7 +17,9 @@ namespace Client.Controls
             //}
 
             if (type == typeof(bool)) { return new PropertyGridBoolEditor(); }
+            if (type == typeof(TimeSpan)) { return new PropertyGridTimeSpanEditor(); }
             if (type.IsEnum) { return new PropertyGridEnumEditor(); }
+            if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>)) { return new PropertyGridNullableEditor(); }
 
             return new PropertyGridTextEditor();
         }

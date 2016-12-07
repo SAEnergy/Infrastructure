@@ -385,15 +385,12 @@ namespace Scheduler.Component.Jobs
             {
                 var secondsInDay = (int)Math.Floor(TimeSpan.FromDays(1).TotalSeconds);
 
-                int seconds = schedule.StartTime.TimeInSeconds;
-
-                if (schedule.StartTime.TimeInSeconds > secondsInDay)
+                if (schedule.StartTime.TotalSeconds > secondsInDay)
                 {
                     _logger.Log(string.Format("Job by the name of \"{0}\" start time set to more that one days worth of seconds, defaulting to start running at midnight.", Configuration.Name), LogMessageSeverity.Warning);
-                    seconds = 0;
                 }
 
-                DateTime startTime = DateTime.Today.Add(TimeSpan.FromSeconds(seconds));
+                DateTime startTime = DateTime.Today.Add(schedule.StartTime);
 
                 TimeSpan offset = startTime.Subtract(DateTime.UtcNow.ToLocalTime());
 
@@ -444,11 +441,11 @@ namespace Scheduler.Component.Jobs
 
             var result = startTimeOffset;
 
-            if (schedule.RepeatEvery.Enabled)
+            if (schedule.RepeatEvery != TimeSpan.Zero)
             {
-                var repeatSeconds = schedule.RepeatEvery.TimeInSeconds;
+                var repeatSeconds = schedule.RepeatEvery.TotalSeconds;
 
-                if (schedule.RepeatEvery.TimeInSeconds < 1)
+                if (repeatSeconds < 1)
                 {
                     _logger.Log(string.Format("Job by the name of \"{0}\" start time set to repeat faster than every 1 second, defaulting to run every 1 second.", Configuration.Name), LogMessageSeverity.Warning);
                     repeatSeconds = 1;

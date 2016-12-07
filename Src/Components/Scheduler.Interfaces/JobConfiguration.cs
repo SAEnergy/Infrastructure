@@ -2,6 +2,7 @@
 using Core.Models.ComplexTypes;
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Scheduler.Interfaces
 {
@@ -18,7 +19,14 @@ namespace Scheduler.Interfaces
 
         public bool AllowSimultaneousExecutions { get; set; }
 
-        public TimeSpanBool Timeout { get; set; }
+        [PropertyEditorMetadata(Hidden = true)]
+        public long TimeoutTicks { get; set; }
+        [NotMapped]
+        public TimeSpan Timeout
+        {
+            get { return TimeSpan.FromTicks(TimeoutTicks); }
+            set { TimeoutTicks = value.Ticks; }
+        }
 
         public JobRunState RunState { get; set; }
 
@@ -30,9 +38,9 @@ namespace Scheduler.Interfaces
 
         public JobConfiguration()
         {
+            Timeout = TimeSpan.FromDays(1);
             //initialize objects
             AuditInfo = new AuditInfo();
-            Timeout = new TimeSpanBool();
             Schedule = new JobSchedule();
         }
 

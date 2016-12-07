@@ -134,9 +134,17 @@ namespace Client.Controls
             DefaultStyleKeyProperty.OverrideMetadata(typeof(PropertyGridTextEditor), new FrameworkPropertyMetadata(typeof(PropertyGridTextEditor)));
         }
 
-        protected override void OnMultipleValues()
+        //protected override void OnMultipleValues()
+        //{
+        //    Data = _multipleValuesString;// + " " + string.Join(",", Values.Select(o => (o == null ? "" : o.ToString())).ToArray());
+        //}
+    }
+
+    public class PropertyGridTimeSpanEditor : PropertyGridEditor
+    {
+        static PropertyGridTimeSpanEditor()
         {
-            Data = _multipleValuesString;// + " " + string.Join(",", Values.Select(o => (o == null ? "" : o.ToString())).ToArray());
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(PropertyGridTimeSpanEditor), new FrameworkPropertyMetadata(typeof(PropertyGridTimeSpanEditor)));
         }
     }
 
@@ -151,6 +159,20 @@ namespace Client.Controls
         {
             // null for indeterminite check box
             Data = null;
+        }
+    }
+
+    public class PropertyGridNullableEditor : PropertyGridEditor
+    {
+        static PropertyGridNullableEditor()
+        {
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(PropertyGridNullableEditor), new FrameworkPropertyMetadata(typeof(PropertyGridNullableEditor)));
+        }
+
+        protected override void OnMultipleValues()
+        {
+            // null for indeterminite check box
+            Data = _multipleValuesString;
         }
     }
 

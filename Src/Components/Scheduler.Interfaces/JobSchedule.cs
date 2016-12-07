@@ -2,6 +2,7 @@
 using Core.Models.ComplexTypes;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,7 +11,14 @@ namespace Scheduler.Interfaces
 {
     public class JobSchedule : ICloneable<JobSchedule>
     {
-        public TimeSpanBool StartTime { get; set; }
+        [PropertyEditorMetadata(Hidden = true)]
+        public long StartTimeTicks { get; set; }
+        [NotMapped]
+        public TimeSpan StartTime
+        {
+            get { return TimeSpan.FromTicks(StartTimeTicks); }
+            set { StartTimeTicks = value.Ticks; }
+        }
 
         public JobTriggerType TriggerType { get; set; }
 
@@ -20,12 +28,25 @@ namespace Scheduler.Interfaces
 
         public JobTriggerMonths TriggerMonths { get; set; }
 
-        public TimeSpanBool RepeatEvery { get; set; }
+        //[PropertyEditorMetadata(Hidden = true)]
+        //public long? RepeatEveryTicks { get; set; }
+        //[NotMapped]
+        //public TimeSpan? RepeatEvery
+        //{
+        //    get { return RepeatEveryTicks.HasValue ? TimeSpan.FromTicks(RepeatEveryTicks.Value) : (TimeSpan?)null; }
+        //    set { RepeatEveryTicks = (value.HasValue) ? (value.Value.Ticks) : (long?)null; }
+        //}
+        [PropertyEditorMetadata(Hidden = true)]
+        public long RepeatEveryTicks { get; set; }
+        [NotMapped]
+        public TimeSpan RepeatEvery
+        {
+            get { return TimeSpan.FromTicks(RepeatEveryTicks); }
+            set { RepeatEveryTicks = value.Ticks; }
+        }
 
         public JobSchedule()
         {
-            StartTime = new TimeSpanBool();
-            RepeatEvery = new TimeSpanBool();
         }
 
         public JobSchedule Clone()

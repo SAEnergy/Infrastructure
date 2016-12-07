@@ -68,15 +68,20 @@ namespace Scheduler.Plugin
 
         public void EditSelectedSchedules()
         {
+            List<JobConfiguration> jobs = Jobs.SelectedItems.Select(s => s.Job.Clone()).ToList();
+            foreach (JobConfiguration job in jobs)
+            {
+                job.Schedule = Jobs.SelectedItems.FirstOrDefault(j => j.Job.JobConfigurationId == job.JobConfigurationId).Job.Schedule.Clone();
+            }
             PropertyGridDialog dlg = new PropertyGridDialog(Window.GetWindow(this));
-            dlg.DataContext = Jobs.SelectedItems.Select(s => s.Job.Schedule.Clone()).ToList();
+            dlg.DataContext = jobs.Select(s=>s.Schedule);
             if (dlg.ShowDialog()== true)
             {
-                //foreach (var iter in dlg.DataContext as IEnumerable<JobSchedule>)
-                //{
-                //    JobConfiguration job = _jobs.Select(j=>j.Job).Where(j=>j.JobConfigurationId)==iter.jo
-                //    Execute(() => Channel.UpdateJob(job));
-                //}
+                foreach (var iter in dlg.DataContext as IEnumerable<JobSchedule>)
+                {
+                    JobConfiguration job = jobs.FirstOrDefault(j=>j.Schedule==iter);
+                    Execute(() => Channel.UpdateJob(job));
+                }
             }
         }
 
