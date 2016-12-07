@@ -132,7 +132,7 @@ namespace Scheduler.Component
             {
                 var found = _jobs.FirstOrDefault(j => j.Configuration.JobConfigurationId == job.JobConfigurationId);
                 if (found == null) throw new InvalidOperationException("JobID " + job.JobConfigurationId + " not found.");
-                if (found.Status == JobStatus.Running) { throw new InvalidOperationException("Cannot delete running job."); }
+                if (found.State.Status == JobStatus.Running) { throw new InvalidOperationException("Cannot delete running job."); }
                 _jobs.Remove(found);
             }
         }

@@ -12,7 +12,7 @@ namespace Scheduler.Interfaces
 
     public interface IJob
     {
-        JobStatus Status { get; }
+        JobState State { get; }
 
         JobConfiguration Configuration { get; }
 

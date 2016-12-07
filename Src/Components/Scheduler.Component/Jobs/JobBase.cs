@@ -45,14 +45,6 @@ namespace Scheduler.Component.Jobs
 
         public JobState State { get; private set; }
 
-        public JobStatus Status
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
-
         #endregion
 
         #region Constructor
@@ -214,7 +206,7 @@ namespace Scheduler.Component.Jobs
         {
             if (info != null)
             {
-                if (Status != JobStatus.Misconfigured)
+                if (State.Status != JobStatus.Misconfigured)
                 {
                     try
                     {
