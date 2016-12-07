@@ -18,7 +18,7 @@ namespace Scheduler.Component.Jobs
 
         public CancellationToken CancellationToken { get; set; }
 
-        public event Action StatisticsUpdated;
+        public event EventHandlerJobStatistics StatisticsUpdated;
 
         public JobRunInfo()
         {
@@ -26,7 +26,7 @@ namespace Scheduler.Component.Jobs
         }
         public void FireStatisticsUpdated()
         {
-            if (StatisticsUpdated != null) { StatisticsUpdated(); }
+            if (StatisticsUpdated != null) { StatisticsUpdated(Statistics); }
         }
     }
 }

@@ -57,7 +57,14 @@ namespace Client.Controls
 
             if (DataContext == null) { return; }
 
-            ParseProperties(new object[] { DataContext });
+            if (DataContext is IEnumerable<object>)
+            {
+                ParseProperties(DataContext as IEnumerable<object>);
+            }
+            else
+            {
+                ParseProperties(new object[] { DataContext });
+            }
         }
 
         protected override void OnItemsSourceChanged(IEnumerable oldValue, IEnumerable newValue)

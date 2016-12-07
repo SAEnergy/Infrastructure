@@ -45,12 +45,12 @@ namespace Scheduler.Plugin
 
         private void OnEditScheduleCommand()
         {
-            throw new NotImplementedException();
+            _parent.EditSelectedSchedules();
         }
 
         private void OnEditJobCommand()
         {
-            throw new NotImplementedException();
+            _parent.EditSelectedJobs();
         }
     }
 }

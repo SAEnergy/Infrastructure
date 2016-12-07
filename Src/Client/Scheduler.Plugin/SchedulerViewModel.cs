@@ -1,5 +1,6 @@
 ﻿using Client.Base;
 using Client.Controls;
+using Client.Controls.Dialogs;
 using Core.Comm;
 using Core.Util;
 using Scheduler.Interfaces;
@@ -53,12 +54,30 @@ namespace Scheduler.Plugin
 
         public void EditSelectedJobs()
         {
-            throw new NotImplementedException();
+            PropertyGridDialog dlg = new PropertyGridDialog(Window.GetWindow(this));
+            dlg.DataContext = Jobs.SelectedItems.Select(s => s.Job.Clone()).ToList();
+            if (dlg.ShowDialog() == true)
+            {
+                foreach(var iter in dlg.DataContext as IEnumerable<JobConfiguration>)
+                {
+                    JobConfiguration job = iter;
+                    Execute(() => Channel.UpdateJob(job));
+                }
+            }
         }
 
         public void EditSelectedSchedules()
         {
-            throw new NotImplementedException();
+            PropertyGridDialog dlg = new PropertyGridDialog(Window.GetWindow(this));
+            dlg.DataContext = Jobs.SelectedItems.Select(s => s.Job.Schedule.Clone()).ToList();
+            if (dlg.ShowDialog()== true)
+            {
+                //foreach (var iter in dlg.DataContext as IEnumerable<JobSchedule>)
+                //{
+                //    JobConfiguration job = _jobs.Select(j=>j.Job).Where(j=>j.JobConfigurationId)==iter.jo
+                //    Execute(() => Channel.UpdateJob(job));
+                //}
+            }
         }
 
         protected override void OnConnect(ISubscription source)

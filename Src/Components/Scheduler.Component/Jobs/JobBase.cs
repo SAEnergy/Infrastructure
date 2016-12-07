@@ -196,8 +196,9 @@ namespace Scheduler.Component.Jobs
             }
         }
 
-        private void StatisticsUpdated()
+        private void StatisticsUpdated(JobStatistics stats)
         {
+            State.Statistics = stats;
             FireStatusUpdate();
         }
 
@@ -644,7 +645,7 @@ namespace Scheduler.Component.Jobs
 
         private void FireStatusUpdate()
         {
-
+            if (StateUpdated!=null) { StateUpdated(State); }
         }
 
         #endregion

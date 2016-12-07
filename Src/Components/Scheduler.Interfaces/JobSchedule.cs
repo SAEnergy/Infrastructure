@@ -1,4 +1,5 @@
-﻿using Core.Models.ComplexTypes;
+﻿using Core.Models;
+using Core.Models.ComplexTypes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Scheduler.Interfaces
 {
-    public class JobSchedule
+    public class JobSchedule : ICloneable<JobSchedule>
     {
         public TimeSpanBool StartTime { get; set; }
 
@@ -25,6 +26,11 @@ namespace Scheduler.Interfaces
         {
             StartTime = new TimeSpanBool();
             RepeatEvery = new TimeSpanBool();
+        }
+
+        public JobSchedule Clone()
+        {
+            return (JobSchedule)this.MemberwiseClone();
         }
     }
 }

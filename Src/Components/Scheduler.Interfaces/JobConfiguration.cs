@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Scheduler.Interfaces
 {
-    public abstract class JobConfiguration
+    public abstract class JobConfiguration : ICloneable<JobConfiguration>
     {
         [Key]
         [PropertyEditorMetadata(Hidden = true)]
@@ -34,6 +34,11 @@ namespace Scheduler.Interfaces
             AuditInfo = new AuditInfo();
             Timeout = new TimeSpanBool();
             Schedule = new JobSchedule();
+        }
+
+        public JobConfiguration Clone()
+        {
+            return (JobConfiguration)this.MemberwiseClone();
         }
     }
 
