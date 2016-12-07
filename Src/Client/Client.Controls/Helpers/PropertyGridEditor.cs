@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -74,7 +75,12 @@ namespace Client.Controls
         protected virtual object OnCoerceData(object value)
         {
             if (_freeze) { return value; }
-            return Convert.ChangeType(value, PropertyType);
+            if (value == null) return null;
+            if (value.GetType()==PropertyType) { return value; }
+            var conv = TypeDescriptor.GetConverter(PropertyType);
+            object newval = conv.ConvertFromInvariantString(value.ToString());
+            return newval;
+            //return Convert.ChangeType(value, PropertyType);
         }
 
         protected static void OnDataPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
