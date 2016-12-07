@@ -14,7 +14,7 @@ namespace Scheduler.Interfaces
     {
         JobState State { get; }
 
-        JobConfiguration Configuration { get; }
+        JobConfiguration Configuration { get; set; }
 
         event JobStateEventHandler StateUpdated;
         event JobStateEventHandler JobCompleted;
@@ -33,7 +33,7 @@ namespace Scheduler.Interfaces
 
     public interface IJob<T> : IJob where T : JobConfiguration
     {
-        new T Configuration { get; }
+        new T Configuration { get; set; }
     }
 
 }

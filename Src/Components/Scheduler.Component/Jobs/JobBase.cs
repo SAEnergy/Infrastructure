@@ -18,7 +18,7 @@ namespace Scheduler.Component.Jobs
         public JobBase(ILogger logger, ConfigType config) : base(logger, config) { }
     }
 
-    public abstract class JobBase<ConfigType, StatisticType> : IJob<ConfigType> 
+    public abstract class JobBase<ConfigType, StatisticType> : IJob<ConfigType>
         where ConfigType : JobConfiguration
         where StatisticType : JobStatistics, new()
     {
@@ -34,14 +34,18 @@ namespace Scheduler.Component.Jobs
 
         public event JobStateEventHandler StateUpdated;
         public event JobStateEventHandler JobCompleted;
-        
+
         #endregion
 
         #region Properties
 
-        public ConfigType Configuration { get; private set; }
+        public ConfigType Configuration { get; set; }
 
-        JobConfiguration IJob.Configuration { get { return Configuration; } }
+        JobConfiguration IJob.Configuration
+        {
+            get { return Configuration; }
+            set { Configuration = (ConfigType)value; }
+        }
 
         public JobState State { get; private set; }
 
@@ -353,7 +357,7 @@ namespace Scheduler.Component.Jobs
 
                 State.Status = rc ? JobStatus.Success : JobStatus.Error;
 
-                if (JobCompleted!=null) JobCompleted(State);
+                if (JobCompleted != null) JobCompleted(State);
 
                 FireStatusUpdate();
 
@@ -645,7 +649,7 @@ namespace Scheduler.Component.Jobs
 
         private void FireStatusUpdate()
         {
-            if (StateUpdated!=null) { StateUpdated(State); }
+            if (StateUpdated != null) { StateUpdated(State); }
         }
 
         #endregion

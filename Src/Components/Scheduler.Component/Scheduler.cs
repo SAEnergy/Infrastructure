@@ -139,7 +139,12 @@ namespace Scheduler.Component
 
         public void UpdateJob(JobConfiguration job)
         {
-            throw new NotImplementedException();
+            lock (_jobs)
+            {
+                var found = _jobs.FirstOrDefault(j => j.Configuration.JobConfigurationId == job.JobConfigurationId);
+                if (found == null) throw new InvalidOperationException("JobID " + job.JobConfigurationId + " not found.");
+                found.Configuration = job;
+            }
         }
 
         #endregion

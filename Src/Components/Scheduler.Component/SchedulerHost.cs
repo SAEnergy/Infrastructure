@@ -52,7 +52,11 @@ namespace Scheduler.Component
 
         public void UpdateJob(JobConfiguration job)
         {
-            throw new NotImplementedException();
+            _scheduler.UpdateJob(job);
+            if (_data.Update<JobConfiguration>(job))
+            {
+                this.Broadcast(j => j.JobUpdated(job));
+            }
         }
     }
 }

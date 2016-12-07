@@ -138,5 +138,14 @@ namespace Scheduler.Plugin
                 if (model!=null) { model.State = state; }
             });
         }
+
+        public void JobUpdated(JobConfiguration job)
+        {
+            this.BeginInvoke(() =>
+            {
+                SchedulerJobModel model = _jobs.FirstOrDefault(j => j.Job.JobConfigurationId == job.JobConfigurationId);
+                if (model != null) { model.Job = job; }
+            });
+        }
     }
 }

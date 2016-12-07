@@ -15,6 +15,9 @@ namespace Scheduler.Interfaces
         void JobAdded(JobConfiguration job);
 
         [OperationContract(IsOneWay = true)]
+        void JobUpdated(JobConfiguration job);
+
+        [OperationContract(IsOneWay = true)]
         void JobDeleted(JobConfiguration job);
 
         [OperationContract(IsOneWay = true)]
