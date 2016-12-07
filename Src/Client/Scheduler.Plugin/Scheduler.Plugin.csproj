@@ -106,6 +106,10 @@
       <Project>{bdb06c43-2402-444e-a9e0-72c88174fed7}</Project>
       <Name>Core.Interfaces</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Core\Core.Models\Core.Models.csproj">
+      <Project>{803e539b-3687-4465-b272-e50816df453f}</Project>
+      <Name>Core.Models</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Core\Core.Util\Core.Util.csproj">
       <Project>{74311b36-42b8-45d6-b0b7-7651db281d48}</Project>
       <Name>Core.Util</Name>
