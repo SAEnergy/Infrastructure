@@ -18,7 +18,13 @@ namespace Scheduler.Component
         public SchedulerHost()
         {
             _scheduler = IoCContainer.Instance.Resolve<ISchedulerComponent>();
+            _scheduler.StateUpdated += SchedulerStateUpdated;
             _data = IoCContainer.Instance.Resolve<IDataComponent>();
+        }
+
+        private void SchedulerStateUpdated(JobState state)
+        {
+            this.Broadcast(s => s.JobStateUpdated(state));
         }
 
         public void AddJob(JobConfiguration job)

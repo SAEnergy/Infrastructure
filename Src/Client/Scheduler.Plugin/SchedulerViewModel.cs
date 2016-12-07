@@ -51,16 +51,15 @@ namespace Scheduler.Plugin
             }
         }
 
-        private void OnEditScheduleCommand()
+        public void EditSelectedJobs()
         {
             throw new NotImplementedException();
         }
 
-        private void OnEditJobCommand()
+        public void EditSelectedSchedules()
         {
             throw new NotImplementedException();
         }
-
 
         protected override void OnConnect(ISubscription source)
         {
@@ -112,13 +111,13 @@ namespace Scheduler.Plugin
             });
         }
 
-        public void JobStateUpdated()
+        public void JobStateUpdated(JobState state)
         {
+            this.BeginInvoke(() =>
+            {
+                SchedulerJobModel model = _jobs.FirstOrDefault(j => j.Job.JobConfigurationId == state.JobId);
+                if (model!=null) { model.State = state; }
+            });
         }
-
-        public void JobStatisticsUpdated(JobStatistics stats)
-        {
-        }
-
     }
 }

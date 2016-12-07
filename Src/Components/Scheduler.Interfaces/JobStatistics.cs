@@ -25,6 +25,8 @@ namespace Scheduler.Interfaces
 
         public int TotalItems { get; set; }
 
+        public int Completed { get; set; }
+
         public int Errors { get; set; }
     }
 }

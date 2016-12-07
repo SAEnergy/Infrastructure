@@ -16,9 +16,8 @@ namespace Scheduler.Interfaces
 
         JobConfiguration Configuration { get; }
 
-        event EventHandlerJobStatistics StatisticsUpdated;
-
-        event EventHandlerJobStatistics JobCompleted;
+        event JobStateEventHandler StateUpdated;
+        event JobStateEventHandler JobCompleted;
 
         void ForceRun();
 

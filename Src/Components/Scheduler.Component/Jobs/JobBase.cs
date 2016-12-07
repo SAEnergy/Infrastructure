@@ -32,9 +32,9 @@ namespace Scheduler.Component.Jobs
         private List<JobRunInfo<StatisticType>> _infos = new List<JobRunInfo<StatisticType>>();
         private bool _isRunning;
 
-        public event EventHandlerJobStatistics StatisticsUpdated;
-        public event EventHandlerJobStatistics JobCompleted;
-
+        public event JobStateEventHandler StateUpdated;
+        public event JobStateEventHandler JobCompleted;
+        
         #endregion
 
         #region Properties
@@ -43,7 +43,15 @@ namespace Scheduler.Component.Jobs
 
         JobConfiguration IJob.Configuration { get { return Configuration; } }
 
-        public JobStatus Status { get; private set; }
+        public JobState State { get; private set; }
+
+        public JobStatus Status
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
 
         #endregion
 
@@ -51,7 +59,9 @@ namespace Scheduler.Component.Jobs
 
         protected JobBase(ILogger logger, ConfigType config)
         {
-            Status = JobStatus.Unknown;
+            State = new JobState();
+            State.Status = JobStatus.Unknown;
+
             _logger = logger;
             Configuration = config;
             cancelSource = new CancellationTokenSource();
@@ -92,7 +102,9 @@ namespace Scheduler.Component.Jobs
             {
                 if (InfosCount() > 0)
                 {
-                    Status = JobStatus.Cancelling;
+                    State.Status = JobStatus.Cancelling;
+                    FireStatusUpdate();
+
 
                     _logger.Log(string.Format("Job name \"{0}\" canceling all scheduled and currently executing tasks.  ", Configuration.Name), LogMessageSeverity.Warning);
 
@@ -104,7 +116,10 @@ namespace Scheduler.Component.Jobs
                         Thread.Sleep(_cancelWaitCycle);
                     }
 
-                    Status = JobStatus.Cancelled;
+                    State.Status = JobStatus.Cancelled;
+                    State.Statistics = null;
+                    FireStatusUpdate();
+
                     _logger.Log(string.Format("Job name \"{0}\" all tasks have been canceled.", Configuration.Name));
                 }
             }
@@ -167,11 +182,14 @@ namespace Scheduler.Component.Jobs
             if (Configuration.RunState == JobRunState.Automatic || runNow)
             {
                 var info = new JobRunInfo<StatisticType>();
+                this.State.Statistics = info.Statistics;
                 info.CancellationToken = ct;
+                info.StatisticsUpdated += StatisticsUpdated;
                 info.Task = new Task<bool>(() => Execute(info), ct);
-
                 info.Statistics.JobID = Configuration.JobConfigurationId;
                 info.Statistics.StartTime = runNow ? DateTime.UtcNow : CalculateNextStartTime();
+
+                FireStatusUpdate();
 
                 if (_infos != null)
                 {
@@ -184,6 +202,11 @@ namespace Scheduler.Component.Jobs
                 Task.Run(() => Run(ct, info)); //does not block here on purpose
                 _logger.Log(string.Format("Job \"{0}\" has been setup to run.", Configuration.Name));
             }
+        }
+
+        private void StatisticsUpdated()
+        {
+            FireStatusUpdate();
         }
 
         //a self relaunching scheduler
@@ -314,7 +337,8 @@ namespace Scheduler.Component.Jobs
                 try
                 {
                     info.Task.Start();
-                    Status = JobStatus.Running;
+                    State.Status = JobStatus.Running;
+                    FireStatusUpdate();
                     info.IsRunning = true;
 
                     rc = await info.Task;
@@ -334,9 +358,11 @@ namespace Scheduler.Component.Jobs
                 info.Statistics.Duration = watch.Elapsed;
                 info.IsRunning = false;
 
-                if (JobCompleted!=null) JobCompleted(info.Statistics);
+                State.Status = rc ? JobStatus.Success : JobStatus.Error;
 
-                Status = rc ? JobStatus.Success : JobStatus.Error;
+                if (JobCompleted!=null) JobCompleted(State);
+
+                FireStatusUpdate();
 
                 string message = rc ? "completed successfully" : "failed to complete successfully";
 
@@ -401,7 +427,9 @@ namespace Scheduler.Component.Jobs
             }
             else
             {
-                Status = JobStatus.Misconfigured;
+                State.Status = JobStatus.Misconfigured;
+                FireStatusUpdate();
+
                 _logger.Log(string.Format("Job by the name of \"{0}\" has a trigger type of \"{1}\" that is misconfigured.  This job will not run!", Configuration.Name, schedule.TriggerType), LogMessageSeverity.Critical);
             }
 
@@ -468,7 +496,9 @@ namespace Scheduler.Component.Jobs
             }
             else
             {
-                Status = JobStatus.Misconfigured;
+                State.Status = JobStatus.Misconfigured;
+                FireStatusUpdate();
+
                 _logger.Log(string.Format("Job by the name of \"{0}\" has a trigger type of \"{1}\" that is misconfigured.  This job will not run!", Configuration.Name, schedule.TriggerType), LogMessageSeverity.Critical);
                 result = TimeSpan.MaxValue;
             }
@@ -494,7 +524,8 @@ namespace Scheduler.Component.Jobs
             }
             else
             {
-                Status = JobStatus.Misconfigured;
+                State.Status = JobStatus.Misconfigured;
+                FireStatusUpdate();
                 _logger.Log(string.Format("Job by the name of \"{0}\" has a trigger type of \"{1}\" that is misconfigured.  This job will not run!", Configuration.Name, schedule.TriggerType), LogMessageSeverity.Critical);
                 result = TimeSpan.MaxValue;
             }
@@ -524,7 +555,9 @@ namespace Scheduler.Component.Jobs
             }
             else
             {
-                Status = JobStatus.Misconfigured;
+                State.Status = JobStatus.Misconfigured;
+                FireStatusUpdate();
+
                 _logger.Log(string.Format("Job by the name of \"{0}\" has a trigger type of \"{1}\" that is misconfigured.  This job will not run!", Configuration.Name, schedule.TriggerType), LogMessageSeverity.Critical);
                 result = TimeSpan.MaxValue;
             }
@@ -615,6 +648,11 @@ namespace Scheduler.Component.Jobs
             }
 
             return jobDay;
+        }
+
+        private void FireStatusUpdate()
+        {
+
         }
 
         #endregion

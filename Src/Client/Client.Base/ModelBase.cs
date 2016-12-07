@@ -10,10 +10,27 @@ using System.Threading.Tasks;
 
 namespace Client.Base
 {
-    public class ModelBase<T> : INotifyPropertyChanged where T : ICloneable<T>
+    public class ModelBase : INotifyPropertyChanged
+    {
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected void NotifyChanged()
+        {
+            foreach (PropertyInfo prop in this.GetType().GetProperties())
+            {
+                NotifyChanged(prop.Name);
+            }
+        }
+
+        protected void NotifyChanged(string s)
+        {
+            if (PropertyChanged != null) { PropertyChanged(this, new PropertyChangedEventArgs(s)); }
+        }
+    }
+
+    public class ModelBase<T> : ModelBase where T : ICloneable<T>
     {
         public event Action Modified;
-        public event PropertyChangedEventHandler PropertyChanged;
 
         public T OriginalObject { get; protected set; }
         public T ModifiedObject { get; protected set; }
@@ -32,20 +49,6 @@ namespace Client.Base
             NotifyChanged();
         }
 
-        protected void NotifyChanged()
-        {
-            foreach (PropertyInfo prop in this.GetType().GetProperties())
-            {
-                NotifyChanged(prop.Name);
-            }
-
-        }
-
-        protected void NotifyChanged(string s)
-        {
-            if (PropertyChanged != null) { PropertyChanged(this, new PropertyChangedEventArgs(s)); }
-        }
-
         public virtual bool IsDirty { get; protected set; }
 
         protected virtual void SetDirty()
@@ -54,6 +57,5 @@ namespace Client.Base
             NotifyChanged();
             if (Modified != null) { Modified(); }
         }
-
     }
 }

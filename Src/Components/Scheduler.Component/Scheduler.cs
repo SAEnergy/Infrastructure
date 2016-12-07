@@ -27,6 +27,8 @@ namespace Scheduler.Component
 
         private static object _syncObject = new object();
 
+        public event JobStateEventHandler StateUpdated;
+
         #endregion
 
         #region Properties
@@ -102,22 +104,26 @@ namespace Scheduler.Component
                     {
                         _logger.Log(string.Format("Scheduler component adding new job named \"{0}\".", job.Name));
                         _jobs.Add(newJob);
-                        newJob.StatisticsUpdated += JobStatisticsUpdated;
-                        newJob.JobCompleted += JobJobCompleted;
+                        newJob.StateUpdated += JobStateUpdated;
+                        newJob.JobCompleted += JobCompleted;
                         newJob.Start();
                     }
                 }
             }
         }
 
-        private void JobStatisticsUpdated(JobStatistics stats)
+        private void JobStateUpdated(JobState state)
         {
-            throw new NotImplementedException();
+            if (StateUpdated!=null) { StateUpdated(state); }
         }
 
-        private void JobJobCompleted(JobStatistics stats)
+        private void JobCompleted(JobState state)
         {
-            _dataComponent.Insert<JobStatistics>(stats);
+            if (state.Statistics != null)
+            {
+                _dataComponent.Insert<JobStatistics>(state.Statistics);
+            }
+            if (StateUpdated != null) { StateUpdated(state); }
         }
 
         public void DeleteJob(JobConfiguration job)

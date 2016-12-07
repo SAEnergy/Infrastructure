@@ -18,10 +18,7 @@ namespace Scheduler.Interfaces
         void JobDeleted(JobConfiguration job);
 
         [OperationContract(IsOneWay = true)]
-        void JobStateUpdated();
-
-        [OperationContract(IsOneWay = true)]
-        void JobStatisticsUpdated(JobStatistics stats);
+        void JobStateUpdated(JobState state);
     }
 
     [ServiceContract]
@@ -46,9 +43,11 @@ namespace Scheduler.Interfaces
 
     }
 
+    public delegate void JobStateEventHandler(JobState state);
+
     public interface ISchedulerComponent : ISchedulerBase, IRunnable, IComponent
     {
-
+        event JobStateEventHandler StateUpdated;
     }
 
 }

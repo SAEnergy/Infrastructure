@@ -19,7 +19,10 @@
         </StackPanel>
         <DataGrid Grid.Row ="1" ItemsSource="{Binding Path=Jobs}" IsReadOnly="true" SelectionMode="Extended" controls:MultiSelect.IsEnabled="true" AutoGenerateColumns="False" HeadersVisibility="Column">
             <DataGrid.Columns>
-                <DataGridTextColumn Binding="{Binding Path=Job.Name}" Header="Name"/>
+                <DataGridTextColumn Binding="{Binding Path=Job.Name}" Header="Name" Width="auto"/>
+                <DataGridTextColumn Binding="{Binding Path=Job.RunState}" Header="Startup" Width="auto"/>
+                <DataGridTextColumn Binding="{Binding Path=State.State}" Header="State" Width="auto"/>
+                <DataGridTextColumn Binding="{Binding Path=State.Statistics.TotalItems}" Header="Items" Width="auto"/>
             </DataGrid.Columns>
             <DataGrid.ItemContainerStyle>
                 <Style TargetType="DataGridRow">

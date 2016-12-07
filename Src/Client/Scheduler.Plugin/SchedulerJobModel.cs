@@ -8,15 +8,27 @@ using System.Threading.Tasks;
 
 namespace Scheduler.Plugin
 {
-    public class SchedulerJobModel
+    public class SchedulerJobModel : ModelBase
     {
 
         private SchedulerViewModel _parent;
         public SimpleCommand EditJobCommand { get; private set; }
         public SimpleCommand EditScheduleCommand { get; private set; }
         public SimpleCommand DeleteJobCommand { get; private set; }
-        public JobConfiguration Job { get; set; }
-        public JobStatistics Statistics { get; set; }
+
+        private JobConfiguration _job;
+        public JobConfiguration Job
+        {
+            get { return _job; }
+            set { _job = value; NotifyChanged("Job"); }
+        }
+
+        private JobState _state;
+        public JobState State
+        {
+            get { return _state; }
+            set { _state = value; NotifyChanged("State"); }
+        }
 
         public SchedulerJobModel(SchedulerViewModel parent)
         {
