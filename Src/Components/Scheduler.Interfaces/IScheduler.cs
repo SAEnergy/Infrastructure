@@ -31,6 +31,9 @@ namespace Scheduler.Interfaces
         List<JobConfiguration> GetJobs();
 
         [OperationContract]
+        List<JobState> GetStates();
+
+        [OperationContract]
         void AddJob(JobConfiguration job);
 
         [OperationContract]
@@ -38,12 +41,12 @@ namespace Scheduler.Interfaces
 
         [OperationContract]
         void UpdateJob(JobConfiguration job);
+
     }
 
     [ServiceContract(CallbackContract = typeof(ISchedulerCallback))]
     public interface ISchedulerHost : ISchedulerBase, IUserAuthentication
     {
-
     }
 
     public interface ISchedulerComponent : ISchedulerBase, IRunnable, IComponent

@@ -12,6 +12,10 @@ namespace Scheduler.Interfaces
 
         public JobStatus Status { get; set; }
 
+        public DateTime NextRunTime { get; set; }
+
+        public TimeSpan LastRunDuration { get; set;}
+
         public JobStatistics Statistics { get; set; }
     }
 }

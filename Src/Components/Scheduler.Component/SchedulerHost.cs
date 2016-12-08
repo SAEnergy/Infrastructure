@@ -58,5 +58,10 @@ namespace Scheduler.Component
                 this.Broadcast(j => j.JobUpdated(job));
             }
         }
+
+        public List<JobState> GetStates()
+        {
+            return _scheduler.GetStates();
+        }
     }
 }

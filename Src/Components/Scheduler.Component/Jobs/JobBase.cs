@@ -30,9 +30,11 @@ namespace Scheduler.Component.Jobs
         private Thread _schedulerThread;
         private Thread _taskThread;
         private CancellationTokenSource _taskCancelSource;
-        private CancellationTokenSource _scheduleCancelSource;
+        private ManualResetEvent _scheduleResetEvent;
         private bool _isRunning;
         private bool _runImmediately = false;
+        private TimeSpan _lastRunDuration;
+        private DateTime _nextRunTime;
 
         protected readonly ILogger _logger;
 
@@ -67,7 +69,7 @@ namespace Scheduler.Component.Jobs
                 _configuration = value;
                 // recalculate schedule
                 if (Status == JobStatus.Misconfigured) { Status = JobStatus.Unknown; }
-                if (_scheduleCancelSource != null) { _scheduleCancelSource.Cancel(); }
+                _scheduleResetEvent.Set();
             }
         }
 
@@ -85,6 +87,7 @@ namespace Scheduler.Component.Jobs
         protected JobBase(ILogger logger, ConfigType config)
         {
             _logger = logger;
+            _scheduleResetEvent = new ManualResetEvent(false);
             Configuration = config;
             Status = JobStatus.Unknown;
             _logger.Log(string.Format("Job name \"{0}\" created of type \"{1}\".", config.Name, GetType()));
@@ -109,22 +112,15 @@ namespace Scheduler.Component.Jobs
         public void Stop()
         {
             _isRunning = false;
-            if (_schedulerThread != null && _scheduleCancelSource != null)
+            if (_schedulerThread != null)
             {
-                _scheduleCancelSource.Cancel();
+                _scheduleResetEvent.Set();
                 while (_schedulerThread != null)
                 {
                     Thread.Sleep(_cancelWaitCycle);
                 }
             }
-            if (_taskThread != null && _taskCancelSource != null)
-            {
-                _taskCancelSource.Cancel();
-                while (_taskThread != null)
-                {
-                    Thread.Sleep(_cancelWaitCycle);
-                }
-            }
+            TryCancel();
         }
 
         private void SchedulerThread()
@@ -132,7 +128,7 @@ namespace Scheduler.Component.Jobs
 
             while (_isRunning)
             {
-                _scheduleCancelSource = new CancellationTokenSource();
+                _scheduleResetEvent.Reset();
 
                 Thread.Sleep(1000);
 
@@ -157,43 +153,45 @@ namespace Scheduler.Component.Jobs
                         _logger.Log(string.Format("Job by the name of \"{0}\" has a trigger type of \"{1}\" that is misconfigured.  This job will not run!", Configuration.Name, Configuration.Schedule.TriggerType), LogMessageSeverity.Critical);
                         continue;
                     }
+                    _nextRunTime = startTime;
 
                     _logger.Log(string.Format(string.Format("Job \"{0}\" scheduled to start \"{1}\"", Configuration.Name, startTime.ToLocalTime())));
 
-                    var doneYet = new ManualResetEvent(false);
+                    Status = (_taskThread == null) ? JobStatus.Idle : JobStatus.Running;
 
                     //must wait in a cycle so we can check to make sure we are not being canceled
-                    while (DateTime.UtcNow.ToLocalTime() < startTime.ToLocalTime() && !_scheduleCancelSource.IsCancellationRequested)
+                    while (DateTime.UtcNow.ToLocalTime() < startTime.ToLocalTime())
                     {
-                        Thread.Sleep(_cancelWaitCycle);
+                        if (_scheduleResetEvent.WaitOne(_cancelWaitCycle))
+                        {
+                            break;
+                        }
                     }
 
-                    if (_scheduleCancelSource.IsCancellationRequested)
+                    if (_scheduleResetEvent.WaitOne(0))
                     {
                         _logger.Log(string.Format("The scheduled job, \"{0}\", has been canceled prior to execution.", Configuration.Name), LogMessageSeverity.Warning);
                         continue;
                     }
-                    else
+
+                    if (_taskThread != null)
                     {
-                        if (_taskThread != null)
+                        if (Configuration.RunImmediatelyIfRunTimeMissed)
                         {
-                            if (Configuration.RunImmediatelyIfRunTimeMissed)
-                            {
-                                _logger.Log(string.Format("Job \"{0}\" missed scheduled execution window, will run immediately after task completion.", Configuration.Name), LogMessageSeverity.Warning);
-                                _runImmediately = true;
-                            }
-                            else
-                            {
-                                _logger.Log(string.Format("Job \"{0}\" missed scheduled execution window.", Configuration.Name), LogMessageSeverity.Warning);
-                            }
-                            continue;
+                            _logger.Log(string.Format("Job \"{0}\" missed scheduled execution window, will run immediately after task completion.", Configuration.Name), LogMessageSeverity.Warning);
+                            _runImmediately = true;
                         }
-
-                        _logger.Log(string.Format(string.Format("Job \"{0}\" starting at \"{1}\"", Configuration.Name, DateTime.UtcNow.ToLocalTime())));
-
-                        _taskThread = new Thread(TaskThread);
-                        _taskThread.Start();
+                        else
+                        {
+                            _logger.Log(string.Format("Job \"{0}\" missed scheduled execution window.", Configuration.Name), LogMessageSeverity.Warning);
+                        }
+                        continue;
                     }
+
+                    _logger.Log(string.Format(string.Format("Job \"{0}\" starting at \"{1}\"", Configuration.Name, DateTime.UtcNow.ToLocalTime())));
+
+                    _taskThread = new Thread(TaskThread);
+                    _taskThread.Start();
                 }
             }
             _schedulerThread = null;
@@ -285,6 +283,7 @@ namespace Scheduler.Component.Jobs
 
             Statistics.CompletedSuccessfully = rc;
             Statistics.Duration = watch.Elapsed;
+            _lastRunDuration = watch.Elapsed;
 
             if (JobCompleted != null) JobCompleted(Statistics);
 
@@ -564,15 +563,25 @@ namespace Scheduler.Component.Jobs
             return jobDay;
         }
 
-        public void FireStatusUpdate()
+        public JobState State
         {
-            if (StateUpdated != null)
+            get
             {
                 JobState state = new JobState();
                 state.JobId = Configuration.JobConfigurationId;
                 state.Status = Status;
+                state.LastRunDuration = _lastRunDuration;
+                state.NextRunTime = _nextRunTime.ToLocalTime();
                 state.Statistics = Statistics;
-                StateUpdated(state);
+                return state;
+            }
+        }
+
+        public void FireStatusUpdate()
+        {
+            if (StateUpdated != null)
+            {
+                StateUpdated(State);
             }
         }
 

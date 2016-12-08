@@ -20,16 +20,22 @@
         <DataGrid Grid.Row ="1" ItemsSource="{Binding Path=Jobs}" IsReadOnly="true" SelectionMode="Extended" controls:MultiSelect.IsEnabled="true" AutoGenerateColumns="False" HeadersVisibility="Column">
             <DataGrid.Columns>
                 <DataGridTextColumn Binding="{Binding Path=Job.Name}" Header="Name" Width="auto"/>
+                <DataGridTextColumn Binding="{Binding Path=Job.Site}" Header="Site" Width="auto"/>
+                <DataGridTextColumn Binding="{Binding Path=Type}" Header="Name" Width="auto"/>
                 <DataGridTextColumn Binding="{Binding Path=Job.RunState}" Header="Startup" Width="auto"/>
                 <DataGridTextColumn Binding="{Binding Path=State.Status}" Header="State" Width="auto"/>
-                <DataGridTemplateColumn  Header="Status" Width="auto">
+                <DataGridTextColumn Binding="{Binding Path=State.NextRunTime}" Header="Next Run" Width="auto"/>
+                <DataGridTextColumn Binding="{Binding Path=State.LastRunDuration,StringFormat=\{0:h\\:mm\\:ss\}}" Header="Last Run" Width="auto"/>
+                <DataGridTextColumn Binding="{Binding Path=State.Statistics.Completed}" Header="Processed" Width="auto"/>
+                <DataGridTextColumn Binding="{Binding Path=State.Statistics.Saved}" Header="Saved" Width="auto"/>
+                <DataGridTextColumn Binding="{Binding Path=State.Statistics.TotalItems}" Header="Items" Width="auto"/>
+                <!--<DataGridTemplateColumn  Header="Status" Width="auto">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding Path=State.Statistics.Completed}"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-                <DataGridTextColumn Binding="{Binding Path=State.Statistics.TotalItems}" Header="Items" Width="auto"/>
+                </DataGridTemplateColumn>-->
             </DataGrid.Columns>
             <DataGrid.ItemContainerStyle>
                 <Style TargetType="DataGridRow">

@@ -16,11 +16,13 @@ namespace Scheduler.Plugin
         public SimpleCommand EditScheduleCommand { get; private set; }
         public SimpleCommand DeleteJobCommand { get; private set; }
 
+        public string Type {  get { return Job.GetType().Name; } }
+
         private JobConfiguration _job;
         public JobConfiguration Job
         {
             get { return _job; }
-            set { _job = value; NotifyChanged("Job"); }
+            set { _job = value; NotifyChanged("Job"); NotifyChanged("Type"); }
         }
 
         private JobState _state;

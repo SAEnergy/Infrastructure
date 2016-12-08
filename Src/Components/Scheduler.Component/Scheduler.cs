@@ -207,9 +207,12 @@ namespace Scheduler.Component
             }
         }
 
-        public void Ping()
+        public List<JobState> GetStates()
         {
-            throw new NotImplementedException();
+            lock(_jobs)
+            {
+                return _jobs.Select(j => j.State).ToList();
+            }
         }
 
         #endregion

@@ -15,6 +15,8 @@ namespace Scheduler.Interfaces
     {
         JobStatus Status { get; }
 
+        JobState State { get; }
+
         JobConfiguration Configuration { get; set; }
 
         event JobStateEventHandler StateUpdated;
