@@ -9,7 +9,7 @@ namespace Test.Plugins.Mocks
 {
     public class UnitTestJobConfiugration : RunProgramJobConfiguration
     {
-
+        
     }
 
     public class UnitTestJob : JobBase<UnitTestJobConfiugration>
@@ -30,7 +30,7 @@ namespace Test.Plugins.Mocks
             Instances.Add(this);
         }
 
-        public override bool Execute(JobRunInfo<JobStatistics> info)
+        public override bool Execute()
         {
             if(JobExecuting != null)
             {

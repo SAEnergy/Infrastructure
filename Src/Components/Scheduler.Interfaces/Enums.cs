@@ -12,8 +12,7 @@ namespace Scheduler.Interfaces
         Misconfigured,
         Paused,
         Running,
-        Success,
-        Error,
+        Idle,
         Cancelling,
         Cancelled
     }

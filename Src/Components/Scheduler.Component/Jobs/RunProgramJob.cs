@@ -4,6 +4,7 @@ using Scheduler.Interfaces;
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Reflection;
 using System.Threading;
 
 namespace Scheduler.Component.Jobs
@@ -27,7 +28,7 @@ namespace Scheduler.Component.Jobs
 
         #region Public Methods
 
-        public override bool Execute(JobRunInfo<JobStatistics> info)
+        public override bool Execute()
         {
             bool rc = false;
 
@@ -40,7 +41,7 @@ namespace Scheduler.Component.Jobs
 
                 while (!proc.WaitForExit((int)_processWaitTimer.TotalMilliseconds))
                 {
-                    if (info.CancellationToken.IsCancellationRequested)
+                    if (TaskCancellationToken.IsCancellationRequested)
                     {
                         //if we are not going to kill the proc, then leave it to do it's thing
                         if (Configuration.KillProcOnCancel)
@@ -52,7 +53,7 @@ namespace Scheduler.Component.Jobs
 
                         StopCapturingOutput(proc);
 
-                        info.CancellationToken.ThrowIfCancellationRequested();
+                        TaskCancellationToken.ThrowIfCancellationRequested();
                     }
                 }
 
@@ -77,10 +78,18 @@ namespace Scheduler.Component.Jobs
         private Process CreateProcess()
         {
             Process proc = null;
+            string path = null; 
 
-            string path = Path.GetFullPath(Environment.ExpandEnvironmentVariables(Configuration.WorkingDirectory));
+            if (!string.IsNullOrWhiteSpace(Configuration.WorkingDirectory))
+            {
+                path = Path.GetFullPath(Environment.ExpandEnvironmentVariables(Configuration.WorkingDirectory));
+            }
+            else
+            {
+                path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            }
 
-            string fileName = string.Format("{0}\\{1}", path, Configuration.FileName);
+            string fileName = Path.Combine(path, Configuration.FileName);
 
             if (File.Exists(fileName))
             {

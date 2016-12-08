@@ -1,6 +1,8 @@
-﻿using System;
+﻿using Core.Models;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,7 +21,14 @@ namespace Scheduler.Interfaces
 
         public DateTime StartTime { get; set; }
 
-        public TimeSpan Duration { get; set; }
+        [PropertyEditorMetadata(Hidden = true)]
+        public long DurationTicks { get; set; }
+        [NotMapped]
+        public TimeSpan Duration
+        {
+            get { return TimeSpan.FromTicks(DurationTicks); }
+            set { DurationTicks = value.Ticks; }
+        }
 
         public bool CompletedSuccessfully { get; set; }
 

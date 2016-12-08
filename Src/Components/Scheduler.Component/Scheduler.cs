@@ -131,7 +131,7 @@ namespace Scheduler.Component
             {
                 var found = _jobs.FirstOrDefault(j => j.Configuration.JobConfigurationId == job.JobConfigurationId);
                 if (found == null) throw new InvalidOperationException("JobID " + job.JobConfigurationId + " not found.");
-                if (found.State.Status == JobStatus.Running) { throw new InvalidOperationException("Cannot delete running job."); }
+                if (found.Status == JobStatus.Running) { throw new InvalidOperationException("Cannot delete running job."); }
                 _jobs.Remove(found);
             }
         }
@@ -158,14 +158,14 @@ namespace Scheduler.Component
                 {
                     if (_jobs.Count > 0)
                     {
-                        _logger.Log("Scheduler component attempting to cancel jobs.");
+                        _logger.Log("Scheduler component attempting to stop all jobs.");
 
                         foreach (var job in _jobs)
                         {
-                            job.TryCancel();
+                            job.Stop();
                         }
 
-                        _logger.Log("Scheduler component has canceled all jobs.");
+                        _logger.Log("Scheduler component has stopped all jobs.");
                     }
                 }
             }

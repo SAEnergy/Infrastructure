@@ -1,33 +1,33 @@
-﻿using Scheduler.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
+﻿//using Scheduler.Interfaces;
+//using System;
+//using System.Collections.Generic;
+//using System.Linq;
+//using System.Text;
+//using System.Threading;
+//using System.Threading.Tasks;
 
-namespace Scheduler.Component.Jobs
-{
-    public class JobRunInfo<T> where T : JobStatistics, new()
-    {
-        public Task<bool> Task { get; set; }
+//namespace Scheduler.Component.Jobs
+//{
+//    public class JobRunInfo<T> where T : JobStatistics, new()
+//    {
+//        public Task<bool> Task { get; set; }
 
-        public bool IsRunning { get; set; }
+//        public bool IsRunning { get; set; }
 
-        public T Statistics { get; private set; }
+//        public T Statistics { get; private set; }
 
-        public CancellationToken CancellationToken { get; set; }
+//        public CancellationToken CancellationToken { get; set; }
 
-        public event JobStatisticsEventHandler StatisticsUpdated;
+//        public event JobStatisticsEventHandler StatisticsUpdated;
 
-        public JobRunInfo()
-        {
-            Statistics = new T();
-        }
+//        public JobRunInfo()
+//        {
+//            Statistics = new T();
+//        }
 
-        public void FireStatisticsUpdated()
-        {
-            if (StatisticsUpdated != null) { StatisticsUpdated(Statistics); }
-        }
-    }
-}
+//        public void FireStatisticsUpdated()
+//        {
+//            if (StatisticsUpdated != null) { StatisticsUpdated(Statistics); }
+//        }
+//    }
+//}

@@ -13,11 +13,12 @@ namespace Scheduler.Interfaces
 
     public interface IJob
     {
-        JobState State { get; }
+        JobStatus Status { get; }
 
         JobConfiguration Configuration { get; set; }
 
         event JobStateEventHandler StateUpdated;
+
         event JobStatisticsEventHandler JobCompleted;
 
         void ForceRun();
@@ -25,6 +26,8 @@ namespace Scheduler.Interfaces
         void TryCancel();
 
         void Start();
+
+        void Stop();
 
         //void TryPause();
 

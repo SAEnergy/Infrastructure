@@ -21,7 +21,14 @@
             <DataGrid.Columns>
                 <DataGridTextColumn Binding="{Binding Path=Job.Name}" Header="Name" Width="auto"/>
                 <DataGridTextColumn Binding="{Binding Path=Job.RunState}" Header="Startup" Width="auto"/>
-                <DataGridTextColumn Binding="{Binding Path=State.State}" Header="State" Width="auto"/>
+                <DataGridTextColumn Binding="{Binding Path=State.Status}" Header="State" Width="auto"/>
+                <DataGridTemplateColumn  Header="Status" Width="auto">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Path=State.Statistics.Completed}"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
                 <DataGridTextColumn Binding="{Binding Path=State.Statistics.TotalItems}" Header="Items" Width="auto"/>
             </DataGrid.Columns>
             <DataGrid.ItemContainerStyle>
