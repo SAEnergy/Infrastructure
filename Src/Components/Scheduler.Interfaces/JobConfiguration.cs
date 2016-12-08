@@ -17,8 +17,6 @@ namespace Scheduler.Interfaces
 
         public bool RunImmediatelyIfRunTimeMissed { get; set; }
 
-        public bool AllowSimultaneousExecutions { get; set; }
-
         [PropertyEditorMetadata(Hidden = true)]
         public long TimeoutTicks { get; set; }
         [NotMapped]
