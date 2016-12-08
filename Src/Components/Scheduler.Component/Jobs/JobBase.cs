@@ -117,10 +117,11 @@ namespace Scheduler.Component.Jobs
                 _scheduleResetEvent.Set();
                 while (_schedulerThread != null)
                 {
-                    Thread.Sleep(_cancelWaitCycle);
+                    Thread.Sleep(10);
                 }
             }
             TryCancel();
+            _logger.Log(string.Format("Job name \"{0}\" has been stopped.", Configuration.Name));
         }
 
         private void SchedulerThread()

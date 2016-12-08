@@ -28,7 +28,7 @@ namespace Scheduler.Plugin
         {
             _jobs = new ObservableCollection<SchedulerJobModel>();
             Jobs = new MultiSelectCollectionView<SchedulerJobModel>(_jobs);
-            Jobs.SortDescriptions.Add(new SortDescription("Name", ListSortDirection.Ascending));
+            Jobs.SortDescriptions.Add(new SortDescription("Job.Name", ListSortDirection.Ascending));
             AddJobCommand = new SimpleCommand(OnAddJobCommand);
         }
 
