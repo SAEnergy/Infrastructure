@@ -20,7 +20,7 @@ namespace Scheduler.Interfaces
         [OperationContract(IsOneWay = true)]
         void JobDeleted(JobConfiguration job);
 
-        [OperationContract(IsOneWay = true)]
+        [OperationContract]
         void JobStateUpdated(JobState state);
     }
 

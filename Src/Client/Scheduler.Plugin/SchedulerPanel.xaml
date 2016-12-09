@@ -26,9 +26,11 @@
                 <DataGridTextColumn Binding="{Binding Path=State.Status}" Header="State" Width="auto"/>
                 <DataGridTextColumn Binding="{Binding Path=State.NextRunTime}" Header="Next Run" Width="auto"/>
                 <DataGridTextColumn Binding="{Binding Path=State.LastRunDuration,StringFormat=\{0:h\\:mm\\:ss\}}" Header="Last Run" Width="auto"/>
-                <DataGridTextColumn Binding="{Binding Path=State.Statistics.Completed}" Header="Processed" Width="auto"/>
-                <DataGridTextColumn Binding="{Binding Path=State.Statistics.Saved}" Header="Saved" Width="auto"/>
                 <DataGridTextColumn Binding="{Binding Path=State.Statistics.TotalItems}" Header="Items" Width="auto"/>
+                <DataGridTextColumn Binding="{Binding Path=State.Statistics.Completed}" Header="Completed" Width="auto"/>
+                <DataGridTextColumn Binding="{Binding Path=State.Statistics.Saved}" Header="Saved" Width="auto"/>
+                <DataGridTextColumn Binding="{Binding Path=State.Statistics.Skipped}" Header="Skipped" Width="auto"/>
+                <DataGridTextColumn Binding="{Binding Path=State.Statistics.Errors}" Header="Errors" Width="auto"/>
                 <!--<DataGridTemplateColumn  Header="Status" Width="auto">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>

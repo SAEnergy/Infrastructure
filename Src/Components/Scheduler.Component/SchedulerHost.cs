@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Scheduler.Component
@@ -14,17 +15,57 @@ namespace Scheduler.Component
     {
         private ISchedulerComponent _scheduler;
         private IDataComponent _data;
+        private Thread _stateThread;
+        private bool _shouldRun = true;
+        private Dictionary<int, JobState> _stateQueue = new Dictionary<int, JobState>();
 
         public SchedulerHost()
         {
             _scheduler = IoCContainer.Instance.Resolve<ISchedulerComponent>();
             _scheduler.StateUpdated += SchedulerStateUpdated;
             _data = IoCContainer.Instance.Resolve<IDataComponent>();
+            _stateThread = new Thread(StateThread);
+            _stateThread.Start();
+        }
+
+        private void StateThread()
+        {
+            while (_shouldRun)
+            {
+                List<JobState> toSend = new List<JobState>();
+                lock (_stateQueue)
+                {
+                    foreach (int id in _stateQueue.Keys.ToArray())
+                    {
+                        toSend.Add(_stateQueue[id]);
+                        _stateQueue.Remove(id);
+                    }
+                }
+                foreach (var item in toSend)
+                {
+                    Send(s => s.JobStateUpdated(item));
+                }
+            }
+        }
+
+        public override void Dispose()
+        {
+            _shouldRun = false;
         }
 
         private void SchedulerStateUpdated(JobState state)
         {
-            this.Broadcast(s => s.JobStateUpdated(state));
+            lock (_stateQueue)
+            {
+                if (_stateQueue.ContainsKey(state.JobId))
+                {
+                    _stateQueue[state.JobId] = state;
+                }
+                else
+                {
+                    _stateQueue.Add(state.JobId, state);
+                }
+            }
         }
 
         public void AddJob(JobConfiguration job)
@@ -71,7 +112,7 @@ namespace Scheduler.Component
 
         public void CancelJob(JobConfiguration job)
         {
-            _scheduler.CancelJob(job);
+            Task.Run(() => _scheduler.CancelJob(job));
         }
     }
 }
