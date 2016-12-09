@@ -87,6 +87,24 @@ namespace Scheduler.Plugin
             }
         }
 
+        public void RunSelectedJobs()
+        {
+            foreach (var iter in Jobs.SelectedItems)
+            {
+                var job = iter.Job;
+                Execute(() => Channel.RunJob(job));
+            }
+        }
+
+        public void CancelSelectedJobs()
+        {
+            foreach (var iter in Jobs.SelectedItems)
+            {
+                var job = iter.Job;
+                Execute(() => Channel.CancelJob(job));
+            }
+        }
+
         protected override void OnConnect(ISubscription source)
         {
             base.OnConnect(source);

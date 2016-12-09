@@ -215,6 +215,22 @@ namespace Scheduler.Component
             }
         }
 
+        public void RunJob(JobConfiguration job)
+        {
+            lock (_jobs)
+            {
+                _jobs.First(j => j.Configuration.JobConfigurationId == job.JobConfigurationId).ForceRun();
+            }
+        }
+
+        public void CancelJob(JobConfiguration job)
+        {
+            lock (_jobs)
+            {
+                _jobs.First(j => j.Configuration.JobConfigurationId == job.JobConfigurationId).TryCancel();
+            }
+        }
+
         #endregion
     }
 }

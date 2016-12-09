@@ -63,5 +63,15 @@ namespace Scheduler.Component
         {
             return _scheduler.GetStates();
         }
+
+        public void RunJob(JobConfiguration job)
+        {
+            _scheduler.RunJob(job);
+        }
+
+        public void CancelJob(JobConfiguration job)
+        {
+            _scheduler.CancelJob(job);
+        }
     }
 }

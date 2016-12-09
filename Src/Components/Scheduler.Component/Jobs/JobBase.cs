@@ -254,53 +254,58 @@ namespace Scheduler.Component.Jobs
 
         private void TaskThread()
         {
-            _taskCancelSource = new CancellationTokenSource();
-            TaskCancellationToken = _taskCancelSource.Token;
-
-            var watch = Stopwatch.StartNew();
-
-            bool rc = false;
-
             try
             {
-                Statistics = new StatisticType();
-                Statistics.JobID = Configuration.JobConfigurationId;
-                Statistics.StartTime = DateTime.Now;
+                _taskCancelSource = new CancellationTokenSource();
+                TaskCancellationToken = _taskCancelSource.Token;
 
-                Status = JobStatus.Running;
+                var watch = Stopwatch.StartNew();
 
-                rc = Execute();
+                bool rc = false;
+
+                try
+                {
+                    Statistics = new StatisticType();
+                    Statistics.JobID = Configuration.JobConfigurationId;
+                    Statistics.StartTime = DateTime.Now;
+
+                    Status = JobStatus.Running;
+
+                    rc = Execute();
+                }
+                catch (OperationCanceledException)
+                {
+                    _logger.Log(string.Format("Job \"{0}\" canceled.", Configuration.Name), LogMessageSeverity.Warning);
+                }
+                catch (Exception ex)
+                {
+                    _logger.Log(string.Format("Job \"{0}\" failed! Error - {1}.", Configuration.Name, ex.Message), LogMessageSeverity.Error);
+                }
+
+                watch.Stop();
+
+                Statistics.CompletedSuccessfully = rc;
+                Statistics.Duration = watch.Elapsed;
+                _lastRunDuration = watch.Elapsed;
+
+                if (JobCompleted != null) JobCompleted(Statistics);
+
+                string message = rc ? "completed successfully" : "failed to complete successfully";
+
+                _logger.Log(string.Format("Job \"{0}\" {1}, run time = {2:hh\\:mm\\:ss}", Configuration.Name, message, watch.Elapsed), rc ? LogMessageSeverity.Information : LogMessageSeverity.Error);
+
+                Status = JobStatus.Idle;
+
+                if (_runImmediately)
+                {
+                    _runImmediately = false;
+                    TaskThread();
+                }
             }
-            catch (OperationCanceledException)
+            finally
             {
-                _logger.Log(string.Format("Job \"{0}\" canceled.", Configuration.Name), LogMessageSeverity.Warning);
+                _taskThread = null;
             }
-            catch (Exception ex)
-            {
-                _logger.Log(string.Format("Job \"{0}\" failed! Error - {1}.", Configuration.Name, ex.Message), LogMessageSeverity.Error);
-            }
-
-            watch.Stop();
-
-            Statistics.CompletedSuccessfully = rc;
-            Statistics.Duration = watch.Elapsed;
-            _lastRunDuration = watch.Elapsed;
-
-            if (JobCompleted != null) JobCompleted(Statistics);
-
-            string message = rc ? "completed successfully" : "failed to complete successfully";
-
-            _logger.Log(string.Format("Job \"{0}\" {1}, run time = {2:hh\\:mm\\:ss}", Configuration.Name, message, watch.Elapsed), rc ? LogMessageSeverity.Information : LogMessageSeverity.Error);
-
-            Status = JobStatus.Idle;
-
-            if (_runImmediately)
-            {
-                _runImmediately = false;
-                TaskThread();
-            }
-
-            _taskThread = null;
         }
 
         private DateTime CalculateNextStartTime()

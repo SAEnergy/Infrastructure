@@ -42,6 +42,11 @@ namespace Scheduler.Interfaces
         [OperationContract]
         void UpdateJob(JobConfiguration job);
 
+        [OperationContract]
+        void RunJob(JobConfiguration job);
+
+        [OperationContract]
+        void CancelJob(JobConfiguration job);
     }
 
     [ServiceContract(CallbackContract = typeof(ISchedulerCallback))]
