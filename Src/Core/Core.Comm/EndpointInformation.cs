@@ -15,15 +15,17 @@ namespace Core.Comm
 
         public static EndpointAddress BuildEndpoint(EndpointInformation info, ServerConnectionInformation server, Type serviceContractType)
         {
+            string connstr = null;
             if (server.ConnectionString.Contains(":"))
             {
-                return new EndpointAddress("net.tcp://" + server.ConnectionString + "/" + serviceContractType.Name + "/");
 
+                connstr = "net.tcp://" + server.ConnectionString + "/" + serviceContractType.Name + "/";
             }
             else
             {
-                return new EndpointAddress("net.tcp://" + server.ConnectionString + ":" + DefaultPort + "/" + serviceContractType.Name + "/");
+                connstr = "net.tcp://" + server.ConnectionString + ":" + DefaultPort + "/" + serviceContractType.Name + "/";
             }
+            return new EndpointAddress(new Uri(connstr), EndpointIdentity.CreateSpnIdentity(""));
         }
 
     }
