@@ -8,6 +8,7 @@ using Core.Interfaces.Components.Logging;
 using System.Diagnostics;
 using System.Globalization;
 using Scheduler.Interfaces;
+using Core.IoC.Container;
 
 namespace Scheduler.Component.Jobs
 {
@@ -126,6 +127,13 @@ namespace Scheduler.Component.Jobs
 
         private void SchedulerThread()
         {
+            try
+            {
+                ISchedulerComponent sched = IoCContainer.Instance.Resolve<ISchedulerComponent>();
+                Statistics = (StatisticType) sched.GetLatestStatistics(Configuration);
+                _lastRunDuration = Statistics.Duration;
+            }
+            catch { }
 
             while (_isRunning)
             {

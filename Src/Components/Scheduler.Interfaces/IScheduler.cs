@@ -57,6 +57,8 @@ namespace Scheduler.Interfaces
     public interface ISchedulerComponent : ISchedulerBase, IRunnable, IComponent
     {
         event JobStateEventHandler StateUpdated;
+
+        JobStatistics GetLatestStatistics(JobConfiguration job);
     }
 
 }

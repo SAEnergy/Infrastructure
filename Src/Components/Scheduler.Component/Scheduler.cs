@@ -114,7 +114,7 @@ namespace Scheduler.Component
 
         private void JobStateUpdated(JobState state)
         {
-            if (StateUpdated!=null) { StateUpdated(state); }
+            if (StateUpdated != null) { StateUpdated(state); }
         }
 
         private void JobCompleted(JobStatistics stats)
@@ -209,7 +209,7 @@ namespace Scheduler.Component
 
         public List<JobState> GetStates()
         {
-            lock(_jobs)
+            lock (_jobs)
             {
                 return _jobs.Select(j => j.State).ToList();
             }
@@ -231,6 +231,11 @@ namespace Scheduler.Component
                 toCancel = _jobs.First(j => j.Configuration.JobConfigurationId == job.JobConfigurationId);
             }
             toCancel.TryCancel();
+        }
+
+        public JobStatistics GetLatestStatistics(JobConfiguration job)
+        {
+            return _dataComponent.Find<JobStatistics>(s => s.JobID == job.JobConfigurationId).OrderByDescending(j => j.StartTime).FirstOrDefault();
         }
 
         #endregion
