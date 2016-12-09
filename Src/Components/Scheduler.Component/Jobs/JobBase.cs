@@ -135,6 +135,8 @@ namespace Scheduler.Component.Jobs
 
                 if (Status == JobStatus.Misconfigured) { continue; }
 
+                Status = (_taskThread == null) ? JobStatus.Idle : JobStatus.Running;
+
                 if (Configuration.RunState == JobRunState.Automatic)
                 {
                     DateTime startTime = DateTime.MaxValue;
@@ -157,8 +159,6 @@ namespace Scheduler.Component.Jobs
                     _nextRunTime = startTime;
 
                     _logger.Log(string.Format(string.Format("Job \"{0}\" scheduled to start \"{1}\"", Configuration.Name, startTime.ToLocalTime())));
-
-                    Status = (_taskThread == null) ? JobStatus.Idle : JobStatus.Running;
 
                     //must wait in a cycle so we can check to make sure we are not being canceled
                     while (DateTime.UtcNow.ToLocalTime() < startTime.ToLocalTime())

@@ -17,8 +17,16 @@ namespace Scheduler.Plugin
         public SimpleCommand DeleteJobCommand { get; private set; }
         public SimpleCommand RunJobCommand { get; private set; }
         public SimpleCommand CancelJobCommand { get; private set; }
+        public SimpleCommand AddJobCommand { get; private set; }
 
-        public string Type {  get { return Job.GetType().Name; } }
+        public string Type
+        {
+            get
+            {
+                string jobType = Job.GetType().Name;
+                return jobType.Replace("JobConfiguration", "");
+            }
+        }
 
         private JobConfiguration _job;
         public JobConfiguration Job
@@ -42,6 +50,12 @@ namespace Scheduler.Plugin
             DeleteJobCommand = new SimpleCommand(OnDeleteJobCommand);
             RunJobCommand = new SimpleCommand(OnRunJobCommand);
             CancelJobCommand = new SimpleCommand(OnCancelJobCommand);
+            AddJobCommand = new SimpleCommand(OnAddJobCommand);
+        }
+
+        private void OnAddJobCommand()
+        {
+            _parent.AddJobCommand.Execute(null);
         }
 
         private void OnCancelJobCommand()

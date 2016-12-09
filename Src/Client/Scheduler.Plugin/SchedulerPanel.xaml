@@ -14,9 +14,6 @@
             <RowDefinition Height="auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <StackPanel Orientation="Horizontal">
-            <Button Command="{Binding Path=AddJobCommand}">New Job</Button>
-        </StackPanel>
         <DataGrid Grid.Row ="1" ItemsSource="{Binding Path=Jobs}" IsReadOnly="true" SelectionMode="Extended" controls:MultiSelect.IsEnabled="true" AutoGenerateColumns="False" HeadersVisibility="Column">
             <DataGrid.Columns>
                 <DataGridTextColumn Binding="{Binding Path=Job.Name}" Header="Name" Width="auto"/>
@@ -50,12 +47,40 @@
                                 <MenuItem Command="{Binding EditJobCommand}" Header="Edit Selected Jobs"/>
                                 <MenuItem Command="{Binding EditScheduleCommand}" Header="Edit Selected Schedules"/>
                                 <Separator/>
+                                <MenuItem Command="{Binding AddJobCommand}" Header="New Job"/>
+                                <Separator/>
                                 <MenuItem Command="{Binding DeleteJobCommand}" Header="Delete Selected Jobs"/>
                             </ContextMenu>
                         </Setter.Value>
                     </Setter>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding State.Status}" Value="Idle">
+                            <Setter Property="Background" Value="#FFFFCC"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Job.RunState}" Value="Disabled">
+                            <Setter Property="Background" Value="#CCCCCC"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding State.Status}" Value="Running">
+                            <Setter Property="Background" Value="#CCFFCC"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding State.Status}" Value="Misconfigured">
+                            <Setter Property="Background" Value="#FFD8CC"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding State.Status}" Value="Cancelling">
+                            <Setter Property="Background" Value="#FF8888"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding State.Status}" Value="Cancelled">
+                            <Setter Property="Background" Value="#FF8888"/>
+                        </DataTrigger>
+
+                    </Style.Triggers>
                 </Style>
             </DataGrid.ItemContainerStyle>
+            <DataGrid.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="New Job" Command="{Binding AddJobCommand}"/>
+                </ContextMenu>
+            </DataGrid.ContextMenu>
         </DataGrid>
     </Grid>
 </base:PanelBase>

@@ -10,12 +10,15 @@
     d:DesignHeight="300" d:DesignWidth="300"
     >
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="auto"/>
-        </Grid.RowDefinitions>
-        <local:PropertyGrid/>
-        <Button Grid.Row="1" HorizontalAlignment="Left" IsCancel="True" Click="ClickCancel">Cancel</Button>
-        <Button Grid.Row="1" HorizontalAlignment="Right" Click="ClickSave">Save</Button>
+        <Border BorderThickness="1" Background="White" Opacity="0.75" Margin="1" Grid.RowSpan="99"/>
+        <Grid Margin="5">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+            <local:PropertyGrid Margin="5"/>
+            <Button Margin="5" Padding="5" Grid.Row="1" HorizontalAlignment="Left" IsCancel="True" Click="ClickCancel">Cancel</Button>
+            <Button Margin="5" Padding="5" Grid.Row="1" HorizontalAlignment="Right" Click="ClickSave">Save</Button>
+        </Grid>
     </Grid>
 </base:DialogBase>
