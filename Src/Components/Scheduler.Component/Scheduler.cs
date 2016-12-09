@@ -225,10 +225,12 @@ namespace Scheduler.Component
 
         public void CancelJob(JobConfiguration job)
         {
+            IJob toCancel = null;
             lock (_jobs)
             {
-                _jobs.First(j => j.Configuration.JobConfigurationId == job.JobConfigurationId).TryCancel();
+                toCancel = _jobs.First(j => j.Configuration.JobConfigurationId == job.JobConfigurationId);
             }
+            toCancel.TryCancel();
         }
 
         #endregion

@@ -26,7 +26,7 @@ namespace Scheduler.Component.Jobs
     {
         #region Fields
 
-        private TimeSpan _cancelWaitCycle = TimeSpan.FromMilliseconds(1000);
+        private TimeSpan _cancelPrintWaitCycle = TimeSpan.FromMilliseconds(5000);
         private Thread _schedulerThread;
         private Thread _taskThread;
         private CancellationTokenSource _taskCancelSource;
@@ -131,7 +131,7 @@ namespace Scheduler.Component.Jobs
             {
                 _scheduleResetEvent.Reset();
 
-                Thread.Sleep(1000);
+                _scheduleResetEvent.WaitOne(1000);
 
                 if (Status == JobStatus.Misconfigured) { continue; }
 
@@ -163,7 +163,7 @@ namespace Scheduler.Component.Jobs
                     //must wait in a cycle so we can check to make sure we are not being canceled
                     while (DateTime.UtcNow.ToLocalTime() < startTime.ToLocalTime())
                     {
-                        if (_scheduleResetEvent.WaitOne(_cancelWaitCycle))
+                        if (_scheduleResetEvent.WaitOne(1000))
                         {
                             break;
                         }
@@ -217,10 +217,17 @@ namespace Scheduler.Component.Jobs
                 _logger.Log(string.Format("Job name \"{0}\" canceling currently executing task.  ", Configuration.Name), LogMessageSeverity.Warning);
                 _taskCancelSource.Cancel();
 
+                TimeSpan totalWait = TimeSpan.Zero;
+                TimeSpan incrementWait = TimeSpan.FromMilliseconds(10);
                 while (_taskThread != null)
                 {
-                    _logger.Log(string.Format("Job name \"{0}\" waiting on task to cancel...", Configuration.Name), LogMessageSeverity.Warning);
-                    Thread.Sleep(_cancelWaitCycle);
+                    Thread.Sleep(incrementWait);
+                    totalWait = totalWait.Add(incrementWait);
+                    if (totalWait.TotalMilliseconds > _cancelPrintWaitCycle.TotalMilliseconds)
+                    {
+                        totalWait = TimeSpan.Zero;
+                        _logger.Log(string.Format("Job name \"{0}\" waiting on task to cancel...", Configuration.Name), LogMessageSeverity.Warning);
+                    }
                 }
                 _logger.Log(string.Format("Job name \"{0}\" has been canceled.", Configuration.Name));
             }
