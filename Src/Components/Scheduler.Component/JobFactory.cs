@@ -56,12 +56,12 @@ namespace Scheduler.Component
                 }
                 else
                 {
-                    Logger.Log(string.Format("Action type \"{0}\" not supported.  This job will not be created.", config.GetType()), LogMessageSeverity.Error);
+                    Logger.Log(string.Format("Action type \"{0}\" not supported.  This job will not be created.", config.GetType()), severity: LogMessageSeverity.Error);
                 }
             }
             else
             {
-                Logger.Log("Job cannot be created without a configuration", LogMessageSeverity.Error);
+                Logger.Log("Job cannot be created without a configuration", severity: LogMessageSeverity.Error);
             }
 
             return retVal;

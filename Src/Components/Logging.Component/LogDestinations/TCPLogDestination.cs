@@ -34,7 +34,7 @@ namespace Core.Logging.LogDestinations
 
         #region Private Methods
 
-        
+
 
         private void Connect()
         {
@@ -47,9 +47,9 @@ namespace Core.Logging.LogDestinations
                 {
                     _tcpClient.Connect(_config.HostName, _config.Port);
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
-                    _logger.HandleLoggingException("Error in TCPLogDestination \"{0}\"", ex.Message);
+                    _logger.HandleLoggingException("Error in TCPLogDestination :" + ex.Message, ex);
                 }
             }
         }
@@ -76,7 +76,7 @@ namespace Core.Logging.LogDestinations
             }
             catch (Exception ex)
             {
-                _logger.HandleLoggingException("Failed to write message to stream \"{0}\"", ex.Message);
+                _logger.HandleLoggingException("Failed to write message to stream :"+ ex.Message,ex);
             }
         }
 

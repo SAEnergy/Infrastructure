@@ -82,7 +82,7 @@ namespace LoggerTest.App
 
             while (_isRunning)
             {
-                _logger.Log(o.ToString() + s[index].ToString(), LogMessageSeverity.Warning);
+                _logger.Log(o.ToString() + s[index].ToString(), severity: LogMessageSeverity.Warning);
                 if (!UltraAbusive)
                     Thread.Sleep(SleepTimeInMilliseconds);
 
@@ -123,7 +123,7 @@ namespace LoggerTest.App
             while (_isRunning)
             {
                 count--;
-                _logger.Log(o.ToString() + count.ToString(), LogMessageSeverity.Error);
+                _logger.Log(o.ToString() + count.ToString(), severity: LogMessageSeverity.Error);
                 if (!UltraAbusive)
                     Thread.Sleep(SleepTimeInMilliseconds);
 
@@ -146,14 +146,14 @@ namespace LoggerTest.App
                 _logger.Log("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore");
                 _logger.Log("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore");
 
-                _logger.Log("Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat", LogMessageSeverity.Warning);
-                _logger.Log("Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat", LogMessageSeverity.Warning);
+                _logger.Log("Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat", severity: LogMessageSeverity.Warning);
+                _logger.Log("Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat", severity: LogMessageSeverity.Warning);
 
-                _logger.Log("Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur", LogMessageSeverity.Error);
-                _logger.Log("Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur", LogMessageSeverity.Error);
-                _logger.Log("Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur", LogMessageSeverity.Error);
+                _logger.Log("Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur", severity: LogMessageSeverity.Error);
+                _logger.Log("Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur", severity: LogMessageSeverity.Error);
+                _logger.Log("Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur", severity: LogMessageSeverity.Error);
 
-                _logger.Log("Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.", LogMessageSeverity.Critical);
+                _logger.Log("Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.", severity: LogMessageSeverity.Critical);
 
                 if (!UltraAbusive)
                     Thread.Sleep(SleepTimeInMilliseconds);

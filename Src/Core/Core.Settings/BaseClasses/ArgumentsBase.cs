@@ -72,11 +72,11 @@ namespace Core.Settings
                 }
                 else
                 {
-                    _logger.Log(string.Format("Missing required command line argument \"{0}\".", tokenName), LogMessageSeverity.Error);
+                    _logger.Log(string.Format("Missing required command line argument \"{0}\".", tokenName), severity: LogMessageSeverity.Error);
 
                     if (_malformedArgumentsAreFatal)
                     {
-                        _logger.Log(string.Format("System exiting because missing arguments are configured to be fatal."), LogMessageSeverity.Error);
+                        _logger.Log(string.Format("System exiting because missing arguments are configured to be fatal."), severity: LogMessageSeverity.Error);
                         Environment.Exit(-1); //do not allow execution to continue, logging system will automatically clean up
                     }
                 }
@@ -131,11 +131,11 @@ namespace Core.Settings
                 }
                 else
                 {
-                    _logger.Log(string.Format("Argument \"{0}\" requires a delimiter of \"{1}\" with a value of type \"{2}\".", arg, setting.Item2.Delimiter, setting.Item1.PropertyType.Name), LogMessageSeverity.Error);
+                    _logger.Log(string.Format("Argument \"{0}\" requires a delimiter of \"{1}\" with a value of type \"{2}\".", arg, setting.Item2.Delimiter, setting.Item1.PropertyType.Name), severity: LogMessageSeverity.Error);
 
                     if (_malformedArgumentsAreFatal)
                     {
-                        _logger.Log(string.Format("System exiting because errors in arguments are configured to be fatal."), LogMessageSeverity.Error);
+                        _logger.Log(string.Format("System exiting because errors in arguments are configured to be fatal."), severity: LogMessageSeverity.Error);
                         Environment.Exit(-1); //do not allow execution to continue, logging system will automatically clean up
                     }
                 }
@@ -182,7 +182,7 @@ namespace Core.Settings
             }
             else
             {
-                _logger.Log("SetAttributeDefault called with null parameters!", LogMessageSeverity.Error);
+                _logger.Log("SetAttributeDefault called with null parameters!", severity: LogMessageSeverity.Error);
             }
         }
 
@@ -203,7 +203,7 @@ namespace Core.Settings
             }
             catch
             {
-                _logger.Log(string.Format("Error: Cannot change value to type {0} for argument with key \"{1}\"", info.PropertyType.Name, setting.Item2.Name), LogMessageSeverity.Error);
+                _logger.Log(string.Format("Error: Cannot change value to type {0} for argument with key \"{1}\"", info.PropertyType.Name, setting.Item2.Name), severity: LogMessageSeverity.Error);
             }
         }
 

@@ -105,7 +105,7 @@ namespace Core.Comm.BaseClasses
             }
             catch (Exception ex)
             {
-                _logger.Log("Exception during callback.  Host=" + typeof(CHANNEL).Name + ", Message=" + ex.Message, LogMessageSeverity.Warning);
+                _logger.Log("Exception during callback.  Host=" + typeof(CHANNEL).Name + ", Message=" + ex.Message, exception:ex, severity: LogMessageSeverity.Warning);
             }
         }
 

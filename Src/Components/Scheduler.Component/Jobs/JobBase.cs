@@ -130,7 +130,7 @@ namespace Scheduler.Component.Jobs
             try
             {
                 ISchedulerComponent sched = IoCContainer.Instance.Resolve<ISchedulerComponent>();
-                Statistics = (StatisticType) sched.GetLatestStatistics(Configuration);
+                Statistics = (StatisticType)sched.GetLatestStatistics(Configuration);
                 _lastRunDuration = Statistics.Duration;
             }
             catch { }
@@ -155,13 +155,13 @@ namespace Scheduler.Component.Jobs
                     }
                     catch (Exception ex)
                     {
-                        _logger.Log(ex.Message, LogMessageSeverity.Error);
+                        _logger.Log("Error calculating next run time: "+ex.Message, ex, severity: LogMessageSeverity.Error);
                     }
 
                     if (startTime == DateTime.MaxValue)
                     {
                         Status = JobStatus.Misconfigured;
-                        _logger.Log(string.Format("Job by the name of \"{0}\" has a trigger type of \"{1}\" that is misconfigured.  This job will not run!", Configuration.Name, Configuration.Schedule.TriggerType), LogMessageSeverity.Critical);
+                        _logger.Log(string.Format("Job by the name of \"{0}\" has a trigger type of \"{1}\" that is misconfigured.  This job will not run!", Configuration.Name, Configuration.Schedule.TriggerType), severity: LogMessageSeverity.Critical);
                         continue;
                     }
                     _nextRunTime = startTime;
@@ -179,7 +179,7 @@ namespace Scheduler.Component.Jobs
 
                     if (_scheduleResetEvent.WaitOne(0))
                     {
-                        _logger.Log(string.Format("The scheduled job, \"{0}\", has been canceled prior to execution.", Configuration.Name), LogMessageSeverity.Warning);
+                        _logger.Log(string.Format("The scheduled job, \"{0}\", has been canceled prior to execution.", Configuration.Name), severity: LogMessageSeverity.Warning);
                         continue;
                     }
 
@@ -187,12 +187,12 @@ namespace Scheduler.Component.Jobs
                     {
                         if (Configuration.RunImmediatelyIfRunTimeMissed)
                         {
-                            _logger.Log(string.Format("Job \"{0}\" missed scheduled execution window, will run immediately after task completion.", Configuration.Name), LogMessageSeverity.Warning);
+                            _logger.Log(string.Format("Job \"{0}\" missed scheduled execution window, will run immediately after task completion.", Configuration.Name), severity: LogMessageSeverity.Warning);
                             _runImmediately = true;
                         }
                         else
                         {
-                            _logger.Log(string.Format("Job \"{0}\" missed scheduled execution window.", Configuration.Name), LogMessageSeverity.Warning);
+                            _logger.Log(string.Format("Job \"{0}\" missed scheduled execution window.", Configuration.Name), severity: LogMessageSeverity.Warning);
                         }
                         continue;
                     }
@@ -222,7 +222,7 @@ namespace Scheduler.Component.Jobs
             {
                 _runImmediately = false;
                 Status = JobStatus.Cancelling;
-                _logger.Log(string.Format("Job name \"{0}\" canceling currently executing task.  ", Configuration.Name), LogMessageSeverity.Warning);
+                _logger.Log(string.Format("Job name \"{0}\" canceling currently executing task.  ", Configuration.Name), severity: LogMessageSeverity.Warning);
                 _taskCancelSource.Cancel();
 
                 TimeSpan totalWait = TimeSpan.Zero;
@@ -234,7 +234,7 @@ namespace Scheduler.Component.Jobs
                     if (totalWait.TotalMilliseconds > _cancelPrintWaitCycle.TotalMilliseconds)
                     {
                         totalWait = TimeSpan.Zero;
-                        _logger.Log(string.Format("Job name \"{0}\" waiting on task to cancel...", Configuration.Name), LogMessageSeverity.Warning);
+                        _logger.Log(string.Format("Job name \"{0}\" waiting on task to cancel...", Configuration.Name), severity: LogMessageSeverity.Warning);
                     }
                 }
                 _logger.Log(string.Format("Job name \"{0}\" has been canceled.", Configuration.Name));
@@ -290,11 +290,11 @@ namespace Scheduler.Component.Jobs
                 }
                 catch (OperationCanceledException)
                 {
-                    _logger.Log(string.Format("Job \"{0}\" canceled.", Configuration.Name), LogMessageSeverity.Warning);
+                    _logger.Log(string.Format("Job \"{0}\" canceled.", Configuration.Name), severity: LogMessageSeverity.Warning);
                 }
                 catch (Exception ex)
                 {
-                    _logger.Log(string.Format("Job \"{0}\" failed! Error - {1}.", Configuration.Name, ex.Message), LogMessageSeverity.Error);
+                    _logger.Log(string.Format("Job \"{0}\" failed! Error - {1}.", Configuration.Name, ex.Message), ex, severity: LogMessageSeverity.Error);
                 }
 
                 watch.Stop();
@@ -307,7 +307,8 @@ namespace Scheduler.Component.Jobs
 
                 string message = rc ? "completed successfully" : "failed to complete successfully";
 
-                _logger.Log(string.Format("Job \"{0}\" {1}, run time = {2:hh\\:mm\\:ss}", Configuration.Name, message, watch.Elapsed), rc ? LogMessageSeverity.Information : LogMessageSeverity.Error);
+                LogMessageSeverity sev = rc ? LogMessageSeverity.Information : LogMessageSeverity.Error;
+                _logger.Log(string.Format("Job \"{0}\" {1}, run time = {2:hh\\:mm\\:ss}", Configuration.Name, message, watch.Elapsed), severity: sev);
 
                 Status = JobStatus.Idle;
 
@@ -343,7 +344,7 @@ namespace Scheduler.Component.Jobs
 
                 if (schedule.StartTime.TotalSeconds > secondsInDay)
                 {
-                    _logger.Log(string.Format("Job by the name of \"{0}\" start time set to more that one days worth of seconds, defaulting to start running at midnight.", Configuration.Name), LogMessageSeverity.Warning);
+                    _logger.Log(string.Format("Job by the name of \"{0}\" start time set to more that one days worth of seconds, defaulting to start running at midnight.", Configuration.Name), severity: LogMessageSeverity.Warning);
                 }
 
                 DateTime startTime = DateTime.Today.Add(schedule.StartTime);
@@ -369,7 +370,7 @@ namespace Scheduler.Component.Jobs
                         break;
 
                     default:
-                        _logger.Log(string.Format("Job by the name of \"{0}\" has a trigger type of \"{1}\" that is not supported.", Configuration.Name, schedule.TriggerType), LogMessageSeverity.Warning);
+                        _logger.Log(string.Format("Job by the name of \"{0}\" has a trigger type of \"{1}\" that is not supported.", Configuration.Name, schedule.TriggerType), severity: LogMessageSeverity.Warning);
                         break;
                 }
                 if (result != TimeSpan.MaxValue)
@@ -396,7 +397,7 @@ namespace Scheduler.Component.Jobs
 
                 if (repeatSeconds < 1)
                 {
-                    _logger.Log(string.Format("Job by the name of \"{0}\" start time set to repeat faster than every 1 second, defaulting to run every 1 second.", Configuration.Name), LogMessageSeverity.Warning);
+                    _logger.Log(string.Format("Job by the name of \"{0}\" start time set to repeat faster than every 1 second, defaulting to run every 1 second.", Configuration.Name), severity: LogMessageSeverity.Warning);
                     repeatSeconds = 1;
                 }
 

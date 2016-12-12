@@ -95,20 +95,20 @@ namespace Core.Logging
             }
             else
             {
-                Log("Cannot add Null LogDestination...", LogMessageSeverity.Error);
+                Log("Cannot add Null LogDestination...", severity: LogMessageSeverity.Error);
             }
         }
 
         public void RemoveLogDestination(ILogDestination logDestination)
         {
-            if(logDestination != null)
+            if (logDestination != null)
             {
                 if (logDestination.IsRunning)
                 {
                     logDestination.Stop();
                 }
 
-                lock(_destinations)
+                lock (_destinations)
                 {
                     var index = _destinations.FindIndex(d => d.Id == logDestination.Id);
 
@@ -118,13 +118,13 @@ namespace Core.Logging
                     }
                     else
                     {
-                        Log(string.Format("Unable to remove LogDestination, cannot find destination with an id of \"{0}\".", logDestination.Id), LogMessageSeverity.Warning);
+                        Log(string.Format("Unable to remove LogDestination, cannot find destination with an id of \"{0}\".", logDestination.Id), severity: LogMessageSeverity.Warning);
                     }
                 }
             }
             else
             {
-                Log("Cannot remove Null LogDestination...", LogMessageSeverity.Error);
+                Log("Cannot remove Null LogDestination...", severity: LogMessageSeverity.Error);
             }
         }
 
@@ -132,13 +132,13 @@ namespace Core.Logging
         {
             var destination = _destinations.Where(d => d.Id == id).FirstOrDefault();
 
-            if(destination != null)
+            if (destination != null)
             {
                 RemoveLogDestination(destination);
             }
             else
             {
-                Log(string.Format("Unable to remove LogDestination, cannot find destination with an id of \"{0}\".", id), LogMessageSeverity.Warning);
+                Log(string.Format("Unable to remove LogDestination, cannot find destination with an id of \"{0}\".", id), severity: LogMessageSeverity.Warning);
             }
         }
 
@@ -165,38 +165,21 @@ namespace Core.Logging
             }
         }
 
-        public void Log(string message, [CallerMemberName] string callerName = "",
-            [CallerFilePath] string callerFilePath = "", [CallerLineNumber] int callerLineNumber = -1)
+        public void Log(string message, Exception ex = null, LogMessageCategory category = null, LogMessageSeverity severity = null, [CallerMemberName] string callerName = "", [CallerFilePath] string callerFilePath = "", [CallerLineNumber] int callerLineNumber = -1)
         {
-            Log(message, LogMessageCategory.General, LogMessageSeverity.Information, callerName, callerFilePath, callerLineNumber);
+            Log(CreateMessage(message, ex, category, severity, callerName, callerFilePath, callerLineNumber));
         }
 
-        public void Log(string message, LogMessageSeverity severity, [CallerMemberName] string callerName = "",
-            [CallerFilePath] string callerFilePath = "", [CallerLineNumber] int callerLineNumber = -1)
-        {
-            Log(message, LogMessageCategory.General, severity, callerName, callerFilePath, callerLineNumber);
-        }
 
-        public void Log(string message, LogMessageCategory category, [CallerMemberName] string callerName = "",
-            [CallerFilePath] string callerFilePath = "", [CallerLineNumber] int callerLineNumber = -1)
-        {
-            Log(message, category, LogMessageSeverity.Information, callerName, callerFilePath, callerLineNumber);
-        }
-
-        public void Log(string message, LogMessageCategory category, LogMessageSeverity severity, [CallerMemberName] string callerName = "",
-            [CallerFilePath] string callerFilePath = "", [CallerLineNumber] int callerLineNumber = -1)
-        {
-            Log(CreateMessage(message, category, severity, callerName, callerFilePath, callerLineNumber));
-        }
-
-        private LogMessage CreateMessage(string message, LogMessageCategory category, LogMessageSeverity severity, [CallerMemberName] string callerName = "",
+        private LogMessage CreateMessage(string message, Exception exception, LogMessageCategory category, LogMessageSeverity severity, [CallerMemberName] string callerName = "",
             [CallerFilePath] string callerFilePath = "", [CallerLineNumber] int callerLineNumber = -1)
         {
             var logMessage = new LogMessage();
 
-            logMessage.Category = category;
-            logMessage.Severity = severity;
+            logMessage.Category = category??LogMessageCategory.General;
+            logMessage.Severity = severity??LogMessageSeverity.Information;
             logMessage.Message = message;
+            logMessage.Detail = (exception == null) ? null : exception.ToString();
             logMessage.CallerName = callerName;
             logMessage.FilePath = callerFilePath;
             logMessage.LineNumber = callerLineNumber;
@@ -310,7 +293,7 @@ namespace Core.Logging
                         }
                     }
 
-                    if(_messageQueue.Count == 0)
+                    if (_messageQueue.Count == 0)
                     {
                         _queueEmpty.Set();
                     }
@@ -332,14 +315,14 @@ namespace Core.Logging
         {
             if (IsRunning)
             {
-                Log("Process exiting, shutting down logging system...", LogMessageSeverity.Warning);
+                Log("Process exiting, shutting down logging system...", severity: LogMessageSeverity.Warning);
                 Stop();
             }
         }
 
-        public void HandleLoggingException(string message, [CallerMemberName] string callerName = "", [CallerFilePath] string callerFilePath = "", [CallerLineNumber] int callerLineNumber = -1)
+        public void HandleLoggingException(string message, Exception ex, [CallerMemberName] string callerName = "", [CallerFilePath] string callerFilePath = "", [CallerLineNumber] int callerLineNumber = -1)
         {
-            LogMessage lm = CreateMessage(message, LogMessageCategory.General, LogMessageSeverity.Error, callerName, callerFilePath, callerLineNumber);
+            LogMessage lm = CreateMessage(message, ex, LogMessageCategory.General, LogMessageSeverity.Error, callerName, callerFilePath, callerLineNumber);
             List<ILogDestination> dests = new List<ILogDestination>();
             lock (_destinations)
             {

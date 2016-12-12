@@ -9,6 +9,8 @@ namespace Core.Interfaces.Components.Logging
 
         public string Message { get; set; }
 
+        public string Detail { get; set; }
+
         public LogMessageSeverity Severity { get; set; }
 
         public LogMessageCategory Category { get; set; }

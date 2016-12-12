@@ -123,7 +123,7 @@ namespace Server.Components
                         }
                         else
                         {
-                            _logger.Log(string.Format("Component of type {0} has already been initialized", componentType.Key.Name), LogMessageSeverity.Warning);
+                            _logger.Log(string.Format("Component of type {0} has already been initialized", componentType.Key.Name), severity: LogMessageSeverity.Warning);
                         }
                     }
                 }
@@ -148,7 +148,7 @@ namespace Server.Components
                 }
                 else
                 {
-                    _logger.Log(string.Format("Cannot start component \"{0}\".  This component is not startable", type.Value.FriendlyName), LogMessageSeverity.Warning);
+                    _logger.Log(string.Format("Cannot start component \"{0}\".  This component is not startable", type.Value.FriendlyName), severity: LogMessageSeverity.Warning);
                 }
             }
 
@@ -173,7 +173,7 @@ namespace Server.Components
                 }
                 else
                 {
-                    _logger.Log(string.Format("Cannot stop component \"{0}\".  This component is not stopable", type.Value.FriendlyName), LogMessageSeverity.Warning);
+                    _logger.Log(string.Format("Cannot stop component \"{0}\".  This component is not stopable", type.Value.FriendlyName), severity: LogMessageSeverity.Warning);
                 }
             }
 
@@ -199,7 +199,7 @@ namespace Server.Components
                 }
                 else
                 {
-                    _logger.Log(string.Format("Cannot restart component \"{0}\".  This component is not restartable", type.Value.FriendlyName), LogMessageSeverity.Warning);
+                    _logger.Log(string.Format("Cannot restart component \"{0}\".  This component is not restartable", type.Value.FriendlyName), severity: LogMessageSeverity.Warning);
                 }
             }
 
@@ -229,12 +229,12 @@ namespace Server.Components
                     }
                     else
                     {
-                        _logger.Log(string.Format("Component with id \"{0}\" has already been disabled.", type.Value.FriendlyName), LogMessageSeverity.Warning);
+                        _logger.Log(string.Format("Component with id \"{0}\" has already been disabled.", type.Value.FriendlyName), severity: LogMessageSeverity.Warning);
                     }
                 }
                 else
                 {
-                    _logger.Log(string.Format("Cannot disable component \"{0}\".", type.Value.FriendlyName), LogMessageSeverity.Warning);
+                    _logger.Log(string.Format("Cannot disable component \"{0}\".", type.Value.FriendlyName), severity: LogMessageSeverity.Warning);
                 }
             }
 
@@ -279,13 +279,13 @@ namespace Server.Components
                         }
                         else
                         {
-                            _logger.Log(string.Format("Cannot start component \"{0}\" because it is disabled.", metadata.FriendlyName), LogMessageSeverity.Warning);
+                            _logger.Log(string.Format("Cannot start component \"{0}\" because it is disabled.", metadata.FriendlyName), severity: LogMessageSeverity.Warning);
                         }
                     }
                 }
                 else
                 {
-                    _logger.Log(string.Format("Cannot start component \"{0}\" because it is already running.", runnable.GetType().Name), LogMessageSeverity.Warning);
+                    _logger.Log(string.Format("Cannot start component \"{0}\" because it is already running.", runnable.GetType().Name), severity: LogMessageSeverity.Warning);
                 }
             }
         }
@@ -302,7 +302,7 @@ namespace Server.Components
                 }
                 else
                 {
-                    _logger.Log(string.Format("Cannot stop component \"{0}\" because it is not running.", runnable.GetType().Name), LogMessageSeverity.Warning);
+                    _logger.Log(string.Format("Cannot stop component \"{0}\" because it is not running.", runnable.GetType().Name), severity: LogMessageSeverity.Warning);
                 }
             }
         }
@@ -315,7 +315,7 @@ namespace Server.Components
             }
             else
             {
-                _logger.Log(string.Format("Unable to set status of component \"{0}\"", type.Name), LogMessageSeverity.Error);
+                _logger.Log(string.Format("Unable to set status of component \"{0}\"", type.Name), severity: LogMessageSeverity.Error);
             }
         }
 
@@ -329,7 +329,7 @@ namespace Server.Components
             }
             else
             {
-                _logger.Log("Unable to set status, Null argument provided.", LogMessageSeverity.Error);
+                _logger.Log("Unable to set status, Null argument provided.", severity: LogMessageSeverity.Error);
             }
         }
 
@@ -339,7 +339,7 @@ namespace Server.Components
 
             if(runnable == null)
             {
-                _logger.Log(string.Format("Unable to cast type \"{0}\" as IRunnable.  ComponentMetadata AllowedActions is misconfigred.", type.Name), LogMessageSeverity.Error);
+                _logger.Log(string.Format("Unable to cast type \"{0}\" as IRunnable.  ComponentMetadata AllowedActions is misconfigred.", type.Name), severity: LogMessageSeverity.Error);
             }
 
             return runnable;
@@ -351,7 +351,7 @@ namespace Server.Components
 
             if (initializable == null)
             {
-                _logger.Log(string.Format("Unable to cast type \"{0}\" as IInitializable.", type.Name), LogMessageSeverity.Error);
+                _logger.Log(string.Format("Unable to cast type \"{0}\" as IInitializable.", type.Name), severity: LogMessageSeverity.Error);
             }
 
             return initializable;

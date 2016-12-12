@@ -60,7 +60,7 @@ namespace ProjectUpdater
             }
             catch(Exception ex)
             {
-                _logger.Log(ex.ToString(), LogMessageSeverity.Critical);
+                _logger.Log(ex.ToString(), severity: LogMessageSeverity.Critical);
                 Environment.ExitCode--;
             }
 

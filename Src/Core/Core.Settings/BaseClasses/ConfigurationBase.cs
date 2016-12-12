@@ -120,7 +120,7 @@ namespace Core.Settings.BaseClasses
             }
             else
             {
-                _logger.Log("SetAttributeDefault called with null parameters!", LogMessageSeverity.Error);
+                _logger.Log("SetAttributeDefault called with null parameters!", severity: LogMessageSeverity.Error);
             }
         }
 
@@ -136,7 +136,7 @@ namespace Core.Settings.BaseClasses
             }
             catch
             {
-                _logger.Log(string.Format("Error: Cannot change value to type {0} for AppSetting with key \"{1}\"", info.PropertyType.Name, setting.Item2.KeyName), LogMessageSeverity.Error);
+                _logger.Log(string.Format("Error: Cannot change value to type {0} for AppSetting with key \"{1}\"", info.PropertyType.Name, setting.Item2.KeyName), severity: LogMessageSeverity.Error);
             }
         }
 

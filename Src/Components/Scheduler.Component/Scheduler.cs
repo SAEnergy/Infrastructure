@@ -121,7 +121,14 @@ namespace Scheduler.Component
         {
             if (stats != null)
             {
-                _dataComponent.Insert<JobStatistics>(stats);
+                try
+                {
+                    _dataComponent.Insert<JobStatistics>(stats);
+                }
+                catch(Exception ex)
+                {
+                    _logger.Log("Exception while saving statistics: " + ex.Message, ex, severity: LogMessageSeverity.Error);
+                }
             }
         }
 
@@ -198,12 +205,12 @@ namespace Scheduler.Component
                 }
                 else
                 {
-                    _logger.Log("Storage returned null as result!", LogMessageSeverity.Warning);
+                    _logger.Log("Storage returned null as result!", severity: LogMessageSeverity.Warning);
                 }
             }
             catch (Exception ex)
             {
-                _logger.Log("Error loading jobs: " + ex.ToString(), LogMessageSeverity.Error);
+                _logger.Log("Error loading jobs: " + ex.ToString(), ex, severity: LogMessageSeverity.Error);
             }
         }
 

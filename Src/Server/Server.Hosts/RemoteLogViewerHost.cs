@@ -48,7 +48,7 @@ namespace Server.Hosts
         {
             if (_destination != null)
             {
-                _logger.Log("Client did not unregister with RemoteLogViewerHost...", LogMessageSeverity.Warning);
+                _logger.Log("Client did not unregister with RemoteLogViewerHost...", severity: LogMessageSeverity.Warning);
 
                 Unregister();
             }

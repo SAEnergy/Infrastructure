@@ -114,13 +114,13 @@ namespace Server.Components
 
             if (!_infos.TryGetValue(typeof(T), out host))
             {
-                _logger.Log(string.Format("HostManager cannot find host with interface type of \"{0}\".", typeof(T).Name), LogMessageSeverity.Error);
+                _logger.Log(string.Format("HostManager cannot find host with interface type of \"{0}\".", typeof(T).Name), severity: LogMessageSeverity.Error);
             }
             else
             {
                 if (host != null)
                 {
-                    _logger.Log(string.Format("HostManager starting host with interface type of \"{0}\".", typeof(T).Name), LogMessageSeverity.Error);
+                    _logger.Log(string.Format("HostManager starting host with interface type of \"{0}\".", typeof(T).Name), severity: LogMessageSeverity.Error);
 
                     host.Host.Open();
                 }
@@ -133,13 +133,13 @@ namespace Server.Components
 
             if (!_infos.TryGetValue(typeof(T), out host))
             {
-                _logger.Log(string.Format("HostManager cannot find host with interface type of \"{0}\".", typeof(T).Name), LogMessageSeverity.Error);
+                _logger.Log(string.Format("HostManager cannot find host with interface type of \"{0}\".", typeof(T).Name), severity: LogMessageSeverity.Error);
             }
             else
             {
                 if (host != null)
                 {
-                    _logger.Log(string.Format("HostManager stopping host with interface type of \"{0}\".", typeof(T).Name), LogMessageSeverity.Error);
+                    _logger.Log(string.Format("HostManager stopping host with interface type of \"{0}\".", typeof(T).Name), severity: LogMessageSeverity.Error);
 
                     host.Host.Abort();
                 }
@@ -199,7 +199,7 @@ namespace Server.Components
 
         public bool HandleError(Exception error)
         {
-            _info.Logger.Log(_info.InterfaceType.Name + " exception: " + error.Message, LogMessageSeverity.Warning);
+            _info.Logger.Log(_info.InterfaceType.Name + " exception: " + error.Message, severity: LogMessageSeverity.Warning);
             //prevent host from closing
             return true;
         }

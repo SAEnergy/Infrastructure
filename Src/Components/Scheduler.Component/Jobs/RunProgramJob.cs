@@ -46,7 +46,7 @@ namespace Scheduler.Component.Jobs
                         //if we are not going to kill the proc, then leave it to do it's thing
                         if (Configuration.KillProcOnCancel)
                         {
-                            _logger.Log(string.Format("Job \"{0}\" is configured to kill process on cancel.  Killing process...", Configuration.Name), LogMessageSeverity.Error);
+                            _logger.Log(string.Format("Job \"{0}\" is configured to kill process on cancel.  Killing process...", Configuration.Name), severity: LogMessageSeverity.Error);
 
                             proc.Kill();
                         }
@@ -65,7 +65,7 @@ namespace Scheduler.Component.Jobs
             }
             else
             {
-                _logger.Log(string.Format("Unable to start process for job \"{0}\".", Configuration.Name), LogMessageSeverity.Error);
+                _logger.Log(string.Format("Unable to start process for job \"{0}\".", Configuration.Name), severity: LogMessageSeverity.Error);
             }
 
             return rc;
@@ -114,13 +114,13 @@ namespace Scheduler.Component.Jobs
 
                     proc.ErrorDataReceived += (sender, args) =>
                     {
-                        _logger.Log(string.Format("Job \"{0}\": {1}", Configuration.Name, args.Data), LogMessageSeverity.Error);
+                        _logger.Log(string.Format("Job \"{0}\": {1}", Configuration.Name, args.Data), severity: LogMessageSeverity.Error);
                     };
                 }
             }
             else
             {
-                _logger.Log(string.Format("Job \"{0}\" misconfigured.  Unable to locate file \"{1}\" in directory \"{2}.", Configuration.Name, Configuration.FileName, path), LogMessageSeverity.Error);
+                _logger.Log(string.Format("Job \"{0}\" misconfigured.  Unable to locate file \"{1}\" in directory \"{2}.", Configuration.Name, Configuration.FileName, path), severity: LogMessageSeverity.Error);
             }
 
             return proc;

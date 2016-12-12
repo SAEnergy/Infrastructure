@@ -177,7 +177,7 @@ namespace Server.Components
             if (obj == null)
             {
                 retVal = false;
-                _logger.Log("Null value detected sent to DataComponent...", LogMessageSeverity.Error);
+                _logger.Log("Null value detected sent to DataComponent...", severity: LogMessageSeverity.Error);
             }
 
             return retVal;

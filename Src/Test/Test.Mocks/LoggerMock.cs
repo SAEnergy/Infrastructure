@@ -56,7 +56,7 @@ namespace Test.Mocks
             //ignore
         }
 
-        public void HandleLoggingException(string message, [CallerMemberName] string callerName = "", [CallerFilePath] string callerFilePath = "", [CallerLineNumber] int callerLineNumber = -1)
+        public void HandleLoggingException(string message, Exception exception= null, [CallerMemberName] string callerName = "", [CallerFilePath] string callerFilePath = "", [CallerLineNumber] int callerLineNumber = -1)
         {
             Trace.TraceInformation(message);
         }
@@ -66,22 +66,7 @@ namespace Test.Mocks
             Trace.TraceInformation(logMessage.Message);
         }
 
-        public void Log(string message, [CallerMemberName] string callerName = "", [CallerFilePath] string callerFilePath = "", [CallerLineNumber] int callerLineNumber = -1)
-        {
-            Log(message, LogMessageCategory.General, LogMessageSeverity.Information, callerName, callerFilePath, callerLineNumber);
-        }
-
-        public void Log(string message, LogMessageCategory category, [CallerMemberName] string callerName = "", [CallerFilePath] string callerFilePath = "", [CallerLineNumber] int callerLineNumber = -1)
-        {
-            Log(message, category, LogMessageSeverity.Information, callerName, callerFilePath, callerLineNumber);
-        }
-
-        public void Log(string message, LogMessageSeverity severity, [CallerMemberName] string callerName = "", [CallerFilePath] string callerFilePath = "", [CallerLineNumber] int callerLineNumber = -1)
-        {
-            Log(message, LogMessageCategory.General, severity, callerName, callerFilePath, callerLineNumber);
-        }
-
-        public void Log(string message, LogMessageCategory category, LogMessageSeverity severity, [CallerMemberName] string callerName = "", [CallerFilePath] string callerFilePath = "", [CallerLineNumber] int callerLineNumber = -1)
+        public void Log(string message, Exception exception = null, LogMessageCategory category = null, LogMessageSeverity severity = null, [CallerMemberName] string callerName = "", [CallerFilePath] string callerFilePath = "", [CallerLineNumber] int callerLineNumber = -1)
         {
             Trace.TraceInformation(message);
         }

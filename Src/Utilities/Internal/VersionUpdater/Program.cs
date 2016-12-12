@@ -65,7 +65,7 @@ namespace VersionReader
                                     }
                                     else
                                     {
-                                        logger.Log(string.Format("Cannot find version number in file \"{0}\".", _settings.AssemblyInfoFile), LogMessageSeverity.Error);
+                                        logger.Log(string.Format("Cannot find version number in file \"{0}\".", _settings.AssemblyInfoFile), severity: LogMessageSeverity.Error);
                                         Environment.ExitCode--;
                                     }
                                 }
@@ -89,7 +89,7 @@ namespace VersionReader
             }
             else
             {
-                logger.Log(string.Format("Cannot find file \"{0}\".", _settings.AssemblyInfoFile), LogMessageSeverity.Error);
+                logger.Log(string.Format("Cannot find file \"{0}\".", _settings.AssemblyInfoFile), severity: LogMessageSeverity.Error);
                 Environment.ExitCode--;
             }
 

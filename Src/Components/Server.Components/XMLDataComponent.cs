@@ -209,7 +209,7 @@ namespace Server.Components
                     }
                     catch(Exception ex)
                     {
-                        _logger.Log(string.Format("XMLDataComponent cannot save xml data to \"{0}\" - Error {1}.", fullFileName, ex.Message), LogMessageSeverity.Error);
+                        _logger.Log(string.Format("XMLDataComponent cannot save xml data to \"{0}\" - Error {1}.", fullFileName, ex.Message), severity: LogMessageSeverity.Error);
                     }
                 }
             }
@@ -359,7 +359,7 @@ namespace Server.Components
 
             if(prop == null)
             {
-                _logger.Log(string.Format("Unable to find primary key property!  Check implementation for type \"{0}\", must have a property named \"{1}\" or [Key] attribute.", type.Name, GetKeyPropertyName(type)), LogMessageSeverity.Critical);
+                _logger.Log(string.Format("Unable to find primary key property!  Check implementation for type \"{0}\", must have a property named \"{1}\" or [Key] attribute.", type.Name, GetKeyPropertyName(type)), severity: LogMessageSeverity.Critical);
             }
 
             return prop;

@@ -26,7 +26,7 @@ namespace Core.Logging.LogDestinations
         {
             if (null != config)
             {
-                if(null == config.LogMessageFormatter)
+                if (null == config.LogMessageFormatter)
                 {
                     config.LogMessageFormatter = new CSVLogMessageFormatter();
                 }
@@ -44,13 +44,13 @@ namespace Core.Logging.LogDestinations
 
         #region Private Methods
 
-        
+
 
         private void Create()
         {
             try
             {
-                if( !string.IsNullOrEmpty(_config.Source))
+                if (!string.IsNullOrEmpty(_config.Source))
                 {
                     if (!EventLog.SourceExists(_config.Source))
                     {
@@ -60,7 +60,7 @@ namespace Core.Logging.LogDestinations
             }
             catch (Exception ex)
             {
-                _logger.HandleLoggingException("Error in EventViewerDestination \"{0}\"", ex.Message);
+                _logger.HandleLoggingException("Error in EventViewerDestination :" + ex.Message, ex);
             }
 
         }
@@ -73,7 +73,7 @@ namespace Core.Logging.LogDestinations
             }
             catch (Exception ex)
             {
-                _logger.HandleLoggingException("Failed to write message to Event Viewer\"{0}\"", ex.Message);
+                _logger.HandleLoggingException("Failed to write message to Event Viewer :" + ex.Message, ex);
             }
         }
 
@@ -89,7 +89,7 @@ namespace Core.Logging.LogDestinations
             foreach (LogMessage message in messages)
             {
                 // only log critical messages to the event viewer
-                if( message.Severity == LogMessageSeverity.Critical)
+                if (message.Severity == LogMessageSeverity.Critical)
                 {
                     WriteLine(message);
                 }

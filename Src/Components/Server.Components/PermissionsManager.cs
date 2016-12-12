@@ -119,7 +119,7 @@ namespace Server.Components
             }
             catch(Exception ex)
             {
-                _logger.Log(ex.Message, LogMessageSeverity.Error);
+                _logger.Log(ex.Message, severity: LogMessageSeverity.Error);
             }
         }
 
