@@ -169,7 +169,7 @@ namespace Scheduler.Plugin
 
         public void JobStateUpdated(JobState state)
         {
-            this.BeginInvoke(() =>
+            this.Invoke(() =>
             {
                 SchedulerJobModel model = _jobs.FirstOrDefault(j => j.Job.JobConfigurationId == state.JobId);
                 if (model!=null) { model.State = state; }

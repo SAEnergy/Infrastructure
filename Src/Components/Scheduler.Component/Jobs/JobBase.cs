@@ -105,7 +105,7 @@ namespace Scheduler.Component.Jobs
                 _isRunning = true;
                 _logger.Log(string.Format("Job name \"{0}\" starting.", Configuration.Name));
 
-                _schedulerThread = new Thread(SchedulerThread);
+                _schedulerThread = new Thread(SchedulerThread, 1024);
                 _schedulerThread.Start();
             }
         }
@@ -155,7 +155,7 @@ namespace Scheduler.Component.Jobs
                     }
                     catch (Exception ex)
                     {
-                        _logger.Log("Error calculating next run time: "+ex.Message, ex, severity: LogMessageSeverity.Error);
+                        _logger.Log("Error calculating next run time: " + ex.Message, ex, severity: LogMessageSeverity.Error);
                     }
 
                     if (startTime == DateTime.MaxValue)
@@ -164,7 +164,9 @@ namespace Scheduler.Component.Jobs
                         _logger.Log(string.Format("Job by the name of \"{0}\" has a trigger type of \"{1}\" that is misconfigured.  This job will not run!", Configuration.Name, Configuration.Schedule.TriggerType), severity: LogMessageSeverity.Critical);
                         continue;
                     }
+
                     _nextRunTime = startTime;
+                    FireStatusUpdate();
 
                     _logger.Log(string.Format(string.Format("Job \"{0}\" scheduled to start \"{1}\"", Configuration.Name, startTime.ToLocalTime())));
 
