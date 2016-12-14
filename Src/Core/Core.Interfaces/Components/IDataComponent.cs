@@ -1,10 +1,11 @@
 ﻿using Core.Interfaces.Components.Base;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Core.Interfaces.Components
 {
-    public interface IDataComponent : IComponent
+    public interface IDataComponent : IComponent 
     {
         bool Delete<T>(int key) where T : class;
 
