@@ -242,7 +242,10 @@ namespace Scheduler.Component
 
         public JobStatistics GetLatestStatistics(JobConfiguration job)
         {
-            return _dataComponent.Find<JobStatistics>(s => s.JobID == job.JobConfigurationId).OrderByDescending(j => j.StartTime).FirstOrDefault();
+            return _dataComponent.All<JobStatistics>()
+                .Where(s => s.JobID == job.JobConfigurationId)
+                .OrderByDescending(j => j.StartTime)
+                .FirstOrDefault();
         }
 
         #endregion

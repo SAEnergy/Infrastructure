@@ -18,6 +18,8 @@ namespace Core.Interfaces.Components
 
         List<T> Find<T>(Func<T, bool> where) where T : class;
 
+        IQueryable<T> All<T>() where T : class;
+
         T Find<T>(int key) where T : class;
     }
 }

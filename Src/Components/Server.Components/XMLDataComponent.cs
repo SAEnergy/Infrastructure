@@ -16,7 +16,7 @@ using Core.Util;
 
 namespace Server.Components
 {
-    [ComponentRegistration(typeof(IDataComponent),DoNotRegister = true)]
+    [ComponentRegistration(typeof(IDataComponent), DoNotRegister = true)]
     [ComponentMetadata(Description = "Data access layer for XML storage.", FriendlyName = "XML Data Component")]
     public sealed class XMLDataComponent : IDataComponent
     {
@@ -61,7 +61,7 @@ namespace Server.Components
         {
             bool rc = false;
 
-            if(where != null)
+            if (where != null)
             {
                 var children = GetObjects<T>();
 
@@ -125,7 +125,7 @@ namespace Server.Components
         {
             var list = new List<T>();
 
-            if(where != null)
+            if (where != null)
             {
                 list.AddRange(GetObjects<T>().Where(where));
             }
@@ -162,17 +162,22 @@ namespace Server.Components
             throw new NotImplementedException();
         }
 
+        public IQueryable<T> All<T>() where T : class
+        {
+            throw new NotImplementedException();
+        }
+
         #endregion
 
         #region Private Methods
 
         private void LoadXMLFile()
         {
-            if(_document == null)
+            if (_document == null)
             {
-                lock(_syncObject)
+                lock (_syncObject)
                 {
-                    if(_document == null)
+                    if (_document == null)
                     {
                         string fullFileName = GetFullFileName();
 
@@ -195,9 +200,9 @@ namespace Server.Components
         {
             bool rc = false;
 
-            if(_document != null)
+            if (_document != null)
             {
-                lock(_document)
+                lock (_document)
                 {
                     string fullFileName = GetFullFileName();
 
@@ -207,7 +212,7 @@ namespace Server.Components
 
                         rc = true;
                     }
-                    catch(Exception ex)
+                    catch (Exception ex)
                     {
                         _logger.Log(string.Format("XMLDataComponent cannot save xml data to \"{0}\" - Error {1}.", fullFileName, ex.Message), severity: LogMessageSeverity.Error);
                     }
@@ -238,9 +243,9 @@ namespace Server.Components
             Type objType = null;
             if (xElement.Name.LocalName != typeof(T).Name)
             {
-                 objType = TypeLocator.FindType(typeof(T),xElement.Name.LocalName);
+                objType = TypeLocator.FindType(typeof(T), xElement.Name.LocalName);
             }
-            var xmlSerializer = new XmlSerializer(objType??typeof(T));
+            var xmlSerializer = new XmlSerializer(objType ?? typeof(T));
             return (T)xmlSerializer.Deserialize(xElement.CreateReader());
         }
 
@@ -250,7 +255,7 @@ namespace Server.Components
 
             var elements = GetElements<T>();
 
-            foreach(var element in elements)
+            foreach (var element in elements)
             {
                 list.Add(FromXElement<T>(element));
             }
@@ -279,7 +284,7 @@ namespace Server.Components
 
         private XElement GetTypeElement<T>()
         {
-            if(_document == null)
+            if (_document == null)
             {
                 LoadXMLFile();
             }
@@ -312,7 +317,7 @@ namespace Server.Components
         {
             string fullPath = Path.GetFullPath(Environment.ExpandEnvironmentVariables(Folder));
 
-            if(!Directory.Exists(fullPath))
+            if (!Directory.Exists(fullPath))
             {
                 _logger.Log(string.Format("Creating directory \"{0}\" for XMLDataComponent", fullPath));
 
@@ -357,7 +362,7 @@ namespace Server.Components
                 prop = type.GetProperty(GetKeyPropertyName(type));
             }
 
-            if(prop == null)
+            if (prop == null)
             {
                 _logger.Log(string.Format("Unable to find primary key property!  Check implementation for type \"{0}\", must have a property named \"{1}\" or [Key] attribute.", type.Name, GetKeyPropertyName(type)), severity: LogMessageSeverity.Critical);
             }
@@ -367,7 +372,7 @@ namespace Server.Components
 
         private string GetKeyPropertyName(Type type)
         {
-            return string.Format("{0}{1}",type.Name,"Id");
+            return string.Format("{0}{1}", type.Name, "Id");
         }
 
         #endregion

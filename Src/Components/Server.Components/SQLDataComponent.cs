@@ -166,6 +166,12 @@ namespace Server.Components
             return result;
         }
 
+        public IQueryable<T> All<T>() where T : class
+        {
+            DbContext db = _contextFactory.NewContext();
+            return db.Set<T>();
+        }
+
         #endregion
 
         #region Private Methods
@@ -182,7 +188,6 @@ namespace Server.Components
 
             return retVal;
         }
-
         #endregion
     }
 }
