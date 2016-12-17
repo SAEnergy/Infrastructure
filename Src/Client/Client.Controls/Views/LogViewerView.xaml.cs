@@ -1,4 +1,6 @@
-﻿using System.Windows.Controls;
+﻿using System;
+using System.Windows;
+using System.Windows.Controls;
 
 namespace Client.Controls
 {
@@ -7,10 +9,45 @@ namespace Client.Controls
     /// </summary>
     public partial class LogViewerView : Client.Base.ViewBase
     {
+        public static readonly DependencyProperty IsLocalProperty = DependencyProperty.Register("IsLocal", typeof(bool), typeof(LogViewerView), new FrameworkPropertyMetadata(false, new PropertyChangedCallback(OnLocalChanged)));
+
+        private static void OnLocalChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            LogViewerView l = d as LogViewerView;
+
+            if (l.ViewModel != null) { l.ViewModel.Dispose(); }
+
+            if (l.IsLocal)
+            {
+                l.ViewModel = new LocalLogViewerViewModel(l);
+            }
+            else
+            {
+                l.ViewModel = new RemoteLogViewerViewModel(l);
+            }
+        }
+
         public LogViewerView()
         {
-            ViewModel = new LogViewerViewModel(this);
             InitializeComponent();
+            this.Loaded += LogViewerView_Loaded;
+        }
+
+        private void LogViewerView_Loaded(object sender, RoutedEventArgs e)
+        {
+            OnLocalChanged(this, new DependencyPropertyChangedEventArgs());
+        }
+
+        public bool IsLocal
+        {
+            get
+            {
+                return (bool)this.GetValue(IsLocalProperty);
+            }
+            set
+            {
+                this.SetValue(IsLocalProperty, value);
+            }
         }
 
         private void datagrid_ScrollChanged(object sender, ScrollChangedEventArgs e)

@@ -53,11 +53,18 @@
       <DependentUpon>ComponentManagerPanel.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Views\LogViewerPanel.xaml.cs">
+      <DependentUpon>LogViewerPanel.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Page Include="Views\ComponentManagerPanel.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\LogViewerPanel.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
   <ItemGroup>
@@ -76,6 +83,10 @@
     <ProjectReference Include="..\Client.Base\Client.Base.csproj">
       <Project>{98c98907-35d1-40b3-970b-53b38dd3cb4a}</Project>
       <Name>Client.Base</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Client.Controls\Client.Controls.csproj">
+      <Project>{ccba905e-cedf-488f-bd79-5b2d1fe5e525}</Project>
+      <Name>Client.Controls</Name>
     </ProjectReference>
     <ProjectReference Include="..\Client.Resources\Client.Resources.csproj">
       <Project>{d40c4661-6b70-437e-9b0c-632aaaab7f9a}</Project>

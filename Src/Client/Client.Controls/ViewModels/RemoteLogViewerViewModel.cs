@@ -12,16 +12,16 @@ using System.Windows;
 
 namespace Client.Controls
 {
-    public class LogViewerViewModel : ViewModelBase<IRemoteLogViewer>, IRemoteLogViewerCallback
+    public class RemoteLogViewerViewModel : ViewModelBase<IRemoteLogViewer>, IRemoteLogViewerCallback
     {
-        public static readonly DependencyProperty ViewDetailProperty = DependencyProperty.Register("ViewDetail", typeof(bool), typeof(LogViewerViewModel));
+        public static readonly DependencyProperty ViewDetailProperty = DependencyProperty.Register("ViewDetail", typeof(bool), typeof(RemoteLogViewerViewModel));
         public bool ViewDetail
         {
             get { return (bool)GetValue(ViewDetailProperty); }
             set { SetValue(ViewDetailProperty, value); }
         }
 
-        public static readonly DependencyProperty MaxMessagesProperty = DependencyProperty.Register("MaxMessages", typeof(int), typeof(LogViewerViewModel));
+        public static readonly DependencyProperty MaxMessagesProperty = DependencyProperty.Register("MaxMessages", typeof(int), typeof(RemoteLogViewerViewModel));
         public int MaxMessages
         {
             get { return (int)GetValue(MaxMessagesProperty); }
@@ -32,7 +32,7 @@ namespace Client.Controls
 
         //public SimpleCommand TogglePause { get; set; }
 
-        public LogViewerViewModel(ViewBase parent) : base(parent)
+        public RemoteLogViewerViewModel(ViewBase parent) : base(parent)
         {
             LogMessages = new ObservableCollection<LogMessage>();
             MaxMessages = 5000;
@@ -72,7 +72,7 @@ namespace Client.Controls
         {
             try
             {
-                Channel.Unregister();
+                if (Channel != null) { Channel.Unregister(); }
             }
             catch (Exception)
             {

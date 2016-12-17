@@ -62,7 +62,8 @@
       <DependentUpon>WaitDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Helpers\MultiSelectCollectionView.cs" />
-    <Compile Include="ViewModels\LogViewerViewModel.cs" />
+    <Compile Include="ViewModels\LocalLogViewerViewModel.cs" />
+    <Compile Include="ViewModels\RemoteLogViewerViewModel.cs" />
     <Compile Include="ViewModels\SettingsViewModel.cs" />
     <Compile Include="Views\LogViewerView.xaml.cs">
       <DependentUpon>LogViewerView.xaml</DependentUpon>
@@ -133,6 +134,10 @@
     <ProjectReference Include="..\..\Core\Core.Interfaces\Core.Interfaces.csproj">
       <Project>{bdb06c43-2402-444e-a9e0-72c88174fed7}</Project>
       <Name>Core.Interfaces</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Core\Core.IoC.Container\Core.IoC.Container.csproj">
+      <Project>{e4860231-c690-45df-b396-120a9e3bcdd4}</Project>
+      <Name>Core.IoC.Container</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Core\Core.Models\Core.Models.csproj">
       <Project>{803e539b-3687-4465-b272-e50816df453f}</Project>

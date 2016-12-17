@@ -1,5 +1,7 @@
 ﻿using Core.Comm;
+using Core.Interfaces.Components.Logging;
 using Core.Interfaces.ServiceContracts;
+using Core.IoC.Container;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,11 +19,13 @@ namespace Client.Base
     {
         protected SynchronizationContext _context;
         protected ViewBase _parent;
+        protected ILogger _logger;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
         public ViewModelBase(ViewBase parent)
         {
+            _logger = IoCContainer.Instance.Resolve<ILogger>();
             _parent = parent;
             _context = SynchronizationContext.Current;
         }
@@ -35,7 +39,7 @@ namespace Client.Base
 
         protected virtual void HandleTransactionException(Exception error)
         {
-            //todo: log when logger is present in client
+            _logger.Log("Error during server transaction: " + error.Message, error, severity: LogMessageSeverity.Error);
         }
 
         protected void Invoke(Action task)

@@ -132,6 +132,15 @@ namespace Core.Comm
                     }
                 }
             }
+            catch (ThreadAbortException)
+            {
+
+            }
+            catch (Exception ex)
+            {
+                _lastException = ex;
+                OnDisconnect(ex);
+            }
             finally
             {
                 Cleanup();
