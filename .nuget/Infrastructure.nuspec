@@ -20,6 +20,7 @@
   </metadata>
   <files>
     <file src="..\$RunOut$\Client.*" target="lib\net452" />
+    <file src="..\$RunOut$\Client.Resources.dll" target="lib\net452" />
     <file src="..\$RunOut$\Server.*" target="lib\net452" />
     <file src="..\$RunOut$\Core.*" target="lib\net452" />
     <file src="..\$RunOut$\Logging.*" target="lib\net452" />
