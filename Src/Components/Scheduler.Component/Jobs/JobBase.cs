@@ -99,7 +99,7 @@ namespace Scheduler.Component.Jobs
 
         #region Public Methods
 
-        public void Start()
+        public virtual void Start()
         {
             if (!_isRunning)
             {
@@ -111,7 +111,7 @@ namespace Scheduler.Component.Jobs
             }
         }
 
-        public void Stop()
+        public virtual void Stop()
         {
             _isRunning = false;
             if (_schedulerThread != null)
@@ -209,7 +209,7 @@ namespace Scheduler.Component.Jobs
             _schedulerThread = null;
         }
 
-        public void ForceRun()
+        public virtual void ForceRun()
         {
             if (Configuration.RunState == JobRunState.Disabled) { throw new InvalidOperationException(string.Format("Cannot force run disabled job by the name of \"{0}\".", Configuration.Name)); }
 
@@ -219,7 +219,7 @@ namespace Scheduler.Component.Jobs
             _taskThread.Start();
         }
 
-        public void TryCancel()
+        public virtual void TryCancel()
         {
             if (_taskThread != null && _taskCancelSource != null)
             {
@@ -275,7 +275,7 @@ namespace Scheduler.Component.Jobs
 
         #region Private Methods
 
-        private void StatisticsUpdated()
+        protected virtual void StatisticsUpdated()
         {
             FireStatusUpdate();
         }

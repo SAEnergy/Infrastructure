@@ -54,22 +54,20 @@ namespace Server.Components
 
         public bool IsAuthorized(IIdentity identity, Type serviceType, MethodInfo operationMethodInfo)
         {
-            bool retVal = false;
-
-            if(identity != null && serviceType != null && operationMethodInfo != null)
+            if (identity == null)
             {
-                
-
-
-
-                retVal = true;
+                throw new ArgumentNullException("identity");
             }
-            else
+            if (serviceType == null)
             {
-                throw new ArgumentNullException();
+                throw new ArgumentNullException("serviceType");
+            }
+            if (operationMethodInfo == null)
+            {
+                throw new ArgumentNullException("operationMethodInfo");
             }
 
-            return retVal;
+            return true;
         }
 
         public void ClearPermissionsCache()

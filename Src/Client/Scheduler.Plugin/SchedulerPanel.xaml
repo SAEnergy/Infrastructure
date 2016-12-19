@@ -69,10 +69,6 @@
                         <DataTrigger Binding="{Binding State.Status}" Value="Cancelling">
                             <Setter Property="Background" Value="#FF8888"/>
                         </DataTrigger>
-                        <DataTrigger Binding="{Binding State.Status}" Value="Cancelled">
-                            <Setter Property="Background" Value="#FF8888"/>
-                        </DataTrigger>
-
                     </Style.Triggers>
                 </Style>
             </DataGrid.ItemContainerStyle>
