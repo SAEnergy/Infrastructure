@@ -8,6 +8,7 @@ using Scheduler.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Scheduler.Component
@@ -167,9 +168,24 @@ namespace Scheduler.Component
                     {
                         _logger.Log("Scheduler component attempting to stop all jobs.");
 
-                        foreach (var job in _jobs)
+                        List<Task> tasks = new List<Task>();
+                        foreach (var iter in _jobs)
                         {
-                            job.Stop();
+                            var job = iter;
+                            tasks.Add(Task.Run(() => job.Stop()));
+                        }
+
+                        while(true)
+                        {
+                            foreach (var task in tasks)
+                            {
+                                if (!task.IsCompleted)
+                                {
+                                    Thread.Sleep(100);
+                                    continue;
+                                }
+                            }
+                            break;
                         }
 
                         _logger.Log("Scheduler component has stopped all jobs.");

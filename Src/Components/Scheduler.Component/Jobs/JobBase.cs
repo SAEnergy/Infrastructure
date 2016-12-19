@@ -28,6 +28,7 @@ namespace Scheduler.Component.Jobs
         #region Fields
 
         private TimeSpan _cancelPrintWaitCycle = TimeSpan.FromMilliseconds(5000);
+        private TimeSpan _cancelForceTimeout = TimeSpan.FromSeconds(60);
         private Thread _schedulerThread;
         private Thread _taskThread;
         private CancellationTokenSource _taskCancelSource;
@@ -143,7 +144,7 @@ namespace Scheduler.Component.Jobs
 
                 if (Status == JobStatus.Misconfigured) { continue; }
 
-                Status = (_taskThread == null) ? JobStatus.Idle : JobStatus.Running;
+                if (Status == JobStatus.Unknown) { Status = (_taskThread == null) ? JobStatus.Idle : JobStatus.Running; }
 
                 if (Configuration.RunState == JobRunState.Automatic)
                 {
@@ -233,6 +234,12 @@ namespace Scheduler.Component.Jobs
                 {
                     Thread.Sleep(incrementWait);
                     totalWait = totalWait.Add(incrementWait);
+                    if (totalWait.TotalMilliseconds > _cancelForceTimeout.TotalMilliseconds)
+                    {
+                        _logger.Log(string.Format("Job name \"{0}\" cancel timeout, aborting...", Configuration.Name), severity: LogMessageSeverity.Warning);
+                        _taskThread.Abort();
+                        break;
+                    }
                     if (totalWait.TotalMilliseconds > _cancelPrintWaitCycle.TotalMilliseconds)
                     {
                         totalWait = TimeSpan.Zero;
