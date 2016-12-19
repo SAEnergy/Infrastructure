@@ -14,6 +14,5 @@ namespace Scheduler.Interfaces
         Running,
         Idle,
         Cancelling,
-        Cancelled
     }
 }

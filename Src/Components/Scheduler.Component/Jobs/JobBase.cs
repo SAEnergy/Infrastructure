@@ -229,24 +229,28 @@ namespace Scheduler.Component.Jobs
                 _taskCancelSource.Cancel();
 
                 TimeSpan totalWait = TimeSpan.Zero;
-                TimeSpan incrementWait = TimeSpan.FromMilliseconds(10);
+                TimeSpan incrementWait = TimeSpan.Zero;
+                TimeSpan waitCycle = TimeSpan.FromMilliseconds(10);
                 while (_taskThread != null)
                 {
-                    Thread.Sleep(incrementWait);
-                    totalWait = totalWait.Add(incrementWait);
+                    Thread.Sleep(waitCycle);
+                    totalWait = totalWait.Add(waitCycle);
+                    incrementWait = incrementWait.Add(waitCycle);
+
                     if (totalWait.TotalMilliseconds > _cancelForceTimeout.TotalMilliseconds)
                     {
                         _logger.Log(string.Format("Job name \"{0}\" cancel timeout, aborting...", Configuration.Name), severity: LogMessageSeverity.Warning);
                         _taskThread.Abort();
                         break;
                     }
-                    if (totalWait.TotalMilliseconds > _cancelPrintWaitCycle.TotalMilliseconds)
+                    if (incrementWait.TotalMilliseconds > _cancelPrintWaitCycle.TotalMilliseconds)
                     {
-                        totalWait = TimeSpan.Zero;
+                        incrementWait = TimeSpan.Zero;
                         _logger.Log(string.Format("Job name \"{0}\" waiting on task to cancel...", Configuration.Name), severity: LogMessageSeverity.Warning);
                     }
                 }
                 _logger.Log(string.Format("Job name \"{0}\" has been canceled.", Configuration.Name));
+                Status = JobStatus.Idle;
             }
         }
 
@@ -324,7 +328,10 @@ namespace Scheduler.Component.Jobs
                 if (_runImmediately)
                 {
                     _runImmediately = false;
-                    TaskThread();
+                    if (Status != JobStatus.Cancelling)
+                    {
+                        TaskThread();
+                    }
                 }
             }
             finally

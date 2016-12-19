@@ -177,15 +177,11 @@ namespace Scheduler.Component
 
                         while(true)
                         {
-                            foreach (var task in tasks)
+                            if (tasks.All(t => t.IsCompleted))
                             {
-                                if (!task.IsCompleted)
-                                {
-                                    Thread.Sleep(100);
-                                    continue;
-                                }
+                                break;
                             }
-                            break;
+                            Thread.Sleep(100);
                         }
 
                         _logger.Log("Scheduler component has stopped all jobs.");
