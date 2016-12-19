@@ -16,6 +16,11 @@ namespace Core.Comm
         {
             var binding = new NetTcpBinding(SecurityMode.Transport, false);
             binding.Security.Transport.ClientCredentialType = TcpClientCredentialType.Windows;
+            binding.MaxReceivedMessageSize = int.MaxValue;
+            binding.MaxBufferSize = int.MaxValue;
+            binding.MaxConnections = 1000;
+            binding.ReaderQuotas.MaxArrayLength = int.MaxValue;
+            binding.ReaderQuotas.MaxStringContentLength = int.MaxValue;
 
             return binding;
         }
