@@ -33,8 +33,8 @@ namespace Client.Base
                 }
 
                 List<Type> types = new List<Type>();
-                types.AddRange(TypeLocator.FindTypes("*client*dll", typeof(ClientSettingsBase)));
-                types.AddRange(TypeLocator.FindTypes("*plugin*dll", typeof(ClientSettingsBase)));
+                types.AddRange(TypeLocator.FindTypes("*.dll", typeof(ClientSettingsBase)));
+                types.AddRange(TypeLocator.FindTypes("*.exe", typeof(ClientSettingsBase)));
 
                 foreach (Type t in types.Distinct())
                 {
