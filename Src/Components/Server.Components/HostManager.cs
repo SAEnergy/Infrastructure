@@ -34,7 +34,7 @@ namespace Server.Components
         private const string _dllSearchPattern = "*.dll";
         private readonly ILogger _logger;
 
-        private Dictionary<Type, ServiceHostInfo> _infos;
+        private Dictionary<Type, ServiceHostInfo> _infos = new Dictionary<Type, ServiceHostInfo>();
 
         #endregion
 
@@ -75,13 +75,16 @@ namespace Server.Components
 
                 IsRunning = true;
 
-                _infos = FindAllHosts();
-
-                foreach (var host in _infos.Values)
+                lock (_infos)
                 {
-                    _logger.Log(string.Format("HostManager starting host for interface \"{0}\".", host.InterfaceType.Name));
+                    _infos.Clear();
+                    var dic = FindAllHosts();
+                    foreach (var key in dic.Keys) { _infos.Add(key, dic[key]); }
 
-                    host.Host.Open();
+                    foreach (var type in _infos.Keys)
+                    {
+                        Start(type);
+                    }
                 }
             }
         }
@@ -93,11 +96,12 @@ namespace Server.Components
                 _logger.Log("HostManager stopping all hosts...");
                 IsRunning = false;
 
-                foreach (var host in _infos.Values)
+                lock (_infos)
                 {
-                    _logger.Log(string.Format("HostManager stopping host for interface \"{0}\".", host.InterfaceType.Name));
-
-                    host.Host.Abort();
+                    foreach (var type in _infos.Keys)
+                    {
+                        Stop(type);
+                    }
                 }
             }
         }
@@ -108,42 +112,55 @@ namespace Server.Components
             Start<T>();
         }
 
-        public void Start<T>()
+        private void Start(Type t)
         {
             ServiceHostInfo host;
 
-            if (!_infos.TryGetValue(typeof(T), out host))
+            lock (_infos)
             {
-                _logger.Log(string.Format("HostManager cannot find host with interface type of \"{0}\".", typeof(T).Name), severity: LogMessageSeverity.Error);
-            }
-            else
-            {
-                if (host != null)
+                if (!_infos.TryGetValue(t, out host))
                 {
-                    _logger.Log(string.Format("HostManager starting host with interface type of \"{0}\".", typeof(T).Name), severity: LogMessageSeverity.Error);
-
-                    host.Host.Open();
+                    _logger.Log(string.Format("HostManager cannot find host with interface type of \"{0}\".", t.Name), severity: LogMessageSeverity.Error);
+                }
+            }
+            if (host != null)
+            {
+                _logger.Log(string.Format("HostManager starting host with interface type of \"{0}\".", t.Name));
+                host.Host.Open();
+                foreach (var endpoint in host.Host.Description.Endpoints)
+                {
+                    _logger.Log("Listening on " + endpoint.Address.Uri.ToString());
                 }
             }
         }
 
-        public void Stop<T>()
+        public void Stop(Type t)
         {
             ServiceHostInfo host;
 
-            if (!_infos.TryGetValue(typeof(T), out host))
+            lock (_infos)
             {
-                _logger.Log(string.Format("HostManager cannot find host with interface type of \"{0}\".", typeof(T).Name), severity: LogMessageSeverity.Error);
-            }
-            else
-            {
-                if (host != null)
+                if (!_infos.TryGetValue(t, out host))
                 {
-                    _logger.Log(string.Format("HostManager stopping host with interface type of \"{0}\".", typeof(T).Name), severity: LogMessageSeverity.Error);
-
-                    host.Host.Abort();
+                    _logger.Log(string.Format("HostManager cannot find host with interface type of \"{0}\".", t.Name), severity: LogMessageSeverity.Error);
                 }
             }
+            if (host != null)
+            {
+                _logger.Log(string.Format("HostManager stopping host with interface type of \"{0}\".", t.Name));
+
+                host.Host.Abort();
+            }
+        }
+
+        public void Start<T>()
+        {
+            Start(typeof(T));
+        }
+
+        public void Stop<T>()
+        {
+            Stop(typeof(T));
         }
 
         #endregion
@@ -167,7 +184,7 @@ namespace Server.Components
 
                 info.Host.Description.Behaviors.Add(new HostErrorHandlerBehavior(info));
                 info.Host.Authorization.ServiceAuthorizationManager = new RoleBasedAuthorizationManager();
-                
+
                 ContractDescription contract = ContractDescription.GetContract(interfaceType);
 
                 EndpointAddress endpoint = EndpointInformation.BuildEndpoint(new EndpointInformation(), ServerConnectionInformation.Instance, interfaceType);
