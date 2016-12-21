@@ -255,7 +255,7 @@ namespace Scheduler.Component
         public JobStatistics GetLatestStatistics(JobConfiguration job)
         {
             return _dataComponent.All<JobStatistics>()
-                .Where(s => s.JobID == job.JobConfigurationId)
+                .Where(s => s.JobID == job.JobConfigurationId && s.CompletedSuccessfully)
                 .OrderByDescending(j => j.StartTime)
                 .FirstOrDefault();
         }
