@@ -54,30 +54,32 @@ namespace Core.Util
 
         public static Type FindType(Type baseType, string typeName)
         {
-            Type retval = null;
-            if (_typeCache.TryGetValue(typeName, out retval)) { return retval; }
-
-            foreach (Assembly assy in AppDomain.CurrentDomain.GetAssemblies())
+            lock (_typeCache)
             {
-                foreach (Type type in assy.GetTypes())
+                Type retval = null;
+                if (_typeCache.TryGetValue(typeName, out retval)) { return retval; }
+
+                foreach (Assembly assy in AppDomain.CurrentDomain.GetAssemblies())
                 {
-                    if (type.FullName == typeName || type.Name == typeName)
+                    foreach (Type type in assy.GetTypes())
                     {
-                        if (baseType != null)
+                        if (type.FullName == typeName || type.Name == typeName)
                         {
-                            Type cType = type.BaseType;
-                            while (cType != null && cType != baseType)
+                            if (baseType != null)
                             {
-                                cType = cType.BaseType;
+                                Type cType = type.BaseType;
+                                while (cType != null && cType != baseType)
+                                {
+                                    cType = cType.BaseType;
+                                }
+                                if (cType != baseType) { continue; }
                             }
-                            if (cType != baseType) { continue; }
+                            _typeCache.Add(typeName, type);
+                            return type;
                         }
-                        _typeCache.Add(typeName, type);
-                        return type;
                     }
                 }
             }
-
             throw new ArgumentException("Unable to locate type '" + typeName + "' in any loaded assembly.");
         }
         public static List<Type> SearchAssembly(Assembly assy, Type searchType)
