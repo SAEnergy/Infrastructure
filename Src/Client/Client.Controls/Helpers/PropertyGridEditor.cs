@@ -140,10 +140,10 @@ namespace Client.Controls
             DefaultStyleKeyProperty.OverrideMetadata(typeof(PropertyGridTextEditor), new FrameworkPropertyMetadata(typeof(PropertyGridTextEditor)));
         }
 
-        //protected override void OnMultipleValues()
-        //{
-        //    Data = _multipleValuesString;// + " " + string.Join(",", Values.Select(o => (o == null ? "" : o.ToString())).ToArray());
-        //}
+        protected override void OnMultipleValues()
+        {
+            Data = _multipleValuesString;// + " " + string.Join(",", Values.Select(o => (o == null ? "" : o.ToString())).ToArray());
+        }
     }
 
     public class PropertyGridTimeSpanEditor : PropertyGridEditor
@@ -232,6 +232,12 @@ namespace Client.Controls
         {
             base.OnDataChanged();
             SetAvailableValues();
+        }
+
+        protected override object OnCoerceData(object value)
+        {
+            if (value == null) { return Data; }
+            return base.OnCoerceData(value);
         }
 
         protected override void OnMultipleValues()
