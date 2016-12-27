@@ -116,14 +116,14 @@ namespace Core.Comm
                         }
                     }
 
-                    switch (WaitHandle.WaitAny(new WaitHandle[] { _resetEvent, _reconnectEvent },15000))
+                    switch (WaitHandle.WaitAny(new WaitHandle[] { _resetEvent, _reconnectEvent }, 15000))
                     {
-                        case WaitHandle.WaitTimeout:break;
+                        case WaitHandle.WaitTimeout: break;
                         case 0: break;
                         case 1:
                             {
                                 Cleanup();
-                                lock(_stateLock)
+                                lock (_stateLock)
                                 {
                                     State = SubscriptionState.Connecting;
                                 }
@@ -150,11 +150,26 @@ namespace Core.Comm
         private void Cleanup()
         {
 
+            if (Channel != null)
+            {
+                try
+                {
+                    ((ICommunicationObject)Channel).Closed -= Channel_Closed;
+                    ((ICommunicationObject)Channel).Faulted -= Channel_Closed;
+                }
+                catch
+                {
+                    /* nom */
+                }
+            }
             Channel = default(T);
 
             try
             {
-                if (_factory != null) { _factory.Close(); }
+                if (_factory != null)
+                {
+                    _factory.Close(TimeSpan.FromSeconds(5));
+                }
             }
             catch
             {
