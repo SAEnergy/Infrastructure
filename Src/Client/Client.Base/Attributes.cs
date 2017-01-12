@@ -6,6 +6,7 @@ namespace Client.Base
     {
         public string DisplayName { get; set; }
         public string IconPath { get; set; }
+        public bool Hidden { get; set; }
     }
 
     public class ClientSettingsMetadataAttribute : Attribute
