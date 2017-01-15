@@ -44,6 +44,8 @@
                                 <MenuItem Command="{Binding RunJobCommand}" Header="Run Selected Jobs"/>
                                 <MenuItem Command="{Binding CancelJobCommand}" Header="Cancel Selected Jobs"/>
                                 <Separator/>
+                                <MenuItem Command="{Binding JobHistoryCommand}" Header="Job History"/>
+                                <Separator/>
                                 <MenuItem Command="{Binding EditJobCommand}" Header="Edit Selected Jobs"/>
                                 <MenuItem Command="{Binding EditScheduleCommand}" Header="Edit Selected Schedules"/>
                                 <Separator/>

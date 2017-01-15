@@ -114,5 +114,11 @@ namespace Scheduler.Component
         {
             Task.Run(() => _scheduler.CancelJob(job));
         }
+
+        public void RequestStatistics(int jobID)
+        {
+            List<JobStatistics> toRet = _data.All<JobStatistics>().Where(j => j.JobID == jobID).OrderByDescending(j => j.StartTime).Take(1000).ToList();
+            this.Post(c=>c.StatisticsHistoryUpdated(toRet));
+        }
     }
 }

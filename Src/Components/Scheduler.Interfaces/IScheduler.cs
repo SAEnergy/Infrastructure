@@ -22,6 +22,9 @@ namespace Scheduler.Interfaces
 
         [OperationContract]
         void JobStateUpdated(JobState state);
+
+        [OperationContract(IsOneWay = true)]
+        void StatisticsHistoryUpdated(List<JobStatistics> stats);
     }
 
     [ServiceContract]
@@ -47,11 +50,14 @@ namespace Scheduler.Interfaces
 
         [OperationContract]
         void CancelJob(JobConfiguration job);
+
     }
 
     [ServiceContract(CallbackContract = typeof(ISchedulerCallback))]
     public interface ISchedulerHost : ISchedulerBase, IUserAuthentication
     {
+        [OperationContract]
+        void RequestStatistics(int jobID);
     }
 
     public interface ISchedulerComponent : ISchedulerBase, IRunnable, IComponent

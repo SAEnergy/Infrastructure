@@ -184,5 +184,7 @@ namespace Scheduler.Plugin
                 if (model != null) { model.Job = job; }
             });
         }
+
+        public void StatisticsHistoryUpdated(List<JobStatistics> stats) { }
     }
 }

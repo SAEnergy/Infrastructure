@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace Scheduler.Plugin
 {
@@ -18,6 +19,7 @@ namespace Scheduler.Plugin
         public SimpleCommand RunJobCommand { get; private set; }
         public SimpleCommand CancelJobCommand { get; private set; }
         public SimpleCommand AddJobCommand { get; private set; }
+        public SimpleCommand JobHistoryCommand { get; private set; }
 
         public string Type
         {
@@ -51,6 +53,13 @@ namespace Scheduler.Plugin
             RunJobCommand = new SimpleCommand(OnRunJobCommand);
             CancelJobCommand = new SimpleCommand(OnCancelJobCommand);
             AddJobCommand = new SimpleCommand(OnAddJobCommand);
+            JobHistoryCommand = new SimpleCommand(OnJobHistoryCommand);
+        }
+
+        private void OnJobHistoryCommand()
+        {
+            JobHistoryDialog dlg = new JobHistoryDialog(Window.GetWindow(_parent),Job.JobConfigurationId);
+            dlg.ShowDialog();
         }
 
         private void OnAddJobCommand()
