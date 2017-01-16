@@ -1,6 +1,7 @@
 ﻿using Core.Comm.BaseClasses;
 using Core.Interfaces.Components;
 using Core.IoC.Container;
+using Core.Util;
 using Scheduler.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -117,8 +118,11 @@ namespace Scheduler.Component
 
         public void RequestStatistics(int jobID)
         {
-            List<JobStatistics> toRet = _data.All<JobStatistics>().Where(j => j.JobID == jobID).OrderByDescending(j => j.StartTime).Take(1000).ToList();
-            this.Post(c=>c.StatisticsHistoryUpdated(toRet));
+            List<JobStatistics> toRet = _data.All<JobStatistics>().Where(j => j.JobID == jobID).OrderByDescending(j => j.StartTime).Take(10000).ToList();
+            foreach (var list in toRet.Batch(100))
+            {
+                this.Send(c => c.StatisticsHistoryUpdated(list.ToList()));
+            }
         }
     }
 }

@@ -44,6 +44,7 @@
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="AttributeHelper.cs" />
+    <Compile Include="Batch.cs" />
     <Compile Include="PascalCaseSplitter.cs" />
     <Compile Include="ProxyFactory.cs" />
     <Compile Include="TypeLocator.cs" />

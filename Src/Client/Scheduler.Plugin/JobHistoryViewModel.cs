@@ -49,39 +49,42 @@ namespace Scheduler.Plugin
 
         public void StatisticsHistoryUpdated(List<JobStatistics> stats)
         {
-            foreach (JobStatistics stat in stats)
+            this.BeginInvoke(() =>
             {
-                foreach (PropertyInfo prop in stat.GetType().GetProperties())
+                foreach (JobStatistics stat in stats)
                 {
-                    if (prop.PropertyType != typeof(int) && prop.PropertyType != typeof(TimeSpan)) { continue; }
-                    if (prop.Name.Contains("ID")) { continue; }
-                    LineSeries ser = (LineSeries)Data.Series.FirstOrDefault(f => f.Title == prop.Name);
-                    if (ser == null)
+                    foreach (PropertyInfo prop in stat.GetType().GetProperties())
                     {
-                        ser = new LineSeries();
-                        ser.Title = prop.Name;
-                        ser.XAxisKey = "Date";
+                        if (prop.PropertyType != typeof(int) && prop.PropertyType != typeof(TimeSpan)) { continue; }
+                        if (prop.Name.Contains("ID")) { continue; }
+                        LineSeries ser = (LineSeries)Data.Series.FirstOrDefault(f => f.Title == prop.Name);
+                        if (ser == null)
+                        {
+                            ser = new LineSeries();
+                            ser.Title = prop.Name;
+                            ser.XAxisKey = "Date";
+                            if (prop.PropertyType == typeof(TimeSpan))
+                            {
+                                ser.YAxisKey = "Duration";
+                            }
+                            else
+                            {
+                                ser.YAxisKey = "Counts";
+                            }
+                            Data.Series.Add(ser);
+                        }
                         if (prop.PropertyType == typeof(TimeSpan))
                         {
-                            ser.YAxisKey = "Duration";
+                            ser.Points.Add(new DataPoint(DateTimeAxis.ToDouble(stat.StartTime), TimeSpanAxis.ToDouble((TimeSpan)prop.GetValue(stat))));
                         }
                         else
                         {
-                            ser.YAxisKey = "Counts";
+                            ser.Points.Add(new DataPoint(DateTimeAxis.ToDouble(stat.StartTime), (int)prop.GetValue(stat)));
                         }
-                        Data.Series.Add(ser);
-                    }
-                    if (prop.PropertyType == typeof(TimeSpan))
-                    {
-                        ser.Points.Add(new DataPoint(DateTimeAxis.ToDouble(stat.StartTime), TimeSpanAxis.ToDouble((TimeSpan)prop.GetValue(stat))));
-                    }
-                    else
-                    {
-                        ser.Points.Add(new DataPoint(DateTimeAxis.ToDouble(stat.StartTime), (int)prop.GetValue(stat)));
                     }
                 }
-            }
-            Data.InvalidatePlot(true);
+                Data.InvalidatePlot(true);
+            });
         }
     }
 }
