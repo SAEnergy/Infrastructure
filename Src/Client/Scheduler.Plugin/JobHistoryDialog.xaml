@@ -14,6 +14,11 @@
     Height="480"
     >
     <Grid>
-        <oxy:PlotView Model="{Binding Path=Data}" ></oxy:PlotView>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="2*"/>
+        </Grid.RowDefinitions>
+        <oxy:PlotView Grid.Row="0" Model="{Binding Path=DurationData}" ></oxy:PlotView>
+        <oxy:PlotView Grid.Row="1" Model="{Binding Path=CountData}" ></oxy:PlotView>
     </Grid>
 </base:DialogBase>
