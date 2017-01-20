@@ -1,4 +1,5 @@
-﻿using Core.Models;
+﻿using Client.Base;
+using Core.Models;
 using Core.Util;
 using System;
 using System.Collections;
@@ -19,14 +20,23 @@ namespace Client.Controls
     {
 
         public static readonly DependencyProperty PropertiesProperty = DependencyProperty.Register("Properties", typeof(ObservableCollection<PropertyGridEditor>), typeof(PropertyGrid));
-
         public ObservableCollection<PropertyGridEditor> Properties
         {
             get { return (ObservableCollection<PropertyGridEditor>)GetValue(PropertiesProperty); }
             set { SetValue(PropertiesProperty, value); }
         }
 
+        public SimpleCommand CommitCommand { get; private set; }
+
+        public static readonly DependencyProperty LiveEditProperty = DependencyProperty.Register("LiveEdit", typeof(bool), typeof(PropertyGrid));
+        public bool LiveEdit
+        {
+            get { return (bool)GetValue(LiveEditProperty); }
+            set { SetValue(LiveEditProperty, value); }
+        }
+
         private Dictionary<string, PropertyGridEditor> _properties;
+        private List<object> _items;
 
         static PropertyGrid()
         {
@@ -36,11 +46,13 @@ namespace Client.Controls
         public PropertyGrid()
         {
             IsTabStop = false;
+            CommitCommand = new SimpleCommand(Commit);
             Properties = new ObservableCollection<PropertyGridEditor>();
             ICollectionView view = CollectionViewSource.GetDefaultView(Properties);
             view.SortDescriptions.Add(new SortDescription("SortOrder", ListSortDirection.Ascending));
             view.SortDescriptions.Add(new SortDescription("DisplayName", ListSortDirection.Ascending));
 
+            _items = new List<object>();
             _properties = new Dictionary<string, PropertyGridEditor>();
             DataContextChanged += PropertyGrid_DataContextChanged;
         }
@@ -48,6 +60,7 @@ namespace Client.Controls
         private void Clear()
         {
             Properties.Clear();
+            _items.Clear();
             _properties.Clear();
         }
 
@@ -59,12 +72,13 @@ namespace Client.Controls
 
             if (DataContext is IEnumerable<object>)
             {
-                ParseProperties(DataContext as IEnumerable<object>);
+                _items.AddRange(DataContext as IEnumerable<object>);
             }
             else
             {
-                ParseProperties(new object[] { DataContext });
+                _items.Add(DataContext);
             }
+            ParseProperties();
         }
 
         protected override void OnItemsSourceChanged(IEnumerable oldValue, IEnumerable newValue)
@@ -72,10 +86,8 @@ namespace Client.Controls
             base.OnItemsSourceChanged(oldValue, newValue);
 
             Clear();
-
-            if (this.Items == null || Items.Count == 0) { return; }
-
-            ParseProperties(Items.OfType<object>().ToArray());
+            _items.AddRange(Items.OfType<object>());
+            ParseProperties();
         }
 
         protected override void OnItemsChanged(NotifyCollectionChangedEventArgs e)
@@ -83,16 +95,14 @@ namespace Client.Controls
             base.OnItemsChanged(e);
 
             Clear();
-
-            if (this.Items == null || Items.Count == 0) { return; }
-
-            ParseProperties(Items.OfType<object>().ToArray());
+            _items.AddRange(Items.OfType<object>());
+            ParseProperties();
         }
 
-        private void ParseProperties(IEnumerable<object> items)
+        private void ParseProperties()
         {
-            Clear();
-            foreach (object obj in items)
+            if(_items == null && _items.Count==0) { return; }
+            foreach (object obj in _items)
             {
                 foreach (PropertyInfo prop in obj.GetType().GetProperties())
                 {
@@ -108,7 +118,7 @@ namespace Client.Controls
                     if (editor == null)
                     {
                         editor = PropertyGridEditorFactory.GetEditor(prop.PropertyType);
-                        editor.PropertyType = prop.PropertyType;
+                        editor.Property = prop;
                         editor.Name = prop.Name;
                         editor.DisplayName = PascalCaseSplitter.Split(prop.Name);
                         editor.IsReadOnly = prop.SetMethod == null || !prop.SetMethod.IsPublic;
@@ -125,31 +135,27 @@ namespace Client.Controls
 
         private void Meta_Modified(object sender, EventArgs e)
         {
+            if (!LiveEdit) { return; }
+
             PropertyGridEditor editor = sender as PropertyGridEditor;
             if (editor == null) { return; }
+            Commit(editor);
+        }
 
-            List<object> items = new List<object>();
-            if (Items != null && Items.Count > 0) { items.AddRange(Items.OfType<object>()); }
-            else if (DataContext != null)
+        public void Commit()
+        {
+            foreach (var editor in Properties)
             {
-                if (DataContext is IEnumerable<object>)
+                if (editor.IsDirty)
                 {
-                    items.AddRange(DataContext as IEnumerable<object>);
-                }
-                else
-                {
-                    items.Add(DataContext);
+                    editor.Commit(_items);
                 }
             }
+        }
 
-            if (items.Count == 0) { return; }
-
-            foreach (object obj in items)
-            {
-                PropertyInfo prop = obj.GetType().GetProperty(editor.Name);
-                if (prop == null) { continue; }
-                prop.SetValue(obj, editor.Data);
-            }
+        public void Commit(PropertyGridEditor editor)
+        {
+            editor.Commit(_items);
         }
     }
 }

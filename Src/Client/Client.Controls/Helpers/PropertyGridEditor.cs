@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -24,7 +25,7 @@ namespace Client.Controls
 
         public string PropertyName { get; set; }
 
-        public Type PropertyType { get; set; }
+        public PropertyInfo Property { get; set; }
 
         public static readonly DependencyProperty DisplayNameProperty = DependencyProperty.Register("DisplayName", typeof(string), typeof(PropertyGridEditor));
         public virtual string DisplayName
@@ -76,8 +77,8 @@ namespace Client.Controls
         {
             if (_freeze) { return value; }
             if (value == null) return null;
-            if (value.GetType()==PropertyType) { return value; }
-            var conv = TypeDescriptor.GetConverter(PropertyType);
+            if (value.GetType() == Property.PropertyType) { return value; }
+            var conv = TypeDescriptor.GetConverter(Property.PropertyType);
             object newval = conv.ConvertFromInvariantString(value.ToString());
             return newval;
             //return Convert.ChangeType(value, PropertyType);
@@ -104,9 +105,9 @@ namespace Client.Controls
             try
             {
                 IsMultipleValues = false;
-                if (PropertyType.IsValueType)
+                if (Property.PropertyType.IsValueType)
                 {
-                    Data = Activator.CreateInstance(PropertyType);
+                    Data = Activator.CreateInstance(Property.PropertyType);
                 }
                 else { Data = null; }
 
@@ -131,6 +132,14 @@ namespace Client.Controls
         {
             Data = Values[0];
         }
+
+        public virtual void Commit(List<object> items)
+        {
+            foreach (object obj in items)
+            {
+                Property.SetValue(obj, Data);
+            }
+        }
     }
 
     public class PropertyGridTextEditor : PropertyGridEditor
@@ -143,6 +152,18 @@ namespace Client.Controls
         protected override void OnMultipleValues()
         {
             Data = _multipleValuesString;// + " " + string.Join(",", Values.Select(o => (o == null ? "" : o.ToString())).ToArray());
+        }
+
+        public override void Commit(List<object> items)
+        {
+            string bob = Data as string;
+
+            if (!string.IsNullOrWhiteSpace(bob) && bob.Contains(_multipleValuesString))
+            {
+                return;
+            }
+
+            base.Commit(items);
         }
     }
 
@@ -204,10 +225,10 @@ namespace Client.Controls
 
         protected void SetAvailableValues()
         {
-            if (PropertyType == null) { return; }
+            if (Property == null) { return; }
             if (AvailableValues.Count == 0)
             {
-                foreach (object obj in Enum.GetValues(PropertyType))
+                foreach (object obj in Enum.GetValues(Property.PropertyType))
                 {
                     AvailableValues.Add(obj);
                 }
