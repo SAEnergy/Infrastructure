@@ -18,9 +18,10 @@ namespace Client.Controls.Dialogs
 {
     public partial class PropertyGridDialog : DialogBase
     {
-        public PropertyGridDialog(Window owner) : base(owner)
+        public PropertyGridDialog(Window owner, bool liveEdit= false) : base(owner)
         {
             InitializeComponent();
+            if (liveEdit) propertyGrid.LiveEdit = true;
         }
 
         private void ClickCancel(object sender, RoutedEventArgs e)
@@ -30,6 +31,7 @@ namespace Client.Controls.Dialogs
 
         private void ClickSave(object sender, RoutedEventArgs e)
         {
+            propertyGrid.Commit();
             DialogResult = true;
             this.Close();
         }

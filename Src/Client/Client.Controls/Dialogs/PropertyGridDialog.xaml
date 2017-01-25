@@ -16,7 +16,7 @@
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="auto"/>
             </Grid.RowDefinitions>
-            <local:PropertyGrid Margin="5"/>
+            <local:PropertyGrid x:Name="propertyGrid" Margin="5"/>
             <Button Margin="5" Padding="5" Grid.Row="1" HorizontalAlignment="Left" IsCancel="True" Click="ClickCancel">Cancel</Button>
             <Button Margin="5" Padding="5" Grid.Row="1" HorizontalAlignment="Right" Click="ClickSave">Save</Button>
         </Grid>
