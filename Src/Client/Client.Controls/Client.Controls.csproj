@@ -52,6 +52,9 @@
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Controls\PropertyGrid.cs" />
+    <Compile Include="Dialogs\PromptForInputDialog.xaml.cs">
+      <DependentUpon>PromptForInputDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Dialogs\PropertyGridDialog.xaml.cs">
       <DependentUpon>PropertyGridDialog.xaml</DependentUpon>
     </Compile>
@@ -101,6 +104,10 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Dialogs\PromptForInputDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Dialogs\PropertyGridDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
